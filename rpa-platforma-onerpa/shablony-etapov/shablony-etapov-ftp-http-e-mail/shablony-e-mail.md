@@ -4,8 +4,8 @@
 
 Для автоматизации работы с электронной почтой и ее вложениями, в платформе OneRPA существует три шаблона:
 
-* Получить письма
-* Отправить письмо
-* Сохранить вложения
+* [Получить письма](shablony-e-mail/poluchit-pisma.md)
+* [Отправить письмо](shablony-e-mail/otpravit-pismo.md)
+* [Сохранить вложения](shablony-e-mail/sokhranit-vlozheniya.md)
 
-![](../../../../.gitbook/assets/Общее-робот.png)
+![](../../../.gitbook/assets/Общее-робот.png)
