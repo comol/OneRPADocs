@@ -10,18 +10,18 @@
 
 Раздел "Действия"
 
-* Ввод текста в Web элемент
-* Клик по web элементу
-* Получить свойство web элемента
-* Получить текст web элемента
+* [Ввод текста в Web элемент](deistviya/vvod-teksta-v-web-element.md)
+* [Клик по web элементу](deistviya/klik-po-web-elementu.md)
+* [Получить свойство web элемента](deistviya/poluchit-svoistvo-web-elementa.md)
+* [Получить текст web элемента](deistviya/poluchit-tekst-web-elementa.md)
 
 Раздел "Управление браузером"
 
-* Инициализировать браузер
-* Перейти на URL
-* Закрыть chrome
+* [Инициализировать браузер](upravlenie-brauzerom/inicializirovat-brauzer.md)
+* [Перейти на URL](upravlenie-brauzerom/pereiti-na-url.md)
+* [Закрыть chrome](upravlenie-brauzerom/zakryt-chrome.md)
 
 Раздел "Условия"
 
-* Элемент найден
-* Элемент отображен
+* [Элемент найден](usloviya/element-naiden.md)
+* [Элемент отображен](usloviya/element-otobrazhen.md)
