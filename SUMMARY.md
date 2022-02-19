@@ -2,6 +2,10 @@
 
 * [Контакты](README.md)
 * [RPA платформа OneRPA](rpa-platforma-onerpa/README.md)
+  * [Установка и использование](rpa-platforma-onerpa/ustanovka-i-ispolzovanie/README.md)
+    * [Функциональные характеристики](rpa-platforma-onerpa/ustanovka-i-ispolzovanie/funkcionalnye-kharakteristiki.md)
+    * [Установка и настройка](rpa-platforma-onerpa/ustanovka-i-ispolzovanie/ustanovka-i-nastroika.md)
+    * [Жизненный цикл, поддержка, особенности эксплуатации](rpa-platforma-onerpa/ustanovka-i-ispolzovanie/zhiznennyi-cikl-podderzhka-osobennosti-ekspluatacii.md)
   * [Конструктор роботов](rpa-platforma-onerpa/konstruktor-robotov.md)
   * [Шаблоны этапов](rpa-platforma-onerpa/shablony-etapov/README.md)
     * [Шаблоны этапов 1С](rpa-platforma-onerpa/shablony-etapov/shablony-etapov-1s.md)
