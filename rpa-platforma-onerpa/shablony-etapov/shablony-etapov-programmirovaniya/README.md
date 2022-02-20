@@ -10,31 +10,31 @@
 
 Ветвления
 
-* Условие
-* Множественное условие
+* [Условие](vetvleniya/uslovie.md)
+* [Множественное условие](vetvleniya/mnozhestvennoe-uslovie.md)
 
 Переменные
 
-* Выражение
-* Переменная
+* [Выражение](peremennye/vyrazhenie.md)
+* [Переменная](peremennye/peremennaya.md)
 
 Работа с таблицами
 
-* Добавить колонку таблицы
-* Добавить строку таблицы
-* Получить значение из таблицы
-* Получить значения строки таблицы
-* Получить количество строк таблицы
-* Создать описание колонок таблицы
-* Создать пустую таблицу
+* [Добавить колонку таблицы](rabota-s-tablicami/dobavit-kolonku-tablicy.md)
+* [Добавить строку таблицы](rabota-s-tablicami/dobavit-stroku-tablicy.md)
+* [Получить значение из таблицы](rabota-s-tablicami/poluchit-znachenie-iz-tablicy.md)
+* [Получить значения строки таблицы](rabota-s-tablicami/poluchit-znacheniya-stroki-tablicy.md)
+* [Получить количество строк таблицы](rabota-s-tablicami/poluchit-kolichestvo-strok-tablicy.md)
+* [Создать описание колонок таблицы](rabota-s-tablicami/sozdat-opisanie-kolonok-tablicy.md)
+* [Создать пустую таблицу](rabota-s-tablicami/sozdat-pustuyu-tablicu.md)
 
 Циклы
 
-* Начало цикла
-* Начало цикла по коллекции
-* Конец цикла
+* [Начало цикла](cikly/nachalo-cikla.md)
+* [Начало цикла по коллекции](cikly/nachalo-cikla-po-kollekcii.md)
+* [Конец цикла](cikly/konec-cikla.md)
 
 
 
-* Аннотация
-* Ожидание
+* [Аннотация](annotaciya.md)
+* [Ожидание](ozhidanie.md)
