@@ -4,26 +4,27 @@
 
 Шаблоны этапов для работы с файлами Excel разных форматов представляют весь необходимый набор действий и являются важной частью всех шаблонов платформы OneRPA. Шаблоны этапов позволяют оперировать как с объектами Excel: книги, листы книги. Так и с уровнями группировок, диапазонами ячеек и отдельно взятыми ячейками. Вы можете даже считать данные из файла, не открывая сам файл и не получая лист книги при помощи интересного шаблона "Считать данные c Excel". Раздел включает в себя следующие шаблоны:
 
-* Вставить из буфера диапазон ячеек
-* Вставить формулу в диапазон ячеек
-* Выделить диапазон ячеек
-* Вырезать диапазон ячеек
-* Закрыть объект Excel
-* Заменить подстроку в выделенном диапазоне ячеек
-* Копировать диапазон ячеек
-* Копировать лист книги excel
-* Открыть файл excel
-* Очистить выделенный диапазон ячеек
-* Получить значение уровня группировки строки листа
-* Получить значение ячейки листа
-* Получить лист книги excel
-* Получить объект Excel
-* Сохранить лист в файл
-* Считать данные c Excel
-* Удалить диапазон ячеек
-* Установить значение ячейки листа
-* Установить значения ячеек диапазона
-* Установить значения ячеек исходного диапазона в заданный диапазон
-* Установить наименование листа
-* Установить уровень группировок строк листа
-* Установить формат ячеек диапазона
+* [Вставить из буфера диапазон ячеек](excel/vstavit-iz-bufera-diapazon-yacheek.md)
+* [Вставить формулу в диапазон ячеек](excel/vstavit-formulu-v-diapazon-yacheek.md)
+* [Выделить диапазон ячеек](excel/vydelit-diapazon-yacheek.md)
+* [Вырезать диапазон ячеек](excel/vyrezat-diapazon-yacheek.md)
+* [Закрыть объект Excel](excel/zakryt-obekt-excel.md)
+* [Заменить подстроку в выделенном диапазоне ячеек](excel/zamenit-podstroku-v-vydelennom-diapazone-yacheek.md)
+* [Копировать диапазон ячеек](excel/kopirovat-diapazon-yacheek.md)
+* [Копировать лист книги excel](excel/kopirovat-list-knigi-excel.md)
+* [Открыть файл excel](excel/otkryt-fail-excel.md)
+* [Очистить выделенный диапазон ячеек](excel/ochistit-vydelennyi-diapazon-yacheek.md)
+* [Получить значение уровня группировки строки листа](excel/poluchit-znachenie-urovnya-gruppirovki-stroki-lista.md)
+* [Получить значение ячейки листа](excel/poluchit-znachenie-yacheiki-lista.md)
+* [Получить лист книги excel](excel/poluchit-list-knigi-excel.md)
+* [Получить объект Excel](excel/poluchit-obekt-excel.md)
+* [Сохранить лист в файл](excel/sokhranit-list-v-fail.md)
+* [Считать данные c Excel](excel/schitat-dannye-c-excel.md)
+* [Удалить диапазон ячеек](excel/udalit-diapazon-yacheek.md)
+* [Установить значение ячейки листа](excel/ustanovit-znachenie-yacheiki-lista.md)
+* [Установить значения ячеек диапазона](excel/ustanovit-znacheniya-yacheek-diapazona.md)
+* [Установить значения ячеек исходного диапазона в заданный диапазон](excel/ustanovit-znacheniya-yacheek-iskhodnogo-diapazona-v-zadannyi-diapazon.md)
+* [Установить наименование листа](excel/ustanovit-naimenovanie-lista.md)
+* [Установить уровень группировок строк листа](excel/ustanovit-uroven-gruppirovok-strok-lista.md)
+* [Установить формат ячеек диапазона](excel/ustanovit-format-yacheek-diapazona.md)
+
