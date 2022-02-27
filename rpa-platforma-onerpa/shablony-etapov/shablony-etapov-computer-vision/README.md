@@ -1,3 +1,3 @@
 # Шаблоны этапов Computer vision
 
-![](<../../.gitbook/assets/image (27).png>)
+![](<../../../.gitbook/assets/image (27).png>)
