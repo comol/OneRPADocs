@@ -11,6 +11,8 @@
     * [Шаблоны этапов 1С](rpa-platforma-onerpa/shablony-etapov/shablony-etapov-1s.md)
     * [Шаблоны этапов Computer vision](rpa-platforma-onerpa/shablony-etapov/shablony-etapov-computer-vision/README.md)
       * [Ждать рисунок](rpa-platforma-onerpa/shablony-etapov/shablony-etapov-computer-vision/zhdat-risunok.md)
+      * [Page 1](rpa-platforma-onerpa/shablony-etapov/shablony-etapov-computer-vision/page-1.md)
+      * [Page 2](rpa-platforma-onerpa/shablony-etapov/shablony-etapov-computer-vision/page-2.md)
     * [Шаблоны этапов FTP, HTTP, E-mail](rpa-platforma-onerpa/shablony-etapov/shablony-etapov-ftp-http-e-mail/README.md)
       * [Шаблоны E-mail](rpa-platforma-onerpa/shablony-etapov/shablony-etapov-ftp-http-e-mail/shablony-e-mail.md)
         * [Отправить письмо](rpa-platforma-onerpa/shablony-etapov/shablony-etapov-ftp-http-e-mail/shablony-e-mail/otpravit-pismo.md)
