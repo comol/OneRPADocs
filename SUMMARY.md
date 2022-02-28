@@ -49,7 +49,7 @@
         * [Установить наименование листа](rpa-platforma-onerpa/shablony-etapov/shablony-etapov-ms-office/excel/ustanovit-naimenovanie-lista.md)
         * [Установить уровень группировок строк листа](rpa-platforma-onerpa/shablony-etapov/shablony-etapov-ms-office/excel/ustanovit-uroven-gruppirovok-strok-lista.md)
         * [Установить формат ячеек диапазона](rpa-platforma-onerpa/shablony-etapov/shablony-etapov-ms-office/excel/ustanovit-format-yacheek-diapazona.md)
-    * [Шаблоны этапов OCR](rpa-platforma-onerpa/shablony-etapov/shablony-etapov-ocr/README.md)
+    * [Шаблоны этапов OCR](rpa-platforma-onerpa/shablony-etapov/shablony-etapov-ocr.md)
       * [Correct](rpa-platforma-onerpa/shablony-etapov/shablony-etapov-ocr/correct/README.md)
         * [Распознать документ (correct)](rpa-platforma-onerpa/shablony-etapov/shablony-etapov-ocr/correct/raspoznat-dokument-correct.md)
       * [Tesseract](rpa-platforma-onerpa/shablony-etapov/shablony-etapov-ocr/tesseract/README.md)
