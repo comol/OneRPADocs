@@ -12,6 +12,7 @@
       * [Логирование выполнения программных роботов и оповещение об ошибках при их выполнении](rpa-platforma-onerpa/ustanovka-i-ispolzovanie/rukovodstvo-polzovatelya/logirovanie-vypolneniya-programmnykh-robotov-i-opoveshenie-ob-oshibkakh-pri-ikh-vypolnenii.md)
       * [Устранение неполадок](rpa-platforma-onerpa/ustanovka-i-ispolzovanie/rukovodstvo-polzovatelya/ustranenie-nepoladok.md)
       * [Техническая поддержка](rpa-platforma-onerpa/ustanovka-i-ispolzovanie/rukovodstvo-polzovatelya/tekhnicheskaya-podderzhka.md)
+      * [Совершенствование программного обеспечения](rpa-platforma-onerpa/ustanovka-i-ispolzovanie/rukovodstvo-polzovatelya/sovershenstvovanie-programmnogo-obespecheniya.md)
   * [Конструктор роботов](rpa-platforma-onerpa/konstruktor-robotov.md)
   * [Шаблоны этапов](rpa-platforma-onerpa/shablony-etapov/README.md)
     * [Шаблоны этапов 1С](rpa-platforma-onerpa/shablony-etapov/shablony-etapov-1s.md)
