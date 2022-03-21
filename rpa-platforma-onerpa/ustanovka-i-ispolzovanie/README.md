@@ -12,6 +12,6 @@ description: Информация об установке и эксплуата�
 [ustanovka-i-nastroika.md](ustanovka-i-nastroika.md)
 {% endcontent-ref %}
 
-{% content-ref url="zhiznennyi-cikl-podderzhka-osobennosti-ekspluatacii.md" %}
-[zhiznennyi-cikl-podderzhka-osobennosti-ekspluatacii.md](zhiznennyi-cikl-podderzhka-osobennosti-ekspluatacii.md)
+{% content-ref url="zhiznennyi-cikl-podderzhka-osobennosti-ekspluatacii/" %}
+[zhiznennyi-cikl-podderzhka-osobennosti-ekspluatacii](zhiznennyi-cikl-podderzhka-osobennosti-ekspluatacii/)
 {% endcontent-ref %}
