@@ -11,7 +11,7 @@
       * [Конструктор программных роботов](rpa-platforma-onerpa/ustanovka-i-ispolzovanie/rukovodstvo-polzovatelya/konstruktor-programmnykh-robotov.md)
       * [Выполнение программных роботов](rpa-platforma-onerpa/ustanovka-i-ispolzovanie/rukovodstvo-polzovatelya/vypolnenie-programmnykh-robotov.md)
       * [Логирование выполнения программных роботов и оповещение об ошибках при их выполнении](rpa-platforma-onerpa/ustanovka-i-ispolzovanie/rukovodstvo-polzovatelya/logirovanie-vypolneniya-programmnykh-robotov-i-opoveshenie-ob-oshibkakh-pri-ikh-vypolnenii.md)
-      * [Устранение неполадок](rpa-platforma-onerpa/ustanovka-i-ispolzovanie/rukovodstvo-polzovatelya/ustranenie-nepoladok.md)
+      * [Устранение неисправностей](rpa-platforma-onerpa/ustanovka-i-ispolzovanie/rukovodstvo-polzovatelya/ustranenie-neispravnostei.md)
       * [Техническая поддержка](rpa-platforma-onerpa/ustanovka-i-ispolzovanie/rukovodstvo-polzovatelya/tekhnicheskaya-podderzhka/README.md)
         * [Контактная информация службы технической поддержки](rpa-platforma-onerpa/ustanovka-i-ispolzovanie/rukovodstvo-polzovatelya/tekhnicheskaya-podderzhka/kontaktnaya-informaciya-sluzhby-tekhnicheskoi-podderzhki.md)
       * [Совершенствование программного обеспечения](rpa-platforma-onerpa/ustanovka-i-ispolzovanie/rukovodstvo-polzovatelya/sovershenstvovanie-programmnogo-obespecheniya.md)
