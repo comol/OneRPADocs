@@ -17,6 +17,8 @@
       * [Совершенствование программного обеспечения](rpa-platforma-onerpa/ustanovka-i-ispolzovanie/rukovodstvo-polzovatelya/sovershenstvovanie-programmnogo-obespecheniya.md)
   * [Конструктор роботов](rpa-platforma-onerpa/konstruktor-robotov.md)
   * [Шаблоны этапов](rpa-platforma-onerpa/shablony-etapov/README.md)
+    * [SAP](rpa-platforma-onerpa/shablony-etapov/sap/README.md)
+      * [Запись UI действий в SAP](rpa-platforma-onerpa/shablony-etapov/sap/zapis-ui-deistvii-v-sap.md)
     * [Шаблоны этапов 1С](rpa-platforma-onerpa/shablony-etapov/shablony-etapov-1s.md)
     * [Шаблоны этапов Computer vision](rpa-platforma-onerpa/shablony-etapov/shablony-etapov-computer-vision/README.md)
       * [Ждать рисунок](rpa-platforma-onerpa/shablony-etapov/shablony-etapov-computer-vision/zhdat-risunok.md)
