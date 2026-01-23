@@ -10,6 +10,6 @@ description: Работа с UiScript SAP
 
 В появившемся окне нажать кнопку "редактировать UI Script":
 
-![](<../../../.gitbook/assets/image (2).png>)
+![](<../../../.gitbook/assets/image (2) (2).png>)
 
 В появившемся окне вставить записанный из SAP UIScript. Как записать UiScrip рассказано ниже
