@@ -20,7 +20,7 @@
 
 Скачать тонкий клиент нужной версии можно с официального сайта 1С: [https://online.1c.ru/catalog/free/](https://online.1c.ru/catalog/free/)&#x20;
 
-Для подключения к облачной версии платформы OneRPA или использования демоверсии тонкий клиент проще скачать по ссылке [https://files.onerpa.ru/setuptc\_8\_3\_19\_838.zip](https://files.onerpa.ru/setuptc\_8\_3\_19\_838.zip)&#x20;
+Для подключения к облачной версии платформы OneRPA или использования демоверсии тонкий клиент проще скачать по ссылке [https://files.onerpa.ru/setuptc\_8\_3\_19\_838.zip](https://files.onerpa.ru/setuptc_8_3_19_838.zip)&#x20;
 
 Скачанный файл нужно разархивировать и запустить setup.exe:
 
@@ -34,7 +34,7 @@
 
 ## **Этап 2.**
 
-Скачать компоненты можно по ссылке: **** [**https://files.onerpa.ru/OneRPAComponents.zip**](https://files.onerpa.ru/OneRPAComponents.zip) ****&#x20;
+Скачать компоненты можно по ссылке: [**https://files.onerpa.ru/OneRPAComponents.zip**](https://files.onerpa.ru/OneRPAComponents.zip)&#x20;
 
 Далее разархивируем и запускаем установщик:
 
@@ -72,7 +72,7 @@
 
 и в появившемся окне выбрать "добавить информационную базу".
 
-![](<../../.gitbook/assets/image (41).png>)&#x20;
+![](<../../.gitbook/assets/image (41) (1).png>)&#x20;
 
 
 
