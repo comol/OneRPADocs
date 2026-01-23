@@ -13,3 +13,7 @@ E-mail: info@onerpa.ru\
 {% content-ref url="ai-platforma-oneapa/" %}
 [ai-platforma-oneapa](ai-platforma-oneapa/)
 {% endcontent-ref %}
+
+{% content-ref url="mcp-servery-1c/" %}
+[mcp-servery-1c](mcp-servery-1c/)
+{% endcontent-ref %}
