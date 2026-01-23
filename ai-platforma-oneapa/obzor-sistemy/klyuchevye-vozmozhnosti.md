@@ -16,7 +16,7 @@ OneAPA предоставляет широкий набор возможност
 
 ### Визуальный интерфейс
 
-<figure><img src="../../.gitbook/assets/image.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (1).png" alt=""><figcaption></figcaption></figure>
 
 ## Поддержка множества LLM провайдеров
 
@@ -38,7 +38,7 @@ OneAPA предоставляет широкий набор возможност
 
 Любой инструмент агента автоматически доступен через MCP, если установлена галка "Публиковать как MCP"
 
-<figure><img src="../../.gitbook/assets/image (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (1) (1).png" alt=""><figcaption></figcaption></figure>
 
 ### OneAPA как MCP клиент
 

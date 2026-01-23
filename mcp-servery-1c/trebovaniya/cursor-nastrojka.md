@@ -1,46 +1,8 @@
-# Настройка Cursor IDE
+# Настройка Cursor
 
-Cursor — это IDE на базе VS Code с встроенной поддержкой ИИ и протокола MCP.
+В настройках Cursor в разделе "Tools & MCP" нажать кнопку редактирования конфигурации
 
-## Установка Cursor
-
-1. Перейдите на [cursor.com](https://cursor.com/)
-2. Скачайте версию для Windows
-3. Установите приложение
-4. Войдите в аккаунт или создайте новый
-
-## Расположение файла mcp.json
-
-Файл `mcp.json` содержит конфигурацию MCP-серверов для Cursor.
-
-### Путь к файлу
-
-```
-%APPDATA%\Cursor\User\globalStorage\mcp.json
-```
-
-Обычно это:
-
-```
-C:\Users\<username>\AppData\Roaming\Cursor\User\globalStorage\mcp.json
-```
-
-### Создание файла
-
-Если файл не существует, создайте его:
-
-```powershell
-# Создание папки (если не существует)
-New-Item -ItemType Directory -Force -Path "$env:APPDATA\Cursor\User\globalStorage"
-
-# Создание пустого файла конфигурации
-@'
-{
-  "mcpServers": {
-  }
-}
-'@ | Out-File -FilePath "$env:APPDATA\Cursor\User\globalStorage\mcp.json" -Encoding utf8
-```
+<figure><img src="../../.gitbook/assets/image.png" alt=""><figcaption></figcaption></figure>
 
 ## Формат конфигурации
 
@@ -83,6 +45,7 @@ New-Item -ItemType Directory -Force -Path "$env:APPDATA\Cursor\User\globalStorag
 ### Перезапуск Cursor
 
 После изменения `mcp.json` перезапустите Cursor:
+
 1. Закройте все окна Cursor
 2. Откройте Cursor заново
 
@@ -108,9 +71,9 @@ git clone https://github.com/comol/cursor_rules_1c.git
 
 ### Рекомендации
 
-- Используйте правила из репозитория как основу
-- Адаптируйте правила под вашу конфигурацию
-- Включите информацию об MCP-инструментах в правила
+* Используйте правила из репозитория как основу
+* Адаптируйте правила под вашу конфигурацию
+* Включите информацию об MCP-инструментах в правила
 
 ## Устранение проблем
 

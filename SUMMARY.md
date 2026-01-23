@@ -200,7 +200,6 @@
   * [Embedding модели](mcp-servery-1c/embedding-modeli/README.md)
     * [LM Studio (рекомендуется)](mcp-servery-1c/embedding-modeli/lm-studio.md)
     * [CPU режим](mcp-servery-1c/embedding-modeli/cpu-modeli.md)
-    * [Ollama](mcp-servery-1c/embedding-modeli/ollama.md)
     * [Выбор модели](mcp-servery-1c/embedding-modeli/vybor-modeli.md)
   * [MCP серверы](mcp-servery-1c/servery/README.md)
     * [HelpSearchServer](mcp-servery-1c/servery/help-search-server/README.md)

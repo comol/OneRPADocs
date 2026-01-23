@@ -4,16 +4,16 @@ MCP-серверы работают как локальные HTTP-сервис�
 
 ## Используемые порты
 
-| Сервер | Порт | Протокол |
-|--------|------|----------|
-| CodeMetadataSearchServer | 8000 | HTTP |
-| SyntaxCheckServer | 8002 | HTTP |
-| HelpSearchServer | 8003 | HTTP |
-| TemplatesSearchServer | 8004 | HTTP |
-| Graph Metadata Search | 8006 | HTTP |
-| 1CCodeChecker | 8007 | HTTP |
-| SSLSearchServer | 8008 | HTTP |
-| FormsServer | 8011 | HTTP |
+| Сервер                   | Порт | Протокол |
+| ------------------------ | ---- | -------- |
+| CodeMetadataSearchServer | 8000 | HTTP     |
+| SyntaxCheckServer        | 8002 | HTTP     |
+| HelpSearchServer         | 8003 | HTTP     |
+| TemplatesSearchServer    | 8004 | HTTP     |
+| Graph Metadata Search    | 8006 | HTTP     |
+| 1CCodeChecker            | 8007 | HTTP     |
+| SSLSearchServer          | 8008 | HTTP     |
+| FormsServer              | 8011 | HTTP     |
 
 {% hint style="info" %}
 Все серверы работают только локально (localhost). Внешний доступ не требуется.
@@ -87,9 +87,10 @@ Get-NetFirewallRule -DisplayName "MCP*" | Format-Table Name, Enabled, Direction
 ### Добавление исключений
 
 Добавьте в исключения антивируса:
-- Процесс `docker.exe`
-- Папку Docker: `C:\Program Files\Docker\`
-- Папку WSL: `C:\Users\<username>\AppData\Local\Docker\`
+
+* Процесс `docker.exe`
+* Папку Docker: `C:\Program Files\Docker\`
+* Папку WSL: `C:\Users\<username>\AppData\Local\Docker\`
 
 ## Внешний доступ к интернету
 
@@ -97,15 +98,15 @@ Get-NetFirewallRule -DisplayName "MCP*" | Format-Table Name, Enabled, Direction
 
 ### При первом запуске
 
-| Ресурс | Назначение |
-|--------|------------|
-| `hub.docker.com` | Скачивание Docker-образов |
-| `huggingface.co` | Скачивание embedding моделей |
+| Ресурс           | Назначение                                                                                                                                      |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `hub.docker.com` | Скачивание Docker-образов                                                                                                                       |
+| `huggingface.co` | Скачивание embedding моделей. <mark style="color:$danger;">**Внимание. Доступ к Huggiungface может быть заблокирован на территории РФ.**</mark> |
 
 ### В процессе работы
 
-| Сервер | Ресурс | Назначение |
-|--------|--------|------------|
+| Сервер        | Ресурс       | Назначение      |
+| ------------- | ------------ | --------------- |
 | 1CCodeChecker | `code.1c.ai` | API 1С:Напарник |
 
 {% hint style="info" %}
