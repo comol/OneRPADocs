@@ -1,5 +1,45 @@
 # Проблемы подключения
 
+{% hint style="info" %}
+Большинство проблем подключения связаны с сетевой конфигурацией Docker. Контейнер работает в изолированной сети и не имеет прямого доступа к localhost хост-машины.
+{% endhint %}
+
+## localhost не работает внутри контейнера
+
+### Симптом
+
+MCP-сервер не может подключиться к Neo4j, LM Studio или другим сервисам по адресу `localhost`.
+
+### Причина
+
+`localhost` внутри контейнера указывает на сам контейнер, а не на хост-машину. Сервисы на хосте недоступны по этому адресу.
+
+### Решение
+
+Используйте специальный адрес `host.docker.internal`:
+
+```env
+# Неправильно
+OPENAI_API_BASE=http://localhost:1234/v1
+NEO4J_URI=bolt://localhost:7687
+
+# Правильно
+OPENAI_API_BASE=http://host.docker.internal:1234/v1
+NEO4J_URI=bolt://host.docker.internal:7687
+```
+
+Если сервис (например, Neo4j) тоже запущен в Docker, используйте имя сервиса из docker-compose:
+
+```yaml
+# docker-compose.yml
+services:
+  neo4j:
+    ...
+  mcp-app:
+    environment:
+      - NEO4J_URI=bolt://neo4j:7687  # имя сервиса, не localhost!
+```
+
 ## Cursor не видит MCP-сервер
 
 ### Проверка 1: Контейнер запущен
@@ -164,6 +204,28 @@ docker stats <container_name>
 # Проверить логи
 docker logs --tail 50 <container_name>
 ```
+
+## Включение SSE транспорта
+
+### Симптом
+
+Некоторые клиенты требуют SSE (Server-Sent Events) вместо стандартного HTTP транспорта.
+
+### Решение
+
+Добавьте переменную окружения `USESSE=true`:
+
+```powershell
+docker run -d -p 8002:8002 `
+  --name 1c_syntaxcheck_mcp `
+  -e LICENSE_KEY=YOUR_LICENSE_KEY `
+  -e USESSE=true `
+  comol/1c_syntaxcheck_mcp:latest
+```
+
+{% hint style="info" %}
+SSE обычно нужен только для legacy-клиентов. Cursor работает со стандартным HTTP транспортом.
+{% endhint %}
 
 ## Скрипт полной диагностики
 

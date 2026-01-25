@@ -1,6 +1,6 @@
 # Выбор модели
 
-Детальное сравнение всех вариантов embedding моделей для MCP-серверов.
+Детальное сравнение вариантов embedding моделей для MCP-серверов.
 
 ## Сводная таблица
 
@@ -8,11 +8,13 @@
 | ---------------------------------- | ----------- | -------- | -------- | ---------- | ------ |
 | **Qwen3-Embedding-4B** (LM Studio) | 2560        | ⭐⭐⭐⭐⭐    | ⭐⭐⭐⭐⭐    | GPU 4 ГБ   | ✅      |
 | **Qwen3-Embedding-8B** (LM Studio) | \~4096      | ⭐⭐⭐⭐⭐    | ⭐⭐⭐⭐     | GPU 8 ГБ   | ✅      |
-| **qwen3:embedding-4b** (Ollama)    | 2560        | ⭐⭐⭐⭐⭐    | ⭐⭐⭐⭐⭐    | GPU 4 ГБ   | ✅      |
-| **nomic-embed-text** (Ollama)      | 768         | ⭐⭐⭐⭐     | ⭐⭐⭐⭐⭐    | GPU 2 ГБ   | ✅      |
 | **multilingual-e5-large** (CPU)    | 1024        | ⭐⭐⭐⭐⭐    | ⭐⭐       | 4 ГБ RAM   | ✅      |
 | **multilingual-e5-base** (CPU)     | 768         | ⭐⭐⭐⭐     | ⭐⭐⭐      | 2 ГБ RAM   | ✅      |
 | **multilingual-e5-small** (CPU)    | 384         | ⭐⭐⭐      | ⭐⭐⭐⭐⭐    | 1 ГБ RAM   | ✅      |
+
+{% hint style="info" %}
+Для GPU-ускорения рекомендуется использовать **LM Studio**. Это самый простой способ получить высокую производительность без сложной настройки CUDA в Docker-контейнерах.
+{% endhint %}
 
 ## Рекомендации по сценариям
 
@@ -148,5 +150,7 @@ INFO - ✓ Vector index created successfully!
 | GPU 8+ ГБ, нужно максимальное качество | LM Studio + Qwen3-Embedding-8B |
 | Нет GPU, важно качество                | CPU + multilingual-e5-base     |
 | Нет GPU, важна скорость                | CPU + multilingual-e5-small    |
-| Уже используете Ollama                 | Ollama + qwen3:embedding-4b    |
-| Минимальные требования к VRAM          | Ollama + nomic-embed-text      |
+
+{% hint style="warning" %}
+**Для пользователей из России:** CPU-модели скачиваются с huggingface.co, который может быть заблокирован. Используйте VPN для первоначального скачивания или выберите LM Studio, где модели скачиваются через встроенный интерфейс приложения.
+{% endhint %}

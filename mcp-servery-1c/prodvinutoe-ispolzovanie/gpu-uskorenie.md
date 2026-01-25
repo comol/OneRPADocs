@@ -2,7 +2,32 @@
 
 Использование видеокарты NVIDIA для ускорения embedding.
 
-## Требования
+{% hint style="success" %}
+**Рекомендация:** Для GPU-ускорения используйте **LM Studio**. Это самый простой и надёжный способ — не требуется настройка CUDA в Docker, просто запустите LM Studio на хосте, и MCP-серверы будут использовать GPU через API.
+{% endhint %}
+
+## Рекомендуемый подход: LM Studio
+
+Вместо сложной настройки GPU в Docker-контейнерах, используйте LM Studio на хосте:
+
+1. **LM Studio** запускается на Windows и автоматически использует GPU
+2. **MCP-серверы** в Docker обращаются к LM Studio через HTTP API
+3. Нет необходимости в `--gpus all` или NVIDIA Container Toolkit
+
+```
+┌────────────────┐     ┌────────────────┐
+│  LM Studio     │◀────│  MCP Server    │
+│  (GPU хоста)   │     │  (контейнер)   │
+└────────────────┘     └────────────────┘
+```
+
+Подробнее о настройке: [LM Studio](../embedding-modeli/lm-studio.md)
+
+## Альтернатива: GPU напрямую в Docker
+
+Если вам нужен GPU напрямую в контейнере (не рекомендуется для большинства случаев):
+
+### Требования
 
 - **Windows 11** (Windows 10 имеет ограниченную поддержку)
 - **NVIDIA GPU** с драйвером версии 470+
@@ -52,22 +77,16 @@ docker run -d -p 8003:8003 `
 Не все образы MCP-серверов поддерживают GPU напрямую. Рекомендуется использовать LM Studio или Ollama для GPU embedding.
 {% endhint %}
 
-## Рекомендуемый подход: LM Studio
+## Конфигурация LM Studio для GPU
 
-Вместо GPU в контейнерах, используйте LM Studio на хосте:
+Если LM Studio запущен локально на порту по умолчанию (1234), параметры подключения можно не указывать:
 
-1. **LM Studio** использует GPU хоста
-2. **MCP-серверы** обращаются к LM Studio через API
-3. Нет необходимости в `--gpus all`
-
-```
-┌────────────────┐     ┌────────────────┐
-│  LM Studio     │◀────│  MCP Server    │
-│  (GPU хоста)   │     │  (контейнер)   │
-└────────────────┘     └────────────────┘
+```env
+# Минимальная конфигурация (LM Studio на localhost:1234)
+OPENAI_MODEL=Qwen3-Embedding-4B
 ```
 
-### Конфигурация
+Полная конфигурация, если нужно указать явно:
 
 ```env
 OPENAI_API_BASE=http://host.docker.internal:1234/v1
@@ -75,34 +94,18 @@ OPENAI_API_KEY=lm-studio
 OPENAI_MODEL=Qwen3-Embedding-4B
 ```
 
-## Ollama с GPU
-
-Ollama также использует GPU хоста:
-
-```powershell
-# Установка Ollama (использует GPU автоматически)
-ollama pull qwen3:embedding-4b
-
-# MCP-сервер обращается к Ollama
-docker run -d -p 8003:8003 `
-    --name 1c_help_mcp `
-    -e LICENSE_KEY=YOUR_LICENSE_KEY `
-    -e OPENAI_API_BASE=http://host.docker.internal:11434/v1 `
-    -e OPENAI_API_KEY=ollama `
-    -e OPENAI_MODEL=qwen3:embedding-4b `
-    -v "C:/Program Files/1cv8/8.3.23.1997/bin:/1c_docs" `
-    -v "E:/bases/mcp_docs:/app/chroma_db" `
-    comol/1c_help_mcp:latest
-```
-
 ## Сравнение производительности
 
 | Конфигурация | Время индексации (5000 док) |
 |--------------|----------------------------|
-| CPU (e5-small) | ~30 минут |
-| CPU (e5-base) | ~60 минут |
-| GPU (Qwen-4B через LM Studio) | ~5 минут |
-| GPU (Qwen-8B через LM Studio) | ~10 минут |
+| CPU (e5-small) | ~10-20 часов |
+| CPU (e5-base) | ~20-40 часов |
+| GPU (Qwen-4B через LM Studio) | ~1-2 часа |
+| GPU (Qwen-8B через LM Studio) | ~2-4 часа |
+
+{% hint style="info" %}
+Время индексации сильно зависит от объёма данных, производительности CPU/GPU и выбранной модели. Приведённые значения — ориентировочные для типичной конфигурации 1С.
+{% endhint %}
 
 ## Устранение проблем
 

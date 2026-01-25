@@ -158,6 +158,101 @@ docker logs -f <container_name>
 docker restart <container_name>
 ```
 
+## Обновление образов MCP-серверов
+
+### Проверка новых версий на Docker Hub
+
+Чтобы проверить, есть ли новая версия образа, и обновить его:
+
+```powershell
+# Скачать последнюю версию образа
+docker pull comol/1c_help_mcp:latest
+
+# Docker покажет, была ли скачана новая версия или образ уже актуален
+# Пример вывода:
+# latest: Pulling from comol/1c_help_mcp
+# Digest: sha256:abc123...
+# Status: Downloaded newer image
+```
+
+### Полная процедура обновления MCP-сервера
+
+```powershell
+# 1. Скачать новую версию образа
+docker pull comol/1c_help_mcp:latest
+
+# 2. Остановить и удалить старый контейнер
+docker stop 1c_help_mcp
+docker rm 1c_help_mcp
+
+# 3. Запустить контейнер с новым образом (индекс сохранится в томе!)
+docker run -d -p 8003:8003 `
+  --name 1c_help_mcp `
+  -e LICENSE_KEY=YOUR_LICENSE_KEY `
+  -e RESET_DATABASE=false `
+  -v "C:/Program Files/1cv8/8.3.23.1997/bin:/1c_docs" `
+  -v "E:/bases/mcp_docs:/app/chroma_db" `
+  comol/1c_help_mcp:latest
+```
+
+{% hint style="info" %}
+Благодаря монтированию тома (`-v "E:/bases/mcp_docs:/app/chroma_db"`) ваш индекс сохранится при обновлении контейнера. Переиндексация не потребуется!
+{% endhint %}
+
+### Просмотр информации об образах
+
+```powershell
+# Список локальных образов
+docker images | Select-String "comol"
+
+# Подробная информация об образе
+docker inspect comol/1c_help_mcp:latest
+```
+
+## Флаг --rm в командах Docker
+
+В некоторых примерах вы можете встретить флаг `--rm`:
+
+```powershell
+docker run --rm -d -p 8003:8003 ...
+```
+
+### Что делает флаг --rm
+
+Флаг `--rm` автоматически **удаляет контейнер** после его остановки.
+
+{% hint style="warning" %}
+**Не рекомендуется для MCP-серверов!** При использовании `--rm`:
+- Контейнер удаляется при остановке (даже случайной)
+- Если вы не примонтировали том — **все данные индекса будут потеряны**
+- Усложняется диагностика проблем (нет доступа к логам после остановки)
+{% endhint %}
+
+### Рекомендация
+
+Убирайте флаг `--rm` из команд запуска MCP-серверов:
+
+```powershell
+# Не рекомендуется (с --rm)
+docker run --rm -d -p 8003:8003 --name 1c_help_mcp ...
+
+# Рекомендуется (без --rm)
+docker run -d -p 8003:8003 --name 1c_help_mcp ...
+```
+
+Для управления контейнерами используйте:
+
+```powershell
+# Остановить контейнер (данные сохраняются)
+docker stop 1c_help_mcp
+
+# Запустить существующий контейнер
+docker start 1c_help_mcp
+
+# Удалить контейнер (когда действительно нужно)
+docker rm 1c_help_mcp
+```
+
 ## Следующий шаг
 
 После установки Docker Desktop настройте [Cursor IDE](cursor-nastrojka.md).

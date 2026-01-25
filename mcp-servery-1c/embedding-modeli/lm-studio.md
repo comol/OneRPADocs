@@ -89,11 +89,36 @@ OPENAI_API_KEY=lm-studio
 OPENAI_MODEL=Qwen3-Embedding-4B
 ```
 
+{% hint style="success" %}
+**Упрощённая настройка:** Если LM Studio запущен локально на порту 1234 (по умолчанию), параметры `OPENAI_API_BASE` и `OPENAI_API_KEY` можно не указывать — MCP-серверы подключатся к LM Studio автоматически.
+{% endhint %}
+
 {% hint style="info" %}
 `host.docker.internal` — специальный адрес для доступа из Docker-контейнера к хост-машине Windows.
 {% endhint %}
 
-### Пример команды Docker
+### Пример команды Docker (упрощённый)
+
+Если LM Studio запущен локально, достаточно указать только модель:
+
+```powershell
+docker run -d -p 8003:8003 `
+  --name 1c_help_mcp `
+  -e LICENSE_KEY=YOUR_LICENSE_KEY `
+  -e RESET_DATABASE=false `
+  -e OPENAI_MODEL=Qwen3-Embedding-4B `
+  -v "C:/Program Files/1cv8/8.3.23.1997/bin:/1c_docs" `
+  -v "E:/bases/mcp_docs:/app/chroma_db" `
+  comol/1c_help_mcp:latest
+```
+
+{% hint style="info" %}
+Путь `E:/bases/mcp_docs` — это **пример**. Используйте любой удобный путь для хранения индексов.
+{% endhint %}
+
+### Пример команды Docker (полный)
+
+Если нужно явно указать параметры подключения к LM Studio:
 
 ```powershell
 docker run -d -p 8003:8003 `

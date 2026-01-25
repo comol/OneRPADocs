@@ -1,8 +1,31 @@
 # Настройка Cursor
 
-В настройках Cursor в разделе "Tools & MCP" нажать кнопку редактирования конфигурации
+## Открытие конфигурации MCP
 
-<figure><img src="../../.gitbook/assets/image.png" alt=""><figcaption></figcaption></figure>
+В Cursor файл `mcp.json` открывается через **визуальный интерфейс**, а не через прямое редактирование файла:
+
+1. Откройте настройки Cursor (Ctrl+,)
+2. Перейдите в раздел **"Tools & MCP"** (или найдите через поиск)
+3. Нажмите кнопку **редактирования конфигурации** MCP
+
+<figure><img src="../../.gitbook/assets/image.png" alt=""><figcaption><p>Открытие конфигурации MCP через интерфейс Cursor</p></figcaption></figure>
+
+{% hint style="info" %}
+Cursor автоматически откроет файл `mcp.json` для редактирования. Вам не нужно вручную искать путь к файлу.
+{% endhint %}
+
+### Расположение файла (для справки)
+
+Если потребуется найти файл вручную:
+
+```
+%APPDATA%\Cursor\User\globalStorage\mcp.json
+```
+
+Обычно это путь:
+```
+C:\Users\<имя_пользователя>\AppData\Roaming\Cursor\User\globalStorage\mcp.json
+```
 
 ## Формат конфигурации
 
