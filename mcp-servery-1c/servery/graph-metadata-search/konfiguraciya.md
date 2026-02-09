@@ -16,25 +16,48 @@
 
 | Переменная | Описание | По умолчанию |
 |------------|----------|--------------|
-| `RESET_DATABASE` | Переиндексировать | `true` |
-| `AUTO_UPDATE_ON_STARTUP` | Авто-обновление | `true` |
+| `RESET_DATABASE` | Переиндексировать при запуске | `true` |
+| `AUTO_UPDATE_ON_STARTUP` | Авто-обновление индексов при запуске | `true` |
+| `ASYNC_VECTOR_INDEXING` | Индексация векторов в фоне (неблокирующая) | `true` |
+| `INDEX_BATCH_SIZE` | Количество объектов, обрабатываемых за один пакет при создании векторного индекса | `50` |
+| `MAX_TOKENS_PER_BATCH` | Максимальное количество токенов в одном пакете запроса к API эмбеддингов. Защита от превышения лимита 8192 токена | `7500` |
+| `EMBEDDING_MAX_TOKENS` | Максимальное количество токенов на один текст при генерации эмбеддингов. Определяется автоматически по модели, но можно переопределить | *(авто)* |
 
 ### Embedding модели
 
 | Переменная | Описание | Пример |
 |------------|----------|--------|
-| `OPENAI_API_BASE` | URL API | `http://host.docker.internal:1234/v1` |
-| `OPENAI_API_KEY` | Ключ API | `lm-studio` |
-| `OPENAI_MODEL` | LLM модель | `gpt-4o` |
-| `OPENAI_EMBEDDING_MODEL` | Embedding модель | `Qwen3-Embedding-4B` |
+| `OPENAI_API_BASE` | URL API для генерации и LLM | `http://host.docker.internal:1234/v1` |
+| `OPENAI_API_KEY` | Ключ API для генерации и LLM | `lm-studio` |
+| `OPENAI_MODEL` | LLM модель для генерации описаний | `gpt-4o` |
+| `OPENAI_TEMPERATURE` | Температура генерации (0–1). Ниже — более детерминированный результат | `0.1` |
+| `OPENAI_MAX_COMPLETION_TOKENS` | Максимальное количество токенов в ответе LLM | `2000` |
+| `OPENAI_MODEL_IS_REASONING` | Принудительное указание, является ли модель «рассуждающей». Если не указано — определяется автоматически по имени модели | *(авто)* |
+| `OPENAI_EMBEDDING_API_BASE` | Отдельный URL для API эмбеддингов (если отличается от основного) | — |
+| `OPENAI_EMBEDDING_API_KEY` | Отдельный ключ для API эмбеддингов | — |
+| `OPENAI_EMBEDDING_MODEL` | Модель для эмбеддингов | `Qwen3-Embedding-4B` |
+| `OPENAI_EMBEDDING_DIMENSIONS` | Явное указание размерности эмбеддингов. Для моделей с переменной размерностью (Qwen3: 32–4096, text-embedding-3: 256–3072) | *(авто)* |
+| `EMBEDDING_MODEL` | Локальная CPU модель (sentence-transformers) | `intfloat/multilingual-e5-small` |
+
+### Поиск по коду
+
+| Переменная | Описание | По умолчанию |
+|------------|----------|--------------|
+| `ENABLE_CODE_SEARCH` | Включить поиск по BSL-файлам | `true` |
+| `CODE_SEARCH_MAX_FILE_SIZE` | Максимальный размер BSL-файла (байт) для индексации | `50000` |
+| `ENABLE_BUSINESS_SEARCH` | Включить семантический поиск по бизнес-описаниям | `true` |
 
 ### Дополнительные
 
 | Переменная | Описание | По умолчанию |
 |------------|----------|--------------|
+| `MCP_HOST` | Хост MCP-сервера | `0.0.0.0` |
 | `MCP_PORT` | Порт MCP | `8006` |
-| `CALCULATE_BUSINESS_INFO` | Генерировать бизнес-описания | `false` |
-| `PROJECT_NAME` | Название проекта | `1C Metadata Project` |
+| `MCP_PATH` | URL-путь для MCP эндпоинта | `/mcp` |
+| `MCP_USE_SSE` | SSE транспорт (для legacy клиентов) | `false` |
+| `CALCULATE_BUSINESS_INFO` | Генерировать AI бизнес-описания для объектов метаданных перед индексацией | `false` |
+| `PROJECT_NAME` | Название проекта (для логов и интерфейса) | `1C Metadata Project` |
+| `DEBUG` | Режим отладки — дополнительные логи | `false` |
 
 ## Переменные Neo4j
 

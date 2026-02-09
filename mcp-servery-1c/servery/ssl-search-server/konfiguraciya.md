@@ -13,22 +13,25 @@
 
 | Переменная | Описание | По умолчанию |
 |------------|----------|--------------|
-| `RESET_DATABASE` | Переиндексировать при запуске | `true` |
-| `RESET_CACHE` | Перезагрузить embedding модель | `true` |
+| `RESET_DATABASE` | Переиндексировать при запуске | `false` |
+| `FORCE_REINDEX_ON_DIMENSION_MISMATCH` | Автоматически пересоздать коллекцию ChromaDB при несовпадении размерности эмбеддингов. Если `false` — сервер остановится с ошибкой | `true` |
 
 ### Транспорт
 
 | Переменная | Описание | По умолчанию |
 |------------|----------|--------------|
-| `USESSE` | SSE транспорт | `false` |
+| `USESSE` | SSE транспорт (для legacy клиентов) | `false` |
 
-### Embedding модели (LM Studio / Ollama)
+### Embedding модели (LM Studio / Ollama / OpenRouter)
 
 | Переменная | Описание | Пример |
 |------------|----------|--------|
-| `OPENAI_API_BASE` | URL API сервера | `http://host.docker.internal:1234/v1` |
+| `OPENAI_API_BASE` | URL API сервера. Суффикс `/v1` добавляется автоматически | `http://host.docker.internal:1234/v1` |
 | `OPENAI_API_KEY` | Ключ API | `lm-studio` |
-| `OPENAI_MODEL` | Название модели | `Qwen3-Embedding-4B` |
+| `OPENAI_MODEL` | Название модели (переопределяет `EMBEDDING_MODEL` для API) | `Qwen3-Embedding-4B` |
+| `EMBEDDING_MODEL` | Модель для локальных эмбеддингов (CPU) | `intfloat/multilingual-e5-small` |
+| `EMBEDDING_DIMENSIONS` | Явное указание размерности эмбеддингов. Для моделей с переменной размерностью (Qwen3, text-embedding-3). Если не указано — определяется автоматически | *(авто)* |
+| `EMBEDDING_INPUT_TYPE_ENABLED` | Включить параметр `input_type` для различения query/document при генерации эмбеддингов. Полезно для моделей Qwen3, BGE, E5 | `true` |
 
 ## Монтируемые тома
 

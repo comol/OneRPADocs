@@ -8,6 +8,7 @@
 |--------|------|------------|-----------|
 | [HelpSearchServer](help-search-server/) | 8003 | Справка платформы 1С | Средняя |
 | [CodeMetadataSearchServer](code-metadata-search/) | 8000 | Метаданные и код конфигурации | Средняя |
+| [CloudEmbeddingsServer](cloud-embeddings-server/) | 8000 | Облачная индексация с параллельными эмбеддингами | Средняя |
 | [Graph Metadata Search](graph-metadata-search/) | 8006 | Графовый поиск связей | Высокая |
 | [SSLSearchServer](ssl-search-server/) | 8008 | Библиотека стандартных подсистем | Низкая |
 | [SyntaxCheckServer](syntax-check-server/) | 8002 | Проверка синтаксиса BSL | Низкая |
@@ -32,7 +33,8 @@
 
 5. **HelpSearchServer** — нужна папка bin платформы 1С
 6. **CodeMetadataSearchServer** — нужна выгрузка конфигурации
-7. **Graph Metadata Search** — нужна выгрузка + Neo4j
+7. **CloudEmbeddingsServer** — нужна выгрузка конфигурации + API-ключ облачного провайдера
+8. **Graph Metadata Search** — нужна выгрузка + Neo4j
 
 ### Требующие внешних ресурсов
 

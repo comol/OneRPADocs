@@ -20,6 +20,7 @@ MCP-серверы решают эту проблему, предоставля�
 |--------|------|------------|----------------|
 | [HelpSearchServer](servery/help-search-server/) | 8003 | Поиск по справке платформы 1С | Да (папка bin) |
 | [CodeMetadataSearchServer](servery/code-metadata-search/) | 8000 | Поиск по метаданным и коду конфигурации | Да (выгрузка) |
+| [CloudEmbeddingsServer](servery/cloud-embeddings-server/) | 8000 | Облачная индексация с параллельными эмбеддингами | Да (выгрузка) |
 | [Graph Metadata Search](servery/graph-metadata-search/) | 8006 | Графовый поиск связей метаданных | Да (выгрузка) |
 | [SSLSearchServer](servery/ssl-search-server/) | 8008 | Поиск по БСП | Нет |
 | [SyntaxCheckServer](servery/syntax-check-server/) | 8002 | Проверка синтаксиса BSL | Нет |
@@ -44,8 +45,9 @@ MCP-серверы решают эту проблему, предоставля�
 
 5. **HelpSearchServer** — справка по вашей версии платформы
 6. **CodeMetadataSearchServer** — метаданные вашей конфигурации
-7. **Graph Metadata Search** — анализ связей объектов
-8. **1CCodeChecker** — если есть токен 1С:Напарник
+7. **CloudEmbeddingsServer** — альтернатива CodeMetadataSearchServer с облачными эмбеддингами
+8. **Graph Metadata Search** — анализ связей объектов
+9. **1CCodeChecker** — если есть токен 1С:Напарник
 
 ## Требования
 

@@ -46,9 +46,15 @@ docker run -d -p 8004:8004 `
 | Переменная | Описание | По умолчанию |
 |------------|----------|--------------|
 | `LICENSE_KEY` | Лицензионный ключ | Обязательно |
-| `RESET_DATABASE` | Переиндексировать | `true` |
+| `RESET_DATABASE` | Переиндексировать шаблоны. Также срабатывает автоматически при несовпадении размерности эмбеддингов | `true` |
 | `RESET_CACHE` | Перезагрузить модель | `true` |
-| `EMBEDDING_MODEL` | CPU модель | `ai-forever/FRIDA` |
+| `USESSE` | SSE транспорт (для legacy клиентов) | `false` |
+| `HTTP_PORT` | Порт HTTP-сервера | `8004` |
+| `EMBEDDING_MODEL` | CPU модель с Hugging Face | `intfloat/multilingual-e5-small` |
+| `OPENAI_API_BASE` | URL API сервера (LM Studio, Ollama, OpenRouter). Суффикс `/v1` добавляется автоматически | `http://host.docker.internal:1234` |
+| `OPENAI_API_KEY` | Ключ API | `lm-studio` |
+| `OPENAI_MODEL` | Название модели для внешнего API | — |
+| `EMBEDDING_DIMENSIONS` | Явное указание размерности эмбеддингов. Для моделей с переменной размерностью (Qwen3, text-embedding-3). Если не указано — определяется автоматически | *(авто)* |
 
 ## Первый запуск
 

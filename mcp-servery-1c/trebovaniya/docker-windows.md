@@ -160,32 +160,24 @@ docker restart <container_name>
 
 ## Обновление образов MCP-серверов
 
-### Проверка новых версий на Docker Hub
-
-Чтобы проверить, есть ли новая версия образа, и обновить его:
-
-```powershell
-# Скачать последнюю версию образа
-docker pull comol/1c_help_mcp:latest
-
-# Docker покажет, была ли скачана новая версия или образ уже актуален
-# Пример вывода:
-# latest: Pulling from comol/1c_help_mcp
-# Digest: sha256:abc123...
-# Status: Downloaded newer image
-```
+{% hint style="warning" %}
+**Рекомендуется сохранять текущий образ перед обновлением!** Если новая версия окажется нерабочей, вы сможете быстро откатиться на предыдущую версию без повторного скачивания.
+{% endhint %}
 
 ### Полная процедура обновления MCP-сервера
 
 ```powershell
-# 1. Скачать новую версию образа
+# 1. Сохранить текущий образ под резервным тегом
+docker tag comol/1c_help_mcp:latest comol/1c_help_mcp:previous
+
+# 2. Скачать новую версию образа
 docker pull comol/1c_help_mcp:latest
 
-# 2. Остановить и удалить старый контейнер
+# 3. Остановить и удалить старый контейнер
 docker stop 1c_help_mcp
 docker rm 1c_help_mcp
 
-# 3. Запустить контейнер с новым образом (индекс сохранится в томе!)
+# 4. Запустить контейнер с новым образом (индекс сохранится в томе!)
 docker run -d -p 8003:8003 `
   --name 1c_help_mcp `
   -e LICENSE_KEY=YOUR_LICENSE_KEY `
@@ -199,10 +191,37 @@ docker run -d -p 8003:8003 `
 Благодаря монтированию тома (`-v "E:/bases/mcp_docs:/app/chroma_db"`) ваш индекс сохранится при обновлении контейнера. Переиндексация не потребуется!
 {% endhint %}
 
+### Откат на предыдущую версию
+
+Если после обновления сервер работает некорректно, откатитесь на сохранённый образ:
+
+```powershell
+# 1. Остановить и удалить проблемный контейнер
+docker stop 1c_help_mcp
+docker rm 1c_help_mcp
+
+# 2. Запустить контейнер из предыдущего образа
+docker run -d -p 8003:8003 `
+  --name 1c_help_mcp `
+  -e LICENSE_KEY=YOUR_LICENSE_KEY `
+  -e RESET_DATABASE=false `
+  -v "C:/Program Files/1cv8/8.3.23.1997/bin:/1c_docs" `
+  -v "E:/bases/mcp_docs:/app/chroma_db" `
+  comol/1c_help_mcp:previous
+```
+
+{% hint style="info" %}
+После того как вы убедились, что новая версия работает стабильно, можно удалить резервный образ для освобождения места на диске:
+
+```powershell
+docker rmi comol/1c_help_mcp:previous
+```
+{% endhint %}
+
 ### Просмотр информации об образах
 
 ```powershell
-# Список локальных образов
+# Список локальных образов (включая резервные)
 docker images | Select-String "comol"
 
 # Подробная информация об образе
