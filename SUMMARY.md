@@ -248,3 +248,8 @@
     * [Порты и эндпоинты](mcp-servery-1c/prilozhenia/porty-i-endpointy.md)
     * [Переменные окружения](mcp-servery-1c/prilozhenia/peremennye-okruzheniya.md)
     * [Глоссарий](mcp-servery-1c/prilozhenia/glossarij.md)
+* [Конструктор MCP серверов для 1С](konstruktor-mcp-serverov-1c/README.md)
+  * [Быстрый старт](konstruktor-mcp-serverov-1c/bystryj-start.md)
+  * [Установка](konstruktor-mcp-serverov-1c/ustanovka.md)
+  * [Конфигурация](konstruktor-mcp-serverov-1c/konfiguraciya.md)
+  * [Инструменты](konstruktor-mcp-serverov-1c/instrumenty.md)

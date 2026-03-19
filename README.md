@@ -17,3 +17,7 @@ E-mail: info@onerpa.ru\
 {% content-ref url="mcp-servery-1c/" %}
 [mcp-servery-1c](mcp-servery-1c/)
 {% endcontent-ref %}
+
+{% content-ref url="konstruktor-mcp-serverov-1c/" %}
+[konstruktor-mcp-serverov-1c](konstruktor-mcp-serverov-1c/)
+{% endcontent-ref %}
