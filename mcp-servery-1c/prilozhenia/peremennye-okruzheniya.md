@@ -122,6 +122,18 @@
 |------------|----------|--------------|
 | `LICENSE_KEY` | Лицензионный ключ | Обязательно |
 | `ONEC_AI_TOKEN` | Токен 1С:Напарник | Обязательно |
+| `MCP_TOOL_CALL_MODE` | Режим вызова upstream: `direct` (прямые вызовы) или `standard` (промпты) | `direct` |
+| `ONEC_AI_BASE_URL` | Базовый URL API 1С.ai | `https://code.1c.ai` |
+| `ONEC_AI_TIMEOUT` | Таймаут запросов к API (секунды) | `30` |
+| `ONEC_AI_SKILL_NAME` | Режим сессии: `custom` (с инструментами) или `raw` | `custom` |
+| `ONEC_AI_INPUT_MAX_LENGTH` | Максимальная длина входных данных | `100000` |
+| `ONEC_AI_UI_LANGUAGE` | Язык интерфейса | `russian` |
+| `ONEC_AI_PROGRAMMING_LANGUAGE` | Язык программирования | *(пусто)* |
+| `ONEC_AI_SCRIPT_LANGUAGE` | Скриптовый язык (`ru` / `en`) | `ru` |
+| `ONEC_CONFIG_NAME` | Конфигурация 1С по умолчанию для `config_help` | *(пусто)* |
+| `MAX_ACTIVE_SESSIONS` | Макс. активных сессий | `10` |
+| `SESSION_TTL` | Время жизни сессии (секунды) | `3600` |
+| `HTTP_PORT` | Порт HTTP-сервера | `8007` |
 
 ### SyntaxCheckServer (порт 8002)
 

@@ -231,6 +231,8 @@
     * [1CCodeChecker](mcp-servery-1c/servery/code-checker/README.md)
       * [Установка](mcp-servery-1c/servery/code-checker/ustanovka.md)
       * [Получение токена](mcp-servery-1c/servery/code-checker/poluchenie-tokena.md)
+      * [Инструменты](mcp-servery-1c/servery/code-checker/instrumenty.md)
+      * [Конфигурация](mcp-servery-1c/servery/code-checker/konfiguraciya.md)
   * [Интеграция](mcp-servery-1c/integraciya/README.md)
     * [Формат mcp.json](mcp-servery-1c/integraciya/cursor-mcp-json.md)
     * [Несколько серверов](mcp-servery-1c/integraciya/neskolko-serverov.md)
