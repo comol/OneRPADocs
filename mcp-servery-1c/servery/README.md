@@ -12,7 +12,7 @@
 | [Graph Metadata Search](graph-metadata-search/) | 8006 | Графовый поиск связей | Высокая |
 | [SSLSearchServer](ssl-search-server/) | 8008 | Библиотека стандартных подсистем | Низкая |
 | [SyntaxCheckServer](syntax-check-server/) | 8002 | Проверка синтаксиса BSL | Низкая |
-| [TemplatesSearchServer](templates-search-server/) | 8004 | Шаблоны кода 1С | Низкая |
+| [TemplatesSearchServer](templates-search-server/) | 8004 | Шаблоны кода 1С и проектная память | Низкая |
 | [FormsServer](forms-server/) | 8011 | Схемы форм 1С | Низкая |
 | [1CCodeChecker](code-checker/) | 8007 | Проверка через 1С:Напарник | Низкая |
 
