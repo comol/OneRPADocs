@@ -39,15 +39,15 @@
 | Переменная | Описание | По умолчанию | Серверы |
 |------------|----------|--------------|---------|
 | `INDEX_BATCH_SIZE` | Размер пакета при добавлении в ChromaDB | `25`–`50` | CodeMetadata, Graph |
-| `CHUNK_SIZE` | Размер фрагмента текста при разбивке (символы) | `1000` | CodeMetadata, Cloud |
-| `CHUNK_OVERLAP` | Перекрытие фрагментов (символы) | `100` | Cloud |
+| `CHUNK_SIZE` | Размер фрагмента текста при разбивке (символы) | `1000` | CodeMetadata |
 | `MAX_TOKENS_PER_BATCH` | Максимум токенов в одном пакете API | `7500` | Graph |
 | `EMBEDDING_MAX_TOKENS` | Максимум токенов на текст для эмбеддингов | *(авто)* | Graph |
-| `EMBEDDING_CONCURRENCY` | Параллельные запросы к API | `1` | Cloud |
-| `EMBEDDING_BATCH_SIZE` | Текстов в одном API-запросе | `10` | Cloud |
 | `INDEX_CODE` | Индексация BSL кода | `true` | CodeMetadata |
 | `INDEX_METADATA` | Индексация метаданных | `true` | CodeMetadata |
 | `INDEX_HELP` | Индексация HTML-справки | `true` | CodeMetadata |
+| `INDEX_METADATA_XML` | Индексация XML-определений метаданных | `true` | CodeMetadata |
+| `INDEX_XSD_SCHEMAS` | Генерация XSD-схем | `true` | CodeMetadata |
+| `REINDEX_INTERVAL_HOURS` | Интервал автоматической переиндексации (часы) | `24` | CodeMetadata |
 
 ## Переменные по серверам
 
@@ -68,26 +68,15 @@
 | `METADATA_PATH` | Путь к метаданным | `/app/metadata` |
 | `CODE_PATH` | Путь к коду | `/app/code` |
 | `RESET_DATABASE` | Переиндексировать | `false` |
-| `INDEX_CODE` | Индексация BSL кода | `true` |
-| `INDEX_METADATA` | Индексация метаданных | `true` |
-| `INDEX_HELP` | Индексация HTML-справки | `true` |
+| `INDEX_CODE` | Индексация BSL кода (8 инструментов) | `true` |
+| `INDEX_METADATA` | Индексация метаданных (2 инструмента) | `true` |
+| `INDEX_HELP` | Индексация HTML-справки (1 инструмент) | `true` |
+| `INDEX_METADATA_XML` | Индексация XML-определений метаданных (1 инструмент) | `true` |
+| `INDEX_XSD_SCHEMAS` | Генерация XSD-схем и валидация XML (2 инструмента) | `true` |
+| `REINDEX_INTERVAL_HOURS` | Интервал автоматической переиндексации (часы) | `24` |
 | `INDEX_BATCH_SIZE` | Размер пакета индексации | `25` |
 | `CHUNK_SIZE` | Размер фрагмента текста | `1000` |
 | `EMBEDDING_DIMENSIONS` | Размерность эмбеддингов | *(авто)* |
-
-### CloudEmbeddingsServer (порт 8000)
-
-| Переменная | Описание | По умолчанию |
-|------------|----------|--------------|
-| `LICENSE_KEY` | Лицензионный ключ | Обязательно |
-| `EMBEDDING_PROVIDER` | Провайдер: `openrouter`, `openai`, `cohere`, `jina`, `local` | Обязательно |
-| `SOURCE_PATH` | Путь к исходным файлам | `/data/source` |
-| `CHROMA_PATH` | Путь к ChromaDB | `/data/chroma_db` |
-| `EMBEDDING_CONCURRENCY` | Параллельные запросы | `1` |
-| `EMBEDDING_BATCH_SIZE` | Текстов в запросе | `10` |
-| `CHUNK_SIZE` | Размер фрагмента | `1000` |
-| `CHUNK_OVERLAP` | Перекрытие фрагментов | `100` |
-| `AUTO_INDEX` | Автоиндексация при запуске | `true` |
 
 ### SSLSearchServer (порт 8008)
 

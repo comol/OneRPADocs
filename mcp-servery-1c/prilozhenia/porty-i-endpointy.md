@@ -7,7 +7,6 @@
 | Сервер | Порт | MCP Endpoint | Дополнительные |
 |--------|------|--------------|----------------|
 | CodeMetadataSearchServer | 8000 | `/mcp` | — |
-| CloudEmbeddingsServer | 8000 | `/mcp` | `/health`, `/reindex` |
 | SyntaxCheckServer | 8002 | `/mcp` | — |
 | HelpSearchServer | 8003 | `/mcp` | `/health` |
 | TemplatesSearchServer | 8004 | `/mcp` | `/extend/` (веб-интерфейс) |
@@ -31,10 +30,6 @@
     "1c-code-metadata-mcp": {
       "url": "http://localhost:8000/mcp",
       "connection_id": "1c_metadata_service_001"
-    },
-    "1c-cloud-mcp": {
-      "url": "http://localhost:8000/mcp",
-      "connection_id": "1c_cloud_service_001"
     },
     "1c-syntax-checker-mcp": {
       "url": "http://localhost:8002/mcp",
@@ -75,7 +70,6 @@
 ```powershell
 $servers = @(
     @{Name="CodeMetadataSearchServer"; Port=8000; Endpoint="/mcp"},
-    @{Name="CloudEmbeddingsServer"; Port=8000; Endpoint="/mcp"},
     @{Name="SyntaxCheckServer"; Port=8002; Endpoint="/mcp"},
     @{Name="HelpSearchServer"; Port=8003; Endpoint="/mcp"},
     @{Name="TemplatesSearchServer"; Port=8004; Endpoint="/mcp"},
