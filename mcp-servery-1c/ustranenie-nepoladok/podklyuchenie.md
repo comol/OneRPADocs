@@ -156,7 +156,7 @@ Get-NetFirewallRule -DisplayName "*Docker*" | Format-Table Name, Enabled
 # От администратора
 New-NetFirewallRule -DisplayName "MCP Servers" `
     -Direction Inbound `
-    -LocalPort 8000,8002,8003,8004,8006,8007,8008,8011 `
+    -LocalPort 8000,8002,8003,8004,8006,8007,8008 `
     -Protocol TCP `
     -Action Allow
 ```
@@ -242,7 +242,7 @@ docker ps -a --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
 
 # Порты
 Write-Host "`nПорты:" -ForegroundColor Yellow
-@(8000, 8002, 8003, 8004, 8006, 8007, 8008, 8011) | ForEach-Object {
+@(8000, 8002, 8003, 8004, 8006, 8007, 8008) | ForEach-Object {
     $result = Test-NetConnection -ComputerName localhost -Port $_ -WarningAction SilentlyContinue
     if ($result.TcpTestSucceeded) {
         Write-Host "  ✓ Порт $_ доступен" -ForegroundColor Green

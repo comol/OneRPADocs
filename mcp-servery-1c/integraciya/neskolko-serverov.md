@@ -123,10 +123,6 @@ docker run -d -p 8010:8000 `
       "url": "http://localhost:8004/mcp",
       "connection_id": "1c_templates_service_001"
     },
-    "1c-forms-mcp": {
-      "url": "http://localhost:8011/mcp",
-      "connection_id": "1c_forms_service_001"
-    },
     "1c-code-checker-mcp": {
       "url": "http://localhost:8007/mcp",
       "connection_id": "1c_code_checker_001"
@@ -147,10 +143,6 @@ docker run -d -p 8010:8000 `
     "1c-syntax-checker-mcp": {
       "url": "http://localhost:8002/mcp",
       "connection_id": "1c_lsp_service_001"
-    },
-    "1c-forms-mcp": {
-      "url": "http://localhost:8011/mcp",
-      "connection_id": "1c_forms_service_001"
     }
   }
 }
@@ -209,10 +201,6 @@ docker run -d -p 8010:8000 `
     "1c-templates-mcp": {
       "url": "http://localhost:8004/mcp",
       "connection_id": "1c_templates_service_001"
-    },
-    "1c-forms-mcp": {
-      "url": "http://localhost:8011/mcp",
-      "connection_id": "1c_forms_service_001"
     }
   }
 }
@@ -230,8 +218,7 @@ $servers = @(
     @{Name="TemplatesSearchServer"; Port=8004},
     @{Name="GraphMetadataSearch"; Port=8006},
     @{Name="1CCodeChecker"; Port=8007},
-    @{Name="SSLSearchServer"; Port=8008},
-    @{Name="FormsServer"; Port=8011}
+    @{Name="SSLSearchServer"; Port=8008}
 )
 
 foreach ($server in $servers) {

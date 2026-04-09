@@ -12,7 +12,6 @@
 | [SSLSearchServer](ssl-search-server/) | 8008 | Библиотека стандартных подсистем | Низкая |
 | [SyntaxCheckServer](syntax-check-server/) | 8002 | Проверка синтаксиса BSL | Низкая |
 | [TemplatesSearchServer](templates-search-server/) | 8004 | Шаблоны кода 1С и проектная память | Низкая |
-| [FormsServer](forms-server/) | 8011 | Схемы форм 1С | Низкая |
 | [1CCodeChecker](code-checker/) | 8007 | Проверка через 1С:Напарник | Низкая |
 
 ## Классификация по сложности
@@ -22,9 +21,8 @@
 Можно запустить сразу после установки Docker:
 
 1. **SyntaxCheckServer** — проверка синтаксиса
-2. **FormsServer** — схемы форм
-3. **TemplatesSearchServer** — шаблоны кода
-4. **SSLSearchServer** — справка БСП
+2. **TemplatesSearchServer** — шаблоны кода
+3. **SSLSearchServer** — справка БСП
 
 ### Требующие данных
 
@@ -48,10 +46,6 @@ docker run -d -p 8002:8002 --name 1c_syntaxcheck_mcp `
   -e LICENSE_KEY=YOUR_LICENSE_KEY `
   comol/1c_syntaxcheck_mcp:latest
 
-# FormsServer
-docker run -d -p 8011:8011 --name 1c_forms_mcp `
-  -e LICENSE_KEY=YOUR_LICENSE_KEY `
-  comol/1c_forms:latest
 ```
 
 ### Этап 2: Если используете БСП

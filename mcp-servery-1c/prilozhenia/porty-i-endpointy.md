@@ -13,7 +13,6 @@
 | Graph Metadata Search | 8006 | `/mcp` | `/search` (веб-интерфейс) |
 | 1CCodeChecker | 8007 | `/mcp` | `/health` |
 | SSLSearchServer | 8008 | `/mcp` | — |
-| FormsServer | 8011 | `/mcp` | — |
 
 ## Neo4j (для Graph Metadata Search)
 
@@ -54,10 +53,6 @@
     "1c-ssl-mcp": {
       "url": "http://localhost:8008/mcp",
       "connection_id": "1c_ssl_service_001"
-    },
-    "1c-forms-mcp": {
-      "url": "http://localhost:8011/mcp",
-      "connection_id": "1c_forms_service_001"
     }
   }
 }
@@ -75,8 +70,7 @@ $servers = @(
     @{Name="TemplatesSearchServer"; Port=8004; Endpoint="/mcp"},
     @{Name="GraphMetadataSearch"; Port=8006; Endpoint="/mcp"},
     @{Name="1CCodeChecker"; Port=8007; Endpoint="/mcp"},
-    @{Name="SSLSearchServer"; Port=8008; Endpoint="/mcp"},
-    @{Name="FormsServer"; Port=8011; Endpoint="/mcp"}
+    @{Name="SSLSearchServer"; Port=8008; Endpoint="/mcp"}
 )
 
 foreach ($server in $servers) {

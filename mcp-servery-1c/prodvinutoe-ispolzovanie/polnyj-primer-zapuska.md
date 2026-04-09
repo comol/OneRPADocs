@@ -45,16 +45,7 @@ docker run -d -p 8002:8002 `
     comol/1c_syntaxcheck_mcp:latest
 
 # --------------------------------------------
-# 2. FormsServer (порт 8011) - без embedding
-# --------------------------------------------
-Write-Host "Запуск FormsServer..." -ForegroundColor Yellow
-docker run -d -p 8011:8011 `
-    --name 1c_forms_mcp `
-    -e LICENSE_KEY=$LICENSE_KEY `
-    comol/1c_forms:latest
-
-# --------------------------------------------
-# 3. HelpSearchServer (порт 8003)
+# 2. HelpSearchServer (порт 8003)
 # --------------------------------------------
 Write-Host "Запуск HelpSearchServer..." -ForegroundColor Yellow
 docker run -d -p 8003:8003 `
@@ -71,7 +62,7 @@ docker run -d -p 8003:8003 `
     comol/1c_help_mcp:latest
 
 # --------------------------------------------
-# 4. SSLSearchServer (порт 8008)
+# 3. SSLSearchServer (порт 8008)
 # --------------------------------------------
 Write-Host "Запуск SSLSearchServer..." -ForegroundColor Yellow
 docker run -d -p 8008:8008 `
@@ -86,7 +77,7 @@ docker run -d -p 8008:8008 `
     comol/mcp_ssl_server:latest
 
 # --------------------------------------------
-# 5. TemplatesSearchServer (порт 8004)
+# 4. TemplatesSearchServer (порт 8004)
 # --------------------------------------------
 Write-Host "Запуск TemplatesSearchServer..." -ForegroundColor Yellow
 docker run -d -p 8004:8004 `
@@ -118,7 +109,6 @@ Write-Host "Остановка MCP серверов..." -ForegroundColor Yellow
 $containers = @(
     "1c_help_mcp",
     "1c_syntaxcheck_mcp",
-    "1c_forms_mcp",
     "mcp_ssl_server",
     "template_search_mcp"
 )
@@ -142,8 +132,7 @@ $servers = @(
     @{Name="SyntaxCheckServer"; Port=8002},
     @{Name="HelpSearchServer"; Port=8003},
     @{Name="TemplatesSearchServer"; Port=8004},
-    @{Name="SSLSearchServer"; Port=8008},
-    @{Name="FormsServer"; Port=8011}
+    @{Name="SSLSearchServer"; Port=8008}
 )
 
 foreach ($server in $servers) {

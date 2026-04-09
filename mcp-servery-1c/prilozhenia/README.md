@@ -21,7 +21,6 @@
 | 8006 | Graph Metadata Search |
 | 8007 | 1CCodeChecker |
 | 8008 | SSLSearchServer |
-| 8011 | FormsServer |
 
 ### Docker образы
 
@@ -33,7 +32,6 @@
 | `comol/mcp_ssl_server` | SSLSearchServer |
 | `comol/1c_syntaxcheck_mcp` | SyntaxCheckServer |
 | `comol/template-search-mcp` | TemplatesSearchServer |
-| `comol/1c_forms` | FormsServer |
 | `comol/1c-code-checker` | 1CCodeChecker |
 
 ### Полезные ссылки

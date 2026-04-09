@@ -16,6 +16,18 @@ New-Item -ItemType Directory -Force -Path @(
 )
 ```
 
+## Выбор образа
+
+| Тег | Размер | Описание |
+|-----|--------|----------|
+| `latest` | ~2.9 GB | Полная версия: локальные embedding (CPU/GPU) + API |
+| `light` | ~290 MB | Облегчённая: embedding только через API (LM Studio, OpenRouter и т.д.) |
+| `arm64` | ~500 MB | Для Apple Silicon / ARM серверов |
+
+{% hint style="info" %}
+Если вы используете LM Studio или OpenRouter для embedding — выбирайте `light`. Образ в 10 раз легче и запускается быстрее.
+{% endhint %}
+
 ## Команды запуска
 
 ### С LM Studio (рекомендуется)
@@ -34,6 +46,24 @@ docker run -d -p 8000:8000 `
   -v "E:/1C_Export/Files:/app/code" `
   -v "E:/bases/mcp_codemetadata:/app/chroma_db" `
   comol/1c_code_metadata_mcp:latest
+```
+
+### С LM Studio (облегчённый образ)
+
+```powershell
+docker run -d -p 8000:8000 `
+  --name 1c_code_metadata_mcp `
+  -e LICENSE_KEY=YOUR_LICENSE_KEY `
+  -e METADATA_PATH="/app/metadata" `
+  -e CODE_PATH="/app/code" `
+  -e RESET_DATABASE=false `
+  -e OPENAI_API_BASE=http://host.docker.internal:1234/v1 `
+  -e OPENAI_API_KEY=lm-studio `
+  -e OPENAI_MODEL=Qwen3-Embedding-4B `
+  -v "E:/1C_Export/Report:/app/metadata" `
+  -v "E:/1C_Export/Files:/app/code" `
+  -v "E:/bases/mcp_codemetadata:/app/chroma_db" `
+  comol/1c_code_metadata_mcp:light
 ```
 
 ### С CPU (без GPU)

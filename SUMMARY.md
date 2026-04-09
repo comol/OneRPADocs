@@ -223,8 +223,6 @@
       * [Установка](mcp-servery-1c/servery/templates-search-server/ustanovka.md)
       * [Редактирование шаблонов](mcp-servery-1c/servery/templates-search-server/redaktirovanie-shablonov.md)
       * [Свои шаблоны](mcp-servery-1c/servery/templates-search-server/svoi-shablony.md)
-    * [FormsServer](mcp-servery-1c/servery/forms-server/README.md)
-      * [Установка](mcp-servery-1c/servery/forms-server/ustanovka.md)
     * [1CCodeChecker](mcp-servery-1c/servery/code-checker/README.md)
       * [Установка](mcp-servery-1c/servery/code-checker/ustanovka.md)
       * [Получение токена](mcp-servery-1c/servery/code-checker/poluchenie-tokena.md)

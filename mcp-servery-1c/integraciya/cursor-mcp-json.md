@@ -90,10 +90,6 @@ C:\Users\<username>\AppData\Roaming\Cursor\User\globalStorage\mcp.json
       "url": "http://localhost:8004/mcp",
       "connection_id": "1c_templates_service_001"
     },
-    "1c-forms-mcp": {
-      "url": "http://localhost:8011/mcp",
-      "connection_id": "1c_forms_service_001"
-    },
     "1c-code-checker-mcp": {
       "url": "http://localhost:8007/mcp",
       "connection_id": "1c_code_checker_001"

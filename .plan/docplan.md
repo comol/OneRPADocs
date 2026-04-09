@@ -21,7 +21,6 @@
 | SSLSearchServer | `E:\MCP_SSL` | Поиск по БСП |
 | SyntaxCheckServer | `E:\MCP_syntax` | Проверка синтаксиса BSL |
 | TemplatesSearchServer | `E:\MCP_Templates` | Поиск по шаблонам кода |
-| FormsServer | `E:\MCP_Forms` | Генерация и анализ форм |
 
 ---
 
@@ -129,10 +128,6 @@ mcp-servery-1c/
 │   │   ├── redaktirovanie-shablonov.md # Веб-интерфейс редактирования
 │   │   └── svoi-shablony.md            # Добавление собственных шаблонов
 │   │
-│   ├── forms-server/
-│   │   ├── README.md                   # Описание (генерация форм)
-│   │   └── ustanovka.md                # Установка и запуск
-│   │
 │   └── code-checker/
 │       ├── README.md                   # Описание (1С:Напарник)
 │       ├── ustanovka.md                # Установка и запуск
@@ -183,7 +178,6 @@ mcp-servery-1c/
 5. TemplatesSearchServer - шаблоны кода
 6. SyntaxCheckServer - проверка синтаксиса
 7. 1CCodeChecker - проверка через 1С:Напарник
-8. FormsServer - генерация форм
 
 ---
 
@@ -221,7 +215,7 @@ wsl --set-default-version 2
 - Включение MCP в настройках Cursor
 
 #### 2.3 setevye-trebovaniya.md
-- Список используемых портов (8000-8011)
+- Список используемых портов (8000-8008)
 - Настройка Windows Firewall
 - Исключения для антивируса (Docker, WSL)
 - Проверка доступности портов: `netstat -an | findstr :8003`
@@ -610,34 +604,7 @@ docker run -d -p 8004:8004 `
 
 ---
 
-### 4.7 FormsServer (Порт 8011)
-
-**Назначение:** Контекст для генерации форм 1С.
-
-**Особенности:**
-- Не требует embedding модели
-- Не требует внешних данных
-- Предоставляет схемы форм для ИИ
-
-**Инструменты MCP:**
-- `get_xsd_schema()` — XSD схема форм 1С
-- `get_json_schema()` — JSON схема форм 1С
-
-**Команда (Windows PowerShell):**
-```powershell
-docker run -d -p 8011:8011 `
-  --name 1c_forms_mcp `
-  -e LICENSE_KEY=YOUR_LICENSE_KEY `
-  comol/1c_forms:latest
-```
-
-{% hint style="success" %}
-Этот сервер можно запустить сразу — он содержит встроенные схемы форм.
-{% endhint %}
-
----
-
-### 4.8 1CCodeChecker (Порт 8007)
+### 4.7 1CCodeChecker (Порт 8007)
 
 **Назначение:** Проверка кода через 1С:Напарник.
 
@@ -690,10 +657,6 @@ docker run -d -p 8007:8007 `
     "1c-templates-mcp": {
       "url": "http://localhost:8004/mcp",
       "connection_id": "1c_templates_service_001"
-    },
-    "1c-forms-mcp": {
-      "url": "http://localhost:8011/mcp",
-      "connection_id": "1c_forms_service_001"
     },
     "1c-graph-metadata-mcp": {
       "url": "http://localhost:8006/mcp",
@@ -766,12 +729,7 @@ docker run -d -p 8002:8002 --name 1c_syntaxcheck_mcp `
   -e LICENSE_KEY=$LICENSE_KEY `
   comol/1c_syntaxcheck_mcp:latest
 
-# 3. FormsServer (порт 8011) - без embedding
-docker run -d -p 8011:8011 --name 1c_forms_mcp `
-  -e LICENSE_KEY=$LICENSE_KEY `
-  comol/1c_forms:latest
-
-# 4. SSLSearchServer (порт 8008)
+# 3. SSLSearchServer (порт 8008)
 docker run -d -p 8008:8008 --name mcp_ssl_server `
   -e LICENSE_KEY=$LICENSE_KEY `
   -e SSL_VERSION=3.1.11 `
@@ -782,7 +740,7 @@ docker run -d -p 8008:8008 --name mcp_ssl_server `
   -v "E:/bases/mcp_ssl:/app/chroma_db" `
   comol/mcp_ssl_server:latest
 
-# 5. TemplatesSearchServer (порт 8004)
+# 4. TemplatesSearchServer (порт 8004)
 docker run -d -p 8004:8004 --name template_search_mcp `
   -e LICENSE_KEY=$LICENSE_KEY `
   -e RESET_DATABASE=false `
@@ -840,7 +798,6 @@ docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
 | Graph Metadata Search | 8006 | /mcp, /search | Графовый поиск |
 | 1CCodeChecker | 8007 | /mcp | 1С:Напарник |
 | SSLSearchServer | 8008 | /mcp | БСП |
-| FormsServer | 8011 | /mcp | Формы |
 
 #### 8.2 peremennye-okruzheniya.md
 Сводная таблица всех переменных окружения по всем серверам.
@@ -892,8 +849,6 @@ docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
       * [Установка](mcp-servery-1c/servery/templates-search-server/ustanovka.md)
       * [Редактирование шаблонов](mcp-servery-1c/servery/templates-search-server/redaktirovanie-shablonov.md)
       * [Свои шаблоны](mcp-servery-1c/servery/templates-search-server/svoi-shablony.md)
-    * [FormsServer](mcp-servery-1c/servery/forms-server/README.md)
-      * [Установка](mcp-servery-1c/servery/forms-server/ustanovka.md)
     * [1CCodeChecker](mcp-servery-1c/servery/code-checker/README.md)
       * [Установка](mcp-servery-1c/servery/code-checker/ustanovka.md)
       * [Получение токена](mcp-servery-1c/servery/code-checker/poluchenie-tokena.md)
@@ -975,9 +930,8 @@ docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
 
 ### Фаза 2 (Важно — основные серверы)
 1. servery/syntax-check-server/* (простой, без embedding)
-2. servery/forms-server/* (простой, без embedding)
-3. servery/ssl-search-server/*
-4. servery/code-metadata-search/* + подготовка данных
+2. servery/ssl-search-server/*
+3. servery/code-metadata-search/* + подготовка данных
 
 ### Фаза 3 (Расширение)
 1. servery/templates-search-server/* + свои шаблоны

@@ -46,10 +46,9 @@ MCP-серверы подключаются к Cursor через файл кон
 Рекомендуемый порядок добавления серверов:
 
 1. **SyntaxCheckServer** — проверка синтаксиса
-2. **FormsServer** — генерация форм
-3. **HelpSearchServer** — справка платформы
-4. **SSLSearchServer** — справка БСП
-5. **TemplatesSearchServer** — шаблоны кода
-6. **CodeMetadataSearchServer** — метаданные конфигурации
-7. **Graph Metadata Search** — графовый поиск
-8. **1CCodeChecker** — 1С:Напарник
+2. **HelpSearchServer** — справка платформы
+3. **SSLSearchServer** — справка БСП
+4. **TemplatesSearchServer** — шаблоны кода
+5. **CodeMetadataSearchServer** — метаданные конфигурации
+6. **Graph Metadata Search** — графовый поиск
+7. **1CCodeChecker** — 1С:Напарник

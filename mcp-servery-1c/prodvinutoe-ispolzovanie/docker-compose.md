@@ -28,15 +28,6 @@ services:
     environment:
       - LICENSE_KEY=${LICENSE_KEY}
 
-  forms:
-    image: comol/1c_forms:latest
-    container_name: 1c_forms_mcp
-    restart: unless-stopped
-    ports:
-      - "8011:8011"
-    environment:
-      - LICENSE_KEY=${LICENSE_KEY}
-
   # ============================================
   # Серверы с embedding
   # ============================================

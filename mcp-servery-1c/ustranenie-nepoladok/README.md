@@ -26,7 +26,7 @@ docker ps -a --format "table {{.Names}}\t{{.Status}}"
 ### 3. Проверка портов
 
 ```powershell
-@(8000, 8002, 8003, 8004, 8006, 8007, 8008, 8011) | ForEach-Object {
+@(8000, 8002, 8003, 8004, 8006, 8007, 8008) | ForEach-Object {
     $result = Test-NetConnection -ComputerName localhost -Port $_ -WarningAction SilentlyContinue
     Write-Host "Порт $_`: $($result.TcpTestSucceeded)"
 }
