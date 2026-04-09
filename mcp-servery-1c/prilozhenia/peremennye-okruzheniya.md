@@ -131,6 +131,25 @@
 | `OPENAI_EMBEDDING_DIMENSIONS` | Размерность эмбеддингов | *(авто)* |
 | `ENABLE_CODE_SEARCH` | Поиск по BSL-коду | `true` |
 | `ENABLE_BUSINESS_SEARCH` | Семантический поиск по бизнес-описаниям | `true` |
+| `CALCULATE_BUSINESS_INFO` | Генерировать AI бизнес-описания | `false` |
+| `ENABLE_METADATA_DESCRIPTION_EMBEDDING` | Эмбеддинги для описательных полей | `false` |
+| `MCP_HOST` | Хост MCP-сервера | `0.0.0.0` |
+| `MCP_PORT` | Порт MCP | `8006` |
+| `MCP_PATH` | URL-путь MCP эндпоинта | `/mcp` |
+| `EMBEDDING_ALLOW_OFFLINE_FALLBACK` | Автопереход на локальную модель | `true` |
+| `TEMPLATE_MODE_ENABLED` | Шаблонный режим (JSON-запросы без LLM) | `true` |
+| `TEMPLATE_MODE_ONLY` | Только шаблоны, без LLM | `false` |
+| `CODE_SEARCH_MAX_FILE_SIZE` | Макс. размер BSL-файла (байт) | `50000` |
+| `CODE_EXPORT_PATH` | Путь к XML-выгрузке в файлы | — |
+| `LOAD_BSL_SIGNATURES` | Загружать BSL-граф (Module/Routine/CALLS) | `false` |
+| `ENABLE_ROUTINE_EMBEDDINGS` | Эмбеддинги для процедур/функций | `true` |
+| `LOAD_FORMS_FROM_XML` | Загружать структуру форм из XML | `false` |
+| `LOAD_EVENT_SUBSCRIPTIONS` | Загружать подписки на события | `false` |
+| `LOAD_PREDEFINED_VALUES` | Загружать предопределённые элементы | `false` |
+| `LOAD_ROLE_RIGHTS` | Загружать права ролей | `false` |
+| `LOAD_HELP_FROM_HTML` | Загружать справку из HTML | `false` |
+| `EXTENSION_NAME` | Имя расширения | — |
+| `EXTENSION_BASE_PROJECT` | Имя базового проекта для расширения | — |
 
 ### 1CCodeChecker (порт 8007)
 

@@ -1,13 +1,13 @@
 # Подготовка данных для Graph Metadata Search
 
-Аналогично CodeMetadataSearchServer, требуется выгрузка из Конфигуратора.
+Для работы Graph Metadata Search необходима выгрузка из Конфигуратора. Для базовых возможностей достаточно отчёта из конфигурации. Для расширенных функций (BSL-граф, формы, подписки, роли) нужна также выгрузка конфигурации в файлы.
 
 ## Необходимые выгрузки
 
-| Выгрузка | Назначение |
-|----------|------------|
-| Отчет из конфигурации | Метаданные объектов |
-| Выгрузка в файлы | Код модулей (опционально) |
+| Выгрузка | Назначение | Обязательность |
+|----------|------------|----------------|
+| Отчёт из конфигурации | Метаданные объектов, реквизиты, табличные части | Обязательно |
+| Выгрузка в файлы | BSL-код, структура форм, подписки, роли, предопределённые, справка | Опционально |
 
 ## Шаг 1: Создание папок
 
@@ -18,46 +18,163 @@ New-Item -ItemType Directory -Force -Path @(
 )
 ```
 
-## Шаг 2: Отчет из конфигурации
+## Шаг 2: Отчёт из конфигурации
 
 1. Откройте конфигурацию в Конфигураторе
-2. Меню **Конфигурация** → **Отчет из конфигурации**
+2. Меню **Конфигурация** → **Отчёт из конфигурации**
 3. Включите все разделы
 4. Сохраните в папку `E:\1C_Export\Report`
 
-## Шаг 3: Выгрузка в файлы (опционально)
+## Шаг 3: Выгрузка в файлы
+
+Требуется для: BSL-графа, структуры форм XML, подписок на события, предопределённых элементов, прав ролей, справки.
 
 1. Меню **Конфигурация** → **Выгрузить конфигурацию в файлы**
 2. Укажите папку `E:\1C_Export\Files`
 
+{% hint style="info" %}
+Без выгрузки в файлы будут работать: поиск по метаданным, business_search, досье (без секции code), шаблонные операции по структуре и навигации. Не будут доступны: search_code, trace_call_chain, структура форм XML, подписки, роли, предопределённые.
+{% endhint %}
+
 ## Граф метаданных
 
-После индексации в Neo4j создаётся граф:
+После индексации в Neo4j создаётся граф с разветвлённой структурой.
+
+### Типы узлов
+
+#### Базовые узлы (из отчёта)
+
+| Узел | Описание |
+|------|----------|
+| **Project** | Корневой узел, идентификация проекта |
+| **Configuration** | Конфигурация |
+| **MetadataCategory** | Категория метаданных (Справочники, Документы, ...) |
+| **MetadataObject** | Объект метаданных |
+| **Attribute** | Реквизит объекта |
+| **TabularPart** | Табличная часть объекта |
+| **Form** | Форма объекта |
+| **EnumValue** | Значение перечисления |
+| **Command** | Команда объекта |
+| **Layout** | Макет объекта |
+
+#### Специализированные узлы (из отчёта)
+
+| Узел | Описание |
+|------|----------|
+| **UrlTemplate** | Шаблон URL HTTP-сервиса |
+| **UrlMethod** | Метод URL-шаблона (GET, POST, ...) |
+| **Characteristic** | Характеристика плана видов характеристик |
+| **JournalGraph** | Граф журнала документов |
+| **AccountingFlag** | Признак учёта плана счетов |
+| **DimensionAccountingFlag** | Признак учёта субконто |
+
+#### BSL-граф (из выгрузки в файлы, `LOAD_BSL_SIGNATURES=true`)
+
+| Узел | Описание |
+|------|----------|
+| **Module** | Модуль объекта (ObjectModule, ManagerModule, FormModule, CommonModule, ...) |
+| **Routine** | Процедура или функция BSL-кода |
+
+#### XML-данные (из выгрузки в файлы)
+
+| Узел | Описание | Переменная |
+|------|----------|------------|
+| **EventSubscription** | Подписка на событие | `LOAD_EVENT_SUBSCRIPTIONS=true` |
+| **PredefinedItem** | Предопределённый элемент | `LOAD_PREDEFINED_VALUES=true` |
+| **FormControl** | Элемент управления формы | `LOAD_FORMS_FROM_XML=true` |
+| **FormEvent** | Событие формы или элемента | `LOAD_FORMS_FROM_XML=true` |
+| **FormAttribute** | Реквизит формы | `LOAD_FORMS_FROM_XML=true` |
+
+#### Системные узлы
+
+| Узел | Описание |
+|------|----------|
+| **SystemMeta** | Системная информация (embedding_model_id, timestamps) |
+
+### Связи
+
+#### Иерархия
+
+| Связь | Описание |
+|-------|----------|
+| `HAS_CONFIGURATION` | Project → Configuration |
+| `HAS_CATEGORY` | Configuration → MetadataCategory |
+| `HAS_OBJECT` | MetadataCategory → MetadataObject |
+| `HAS_ATTRIBUTE` | MetadataObject (или TabularPart) → Attribute |
+| `HAS_TABULAR_PART` | MetadataObject → TabularPart |
+| `HAS_FORM` | MetadataObject → Form |
+| `HAS_VALUE` | MetadataObject (Перечисление) → EnumValue |
+| `HAS_COMMAND` | MetadataObject (или Form) → Command |
+| `HAS_LAYOUT` | MetadataObject → Layout |
+| `HAS_URL_TEMPLATE` | MetadataObject (HTTP-сервис) → UrlTemplate |
+| `HAS_URL_METHOD` | UrlTemplate → UrlMethod |
+| `HAS_CHARACTERISTIC` | MetadataObject → Characteristic |
+| `HAS_GRAPH` | MetadataObject → JournalGraph |
+| `HAS_ACCOUNTING_FLAG` | MetadataObject → AccountingFlag |
+| `HAS_DIMENSION_ACCOUNTING_FLAG` | MetadataObject → DimensionAccountingFlag |
+
+#### Перекрёстные связи объектов
+
+| Связь | Описание |
+|-------|----------|
+| `USED_IN` | Объект используется как тип реквизита/ресурса/измерения в другом объекте |
+| `DO_MOVEMENTS_IN` | Документ делает движения в регистр |
+| `CONTAINS_OBJECT` | Подсистема содержит объект |
+
+#### BSL-граф
+
+| Связь | Описание |
+|-------|----------|
+| `HAS_MODULE` | MetadataObject → Module |
+| `DECLARES` | Module → Routine |
+| `CALLS` | Routine → Routine (вызов процедуры) |
+
+#### XML-данные
+
+| Связь | Описание |
+|-------|----------|
+| `HAS_PREDEFINED` | MetadataObject → PredefinedItem |
+| `HAS_CHILD` | PredefinedItem → PredefinedItem (иерархия) |
+| `HAS_HANDLER` | EventSubscription (или FormEvent) → Routine |
+| `HAS_CONTROL` | Form → FormControl |
+| `HAS_CHILD` | FormControl → FormControl (иерархия элементов) |
+| `HAS_EVENT` | Form (или FormControl) → FormEvent |
+| `HAS_FORM_ATTRIBUTE` | Form → FormAttribute |
+| `BINDS_TO` | FormControl → цель привязки данных |
+| `LINKS_TO_COMMAND` | FormControl → Command |
+| `GRANTS_ACCESS_TO` | Role → MetadataObject (с деталями прав) |
+
+#### Расширения
+
+| Связь | Описание |
+|-------|----------|
+| `EXTENDS` | MetadataObject расширения → MetadataObject базы |
+| `OVERRIDES` | Элемент расширения (Form, Module, Routine) → элемент базы |
+
+### Визуализация графа
 
 ```
 Project (корневой узел)
   └─> Configuration
-        └─> MetadataObject (Справочники, Документы, и т.д.)
-              ├─> Attribute (реквизиты)
-              └─> TabularPart (табличные части)
-                    └─> Attribute
+        └─> MetadataCategory (Справочники, Документы, ...)
+              └─> MetadataObject
+                    ├─> Attribute (реквизиты)
+                    ├─> TabularPart → Attribute
+                    ├─> Form
+                    │     ├─> FormControl → FormControl (иерархия)
+                    │     ├─> FormEvent → Routine (обработчик)
+                    │     ├─> FormAttribute
+                    │     └─> Command
+                    ├─> Command
+                    ├─> Layout
+                    ├─> EnumValue
+                    ├─> Module → Routine → Routine (CALLS)
+                    ├─> PredefinedItem → PredefinedItem (иерархия)
+                    ├─> EventSubscription → Routine (обработчик)
+                    ├── USED_IN ──> другой MetadataObject
+                    ├── DO_MOVEMENTS_IN ──> регистр
+                    └── EXTENDS ──> базовый MetadataObject
 ```
-
-### Типы узлов
-
-- **Project** — корневой узел
-- **Configuration** — конфигурация
-- **MetadataObject** — объект метаданных
-- **TabularPart** — табличная часть
-- **Attribute** — реквизит
-
-### Связи
-
-- `HAS_CONFIGURATION` — проект → конфигурация
-- `HAS_OBJECT` — конфигурация → объект
-- `HAS_ATTRIBUTE` — объект → реквизит
-- `HAS_TABULAR_PART` — объект → табличная часть
-- `REFERENCES` — ссылки между объектами
 
 ## Просмотр графа
 
@@ -65,6 +182,23 @@ Project (корневой узел)
 
 ```cypher
 MATCH (n) RETURN n LIMIT 100
+```
+
+Полезные запросы:
+
+```cypher
+// Все категории метаданных
+MATCH (c:MetadataCategory) RETURN c.name
+
+// Связи конкретного объекта
+MATCH (o:MetadataObject {name: "Контрагенты"})-[r]->(n) RETURN o, r, n
+
+// Граф вызовов процедуры
+MATCH path = (r:Routine {name: "ПередЗаписью"})-[:CALLS*1..3]->(callee)
+RETURN path
+
+// Объекты расширения
+MATCH (o:MetadataObject {origin: "extension"}) RETURN o.name, o.extension_name
 ```
 
 ## Обновление данных
@@ -79,3 +213,13 @@ MATCH (n) RETURN n LIMIT 100
 docker-compose down
 docker-compose up -d
 ```
+
+{% hint style="warning" %}
+При смене embedding-модели также необходимо установить `RESET_DATABASE=true`. Система обнаружит несоответствие модели и не запустится без сброса.
+{% endhint %}
+
+## Мультипроект
+
+Система поддерживает несколько конфигураций в одной базе Neo4j. Каждая конфигурация идентифицируется через `PROJECT_NAME`. При поиске результаты автоматически фильтруются по текущему проекту.
+
+При `FULL_METADATA_RELOAD=true` удаляются только данные текущего проекта, данные других проектов не затрагиваются.

@@ -10,7 +10,7 @@
 | SyntaxCheckServer | 8002 | `/mcp` | — |
 | HelpSearchServer | 8003 | `/mcp` | `/health` |
 | TemplatesSearchServer | 8004 | `/mcp` | `/extend/` (веб-интерфейс) |
-| Graph Metadata Search | 8006 | `/mcp` | `/search` (веб-интерфейс) |
+| Graph Metadata Search | 8006 | `/mcp` | `/search`, `/health`, `/status`, `/stats`, `/docs` |
 | 1CCodeChecker | 8007 | `/mcp` | `/health` |
 | SSLSearchServer | 8008 | `/mcp` | — |
 
