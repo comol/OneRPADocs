@@ -25,12 +25,6 @@
 | Переменная | Описание | По умолчанию |
 |------------|----------|--------------|
 | `RESET_DATABASE` | Переиндексировать при запуске | `false` |
-| `INDEX_CODE` | Индексация BSL кода. При отключении убираются: `codesearch`, `search_function`, `get_module_structure`, `get_method_call_hierarchy`, `search_metadata_forms`, `get_metadata_form_details`, `graph_dependencies`, `bsl_scope_members` | `true` |
-| `INDEX_METADATA` | Индексация метаданных. При отключении убираются: `metadatasearch`, `get_metadata_details` | `true` |
-| `INDEX_HELP` | Индексация HTML-справки конфигурации. При отключении убирается: `helpsearch` | `true` |
-| `INDEX_METADATA_XML` | Индексация XML-определений метаданных. При отключении убирается: `search_metadata_xml` | `true` |
-| `INDEX_XSD_SCHEMAS` | Генерация XSD-схем из конфигурации. При отключении убираются: `get_xsd_schema`, `verify_xml` | `true` |
-| `INDEX_FORMS_SEMANTIC` | Семантический индекс макетов форм. При включении добавляется: `search_forms_semantic` | `false` |
 | `INDEX_BATCH_SIZE` | Размер пакета при добавлении записей в ChromaDB. Увеличение ускоряет индексацию, но требует больше памяти | `25` |
 | `REINDEX_INTERVAL_HOURS` | Интервал автоматической переиндексации в часах. `0` — отключить | `24` |
 

@@ -46,12 +46,6 @@
 | `CHUNK_OVERLAP_TEXT` | Перекрытие чанков для метаданных/XML/справки | `200` | CodeMetadata |
 | `MAX_TOKENS_PER_BATCH` | Максимум токенов в одном пакете API | `7500` | Graph |
 | `EMBEDDING_MAX_TOKENS` | Максимум токенов на текст для эмбеддингов | *(авто)* | Graph |
-| `INDEX_CODE` | Индексация BSL кода | `true` | CodeMetadata |
-| `INDEX_METADATA` | Индексация метаданных | `true` | CodeMetadata |
-| `INDEX_HELP` | Индексация HTML-справки | `true` | CodeMetadata |
-| `INDEX_METADATA_XML` | Индексация XML-определений метаданных | `true` | CodeMetadata |
-| `INDEX_XSD_SCHEMAS` | Генерация XSD-схем | `true` | CodeMetadata |
-| `INDEX_FORMS_SEMANTIC` | Семантический индекс макетов форм | `false` | CodeMetadata |
 | `REINDEX_INTERVAL_HOURS` | Интервал автоматической переиндексации (часы) | `24` | CodeMetadata |
 | `ENABLE_RERANKER` | Нейронный реранкер (cross-encoder) | `false` | CodeMetadata |
 | `RERANKER_MODEL` | Модель реранкера | *(авто)* | CodeMetadata |
@@ -80,12 +74,6 @@
 | `MCP_PATH` | Путь MCP-эндпоинта | `/mcp` |
 | `CHROMA_DB_PATH` | Путь к директории ChromaDB | `/app/chroma_db` |
 | `RESET_DATABASE` | Переиндексировать | `false` |
-| `INDEX_CODE` | Индексация BSL кода (8 инструментов) | `true` |
-| `INDEX_METADATA` | Индексация метаданных (2 инструмента) | `true` |
-| `INDEX_HELP` | Индексация HTML-справки (1 инструмент) | `true` |
-| `INDEX_METADATA_XML` | Индексация XML-определений метаданных (1 инструмент) | `true` |
-| `INDEX_XSD_SCHEMAS` | Генерация XSD-схем и валидация XML (2 инструмента) | `true` |
-| `INDEX_FORMS_SEMANTIC` | Семантический индекс макетов форм (1 инструмент) | `false` |
 | `REINDEX_INTERVAL_HOURS` | Интервал автоматической переиндексации (часы) | `24` |
 | `INDEX_BATCH_SIZE` | Размер пакета индексации | `25` |
 | `CHUNK_SIZE` | Размер фрагмента текста | `1000` |
