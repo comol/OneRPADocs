@@ -231,6 +231,8 @@ CodeMetadataSearchServer — комплексный MCP-сервер для гл
 
 **8000**
 
+MCP endpoint: `/mcp`. По умолчанию используется `streamable-http`; для SSE установите `USESSE=true`. Healthcheck доступен на `/health`.
+
 ## Образ Docker
 
 ```

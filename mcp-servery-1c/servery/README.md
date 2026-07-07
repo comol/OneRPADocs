@@ -8,11 +8,18 @@
 |--------|------|------------|-----------|
 | [HelpSearchServer](help-search-server/) | 8003 | Справка платформы 1С | Средняя |
 | [CodeMetadataSearchServer](code-metadata-search/) | 8000 | Метаданные и код конфигурации | Средняя |
+| [CloudEmbeddingsServer](cloud-embeddings-server/) | 8000* | Метаданные, код и справка через cloud embeddings | Средняя |
 | [Graph Metadata Search](graph-metadata-search/) | 8006 | Графовый поиск связей | Высокая |
 | [SSLSearchServer](ssl-search-server/) | 8008 | Библиотека стандартных подсистем | Низкая |
 | [SyntaxCheckServer](syntax-check-server/) | 8002 | Проверка синтаксиса BSL | Низкая |
 | [TemplatesSearchServer](templates-search-server/) | 8004 | Шаблоны кода 1С и проектная память | Низкая |
 | [1CCodeChecker](code-checker/) | 8007 | Проверка через 1С:Напарник | Низкая |
+
+{% hint style="info" %}
+Актуальные версии серверов по умолчанию используют транспорт `streamable-http` на endpoint `/mcp`. Для старых клиентов можно включить SSE через `USESSE=true`; URL при этом остаётся `/mcp`, если в документации конкретного сервера не указано иное.
+{% endhint %}
+
+`*` CloudEmbeddingsServer имеет настраиваемый `MCP_PORT` и по умолчанию тоже использует 8000. При совместном запуске с CodeMetadataSearchServer вынесите его на свободный внешний порт, например 8001.
 
 ## Классификация по сложности
 
@@ -20,7 +27,7 @@
 
 Можно запустить сразу после установки Docker:
 
-1. **SyntaxCheckServer** — проверка синтаксиса
+1. **SyntaxCheckServer** — проверка синтаксиса строки BSL; при подключении каталога `FILES_DIR` также проверяет файлы
 2. **TemplatesSearchServer** — шаблоны кода
 3. **SSLSearchServer** — справка БСП
 
@@ -31,10 +38,11 @@
 5. **HelpSearchServer** — нужна папка bin платформы 1С
 6. **CodeMetadataSearchServer** — нужна выгрузка конфигурации
 7. **Graph Metadata Search** — нужна выгрузка + Neo4j
+8. **CloudEmbeddingsServer** — нужна выгрузка и внешний embedding API
 
 ### Требующие внешних ресурсов
 
-8. **1CCodeChecker** — нужен токен 1С:Напарник
+9. **1CCodeChecker** — нужен токен 1С:Напарник
 
 ## Приоритет установки
 
@@ -133,7 +141,7 @@ docker rm 1c_help_mcp
 ### Хранение данных
 
 Всегда монтируйте внешние тома для:
-- Векторных БД (`/app/chroma_db`)
+- Векторных БД (`/app/chroma_db`, `/app/data` или путь, указанный в странице конкретного сервера)
 - Кэша моделей (`/app/model_cache`)
 
 ### Первый запуск

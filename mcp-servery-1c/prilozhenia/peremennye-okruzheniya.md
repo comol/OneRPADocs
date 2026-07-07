@@ -11,7 +11,7 @@
 | `LICENSE_KEY` | Лицензионный ключ | Да | — |
 | `RESET_DATABASE` | Переиндексировать данные | Нет | `true` / `false` (зависит от сервера) |
 | `RESET_CACHE` | Перезагрузить модель | Нет | `true` |
-| `USESSE` | SSE транспорт (для legacy клиентов) | Нет | `false` |
+| `USESSE` | Включить SSE-транспорт для legacy-клиентов. При `false` используется `streamable-http` | Нет | `false` |
 
 ## Embedding модели (LM Studio / Ollama / OpenRouter)
 
@@ -93,6 +93,25 @@
 | `RERANKER_TOP_K` | Макс. кандидатов для реранкера | `20` |
 | `LOG_LEVEL` | Уровень логирования: `debug`, `normal`, `none` | `normal` |
 
+### CloudEmbeddingsServer (порт 8000 по умолчанию)
+
+| Переменная | Описание | По умолчанию |
+|------------|----------|--------------|
+| `LICENSE_KEY` | Лицензионный ключ | Обязательно |
+| `USESSE` | Включить SSE-транспорт. При `false` используется `streamable-http` | `false` |
+| `EMBEDDING_PROVIDER` | Провайдер embedding | `openai` |
+| `OPENAI_API_KEY` | Ключ OpenAI-совместимого API | Обязательно для cloud-режима |
+| `SOURCE_PATH` | Каталог исходных данных для индексации | `./src` |
+| `CHROMA_PATH` | Каталог векторной БД | `./chroma_db` |
+| `MCP_PORT` | Порт MCP-сервера. При совместном запуске с CodeMetadataSearchServer задайте свободный порт | `8000` |
+| `AUTO_INDEX` | Индексировать каталог при запуске | `true` |
+| `CHUNK_SIZE` | Размер чанка | `1000` |
+| `CHUNK_OVERLAP` | Перекрытие чанков | `100` |
+| `MAX_BATCH_SIZE` | Максимальный размер пакета индексации | `100` |
+| `DEFAULT_SEARCH_LIMIT` | Количество результатов поиска по умолчанию | `10` |
+| `EMBEDDING_CONCURRENCY` | Количество параллельных embedding-запросов | `10` |
+| `EMBEDDING_BATCH_SIZE` | Размер пакета embedding-запроса | `10` |
+
 ### SSLSearchServer (порт 8008)
 
 | Переменная | Описание | По умолчанию |
@@ -164,6 +183,7 @@
 |------------|----------|--------------|
 | `LICENSE_KEY` | Лицензионный ключ | Обязательно |
 | `USESSE` | SSE транспорт | `false` |
+| `FILES_DIR` | Каталог с файлами BSL внутри контейнера. Если каталог задан и существует, сервер регистрирует инструмент `syntaxcheck_file` | *(пусто)* |
 
 ### TemplatesSearchServer (порт 8004)
 

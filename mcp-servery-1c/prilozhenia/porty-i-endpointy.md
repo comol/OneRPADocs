@@ -4,15 +4,20 @@
 
 ## Порты серверов
 
+По умолчанию современные образы используют `streamable-http` на `/mcp`. Если клиент требует SSE, включите `USESSE=true`; endpoint остаётся `/mcp`, но способ обмена меняется на SSE.
+
 | Сервер | Порт | MCP Endpoint | Дополнительные |
 |--------|------|--------------|----------------|
-| CodeMetadataSearchServer | 8000 | `/mcp` | — |
+| CodeMetadataSearchServer | 8000 | `/mcp` | `/health` |
+| CloudEmbeddingsServer | 8000* | `/mcp` | `/health`, `/reindex` |
 | SyntaxCheckServer | 8002 | `/mcp` | — |
 | HelpSearchServer | 8003 | `/mcp` | `/health` |
-| TemplatesSearchServer | 8004 | `/mcp` | `/extend/` (веб-интерфейс) |
+| TemplatesSearchServer | 8004 | `/mcp` | `/extend/`, `/extend/memory` (веб-интерфейс) |
 | Graph Metadata Search | 8006 | `/mcp` | `/search`, `/health`, `/status`, `/stats`, `/docs` |
 | 1CCodeChecker | 8007 | `/mcp` | `/health` |
 | SSLSearchServer | 8008 | `/mcp` | — |
+
+`*` CloudEmbeddingsServer имеет настраиваемый `MCP_PORT`; при совместном запуске с CodeMetadataSearchServer используйте свободный внешний порт, например 8001.
 
 ## Neo4j (для Graph Metadata Search)
 
@@ -29,6 +34,10 @@
     "1c-code-metadata-mcp": {
       "url": "http://localhost:8000/mcp",
       "connection_id": "1c_metadata_service_001"
+    },
+    "1c-cloud-embeddings-mcp": {
+      "url": "http://localhost:8001/mcp",
+      "connection_id": "1c_cloud_embeddings_001"
     },
     "1c-syntax-checker-mcp": {
       "url": "http://localhost:8002/mcp",
