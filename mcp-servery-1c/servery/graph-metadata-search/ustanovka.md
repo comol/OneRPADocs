@@ -103,7 +103,13 @@ docker-compose ps
 ### MCP сервер — health
 
 ```powershell
-curl http://localhost:8006/health
+curl http://localhost:8006/healthz
+```
+
+Дешёвая liveness-проба: отвечает сразу, как только процесс жив и создан драйвер Neo4j, без запросов к графу. Именно её использует healthcheck в `docker-compose.yml`. Готовность проверяется отдельно:
+
+```powershell
+curl http://localhost:8006/readyz
 ```
 
 ### Статус фоновых задач
@@ -114,10 +120,10 @@ curl http://localhost:8006/status
 
 Возвращает состояние фоновых процессов: business info generation, vector indexing, routine embeddings. Каждая задача может быть в состоянии `pending`, `running`, `completed` или `failed`.
 
-### Статистика
+### Прогресс индексации
 
 ```powershell
-curl http://localhost:8006/stats
+curl http://localhost:8006/search/index-status
 ```
 
 ### OpenAPI документация

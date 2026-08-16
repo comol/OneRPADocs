@@ -16,12 +16,15 @@
 
 | Переменная | Описание | По умолчанию |
 |------------|----------|--------------|
-| `RESET_DATABASE` | Переиндексировать при запуске | `true` |
-| `AUTO_UPDATE_ON_STARTUP` | Авто-обновление индексов при запуске | `true` |
+| `RESET_DATABASE` | Переиндексировать при запуске | `false` |
 | `ASYNC_VECTOR_INDEXING` | Индексация векторов в фоне (неблокирующая) | `true` |
-| `INDEX_BATCH_SIZE` | Количество объектов, обрабатываемых за один пакет при создании векторного индекса | `50` |
-| `MAX_TOKENS_PER_BATCH` | Максимальное количество токенов в одном пакете запроса к API эмбеддингов | `7500` |
+| `BACKGROUND_POST_INDEXING` | Пост-обработка индексов в фоне после старта | `true` |
+| `INDEX_BATCH_SIZE` | Количество объектов, обрабатываемых за один пакет при создании векторного индекса | `512` |
+| `MAX_TOKENS_PER_BATCH` | Максимальное количество токенов в одном пакете запроса к API эмбеддингов | `28000` |
+| `EMBEDDING_REQUEST_CONCURRENCY` | Количество параллельных запросов к API эмбеддингов | `6` |
 | `EMBEDDING_MAX_TOKENS` | Максимальное количество токенов на один текст при генерации эмбеддингов. Определяется автоматически по модели, но можно переопределить | *(авто)* |
+| `EMBEDDING_CHUNK_TARGET_TOKENS` | Целевой размер чанка при разбивке длинных текстов | *(авто)* |
+| `EMBEDDING_CHUNK_OVERLAP_TOKENS` | Перекрытие чанков при разбивке длинных текстов | *(авто)* |
 
 ### Embedding модели
 
@@ -62,15 +65,17 @@
 | `CALCULATE_BUSINESS_INFO` | Генерировать AI бизнес-описания для объектов метаданных | `false` |
 | `BUSINESS_INFO_MAX_TOKENS` | Максимум токенов контекста для бизнес-описаний | `4000` |
 | `BUSINESS_INFO_RETRY_COUNT` | Количество повторных попыток при ошибках API | `3` |
-| `ENABLE_METADATA_DESCRIPTION_EMBEDDING` | Генерировать эмбеддинги для описательных полей метаданных (Синоним, Комментарий, Описание, справка) | `false` |
+| `BUSINESS_INFO_THREADS` | Количество параллельных воркеров генерации бизнес-описаний | `10` |
+| `ENABLE_METADATA_DESCRIPTION_EMBEDDING` | Генерировать эмбеддинги для описательных полей метаданных (Синоним, Комментарий, Описание, справка) | `true` |
 
 ### BSL-граф (Module / Routine / CALLS)
 
 | Переменная | Описание | По умолчанию |
 |------------|----------|--------------|
 | `CODE_EXPORT_PATH` | Путь к XML-выгрузке конфигурации в файлы (Конфигуратор → Выгрузить конфигурацию в файлы) | — |
-| `LOAD_BSL_SIGNATURES` | Загружать сигнатуры BSL-кода в граф — создавать ноды Module и Routine с графом вызовов CALLS | `false` |
+| `LOAD_BSL_SIGNATURES` | Загружать сигнатуры BSL-кода в граф — создавать ноды Module и Routine с графом вызовов CALLS | `true` |
 | `ENABLE_ROUTINE_EMBEDDINGS` | Генерировать эмбеддинги для процедур/функций. Требует `LOAD_BSL_SIGNATURES=true`. Индексация в фоновом потоке | `true` |
+| `BSL_READ_PREFIX_BYTES` | Сколько байт файла читается для быстрой классификации BSL | `4096` |
 
 ### Дополнительные данные из XML-выгрузки
 
@@ -79,10 +84,12 @@
 | Переменная | Описание | По умолчанию |
 |------------|----------|--------------|
 | `LOAD_FORMS_FROM_XML` | Загружать структуру управляемых форм из `Ext/Form.xml` (FormControl, FormEvent, FormAttribute) | `false` |
+| `LOAD_ORDINARY_FORMS` | Загружать структуру обычных форм (отдельная модель узлов от управляемых) | `true` |
 | `LOAD_EVENT_SUBSCRIPTIONS` | Загружать подписки на события из `EventSubscriptions/*.xml` | `false` |
 | `LOAD_PREDEFINED_VALUES` | Загружать предопределённые элементы из `*/Predefined.xml` | `false` |
 | `LOAD_ROLE_RIGHTS` | Загружать права ролей из `Roles/*/Ext/Rights.xml` | `false` |
 | `LOAD_HELP_FROM_HTML` | Загружать справку объектов из `*/Help/ru.html` | `false` |
+| `LOAD_DCS_TEMPLATES` | Загружать схемы компоновки данных (для `get_report_dcs_lineage`) | `false` |
 
 ### Поддержка расширений
 
@@ -90,6 +97,66 @@
 |------------|----------|--------------|
 | `EXTENSION_NAME` | Имя расширения. Если задано, все загружаемые объекты получают `origin="extension"` | — |
 | `EXTENSION_BASE_PROJECT` | Имя базового проекта (`PROJECT_NAME` базовой конфигурации) для построения связей EXTENDS/OVERRIDES | — |
+| `EXTENSION_APPLY_ORDER` | Порядок применения слоя расширения при резолве эффективной сущности | `1` |
+
+### Профиль инструментов и scope
+
+| Переменная | Описание | По умолчанию |
+|------------|----------|--------------|
+| `MCP_TOOL_PROFILE` | Какой набор инструментов публикуется: `admin` (всё) или `read-only` (без управления проектами) | `admin` |
+| `MCP_NAMESPACE` | Namespace установки, в котором регистрируются графовые проекты | `default` |
+| `ADMIN_TOKEN` | Токен для административных HTTP-эндпоинтов веб-интерфейса | — |
+| `GRAPH_SCOPE_ENFORCED` | Требовать явного `project_id` во всех project-scoped вызовах | `false` |
+| `GRAPH_SCOPE_MIGRATION_WINDOW` | Окно миграции: разрешить вызовы без `project_id`, когда зарегистрирован ровно один проект | `false` |
+| `GRAPH_ONLY` | Режим только чтения графа — без загрузки и обогащения данных | `false` |
+
+### Лимиты ответов графовых инструментов
+
+| Переменная | Описание | По умолчанию |
+|------------|----------|--------------|
+| `GRAPH_MAX_ITEMS` | Жёсткий предел элементов в ответе (`max_items` не может его превысить) | `200` |
+| `GRAPH_MAX_NODES` | Предел узлов в компактном графовом ответе | `500` |
+| `GRAPH_MAX_EDGES` | Предел связей в компактном графовом ответе | `1000` |
+| `GRAPH_MAX_CHARS` | Предел размера ответа в символах | `60000` |
+| `GRAPH_TOOL_TIMEOUT_SECONDS` | Таймаут выполнения инструмента | `300` |
+| `GRAPH_ENTITY_GROUP_LIMIT` | Предел размера группы связей в `explain_graph_entity` | `25` |
+| `GRAPH_ENTITY_MAX_CANDIDATES` | Предел кандидатов при резолве сущности | `20` |
+| `GRAPH_PATH_MAX_DEPTH` | Максимальная глубина поиска путей (`find_graph_path`) | `6` |
+| `GRAPH_PATH_MAX_PATHS` | Количество возвращаемых кратчайших путей | `3` |
+| `GRAPH_PATH_FANOUT_LIMIT` | Предел ветвления на шаг при поиске путей | `200` |
+| `GRAPH_PATH_MAX_FRONTIER` | Предел фронта обхода при поиске путей | `2000` |
+| `GRAPH_IMPACT_MAX_DEPTH` | Максимальная глубина `affected_subgraph` / `trace_impact` | `4` |
+| `GRAPH_IMPACT_MAX_PATHS` | Предел путей-обоснований в анализе влияния | `500` |
+| `GRAPH_IMPACT_FANOUT_LIMIT` | Предел ветвления на шаг в анализе влияния | `200` |
+| `GRAPH_COMPARISON_MAX_ENTITIES` | Предел сущностей при сравнении scope (`compare_graph_scope`) | `10000` |
+
+### Поколения графа и загрузка данных
+
+| Переменная | Описание | По умолчанию |
+|------------|----------|--------------|
+| `INGESTION_COORDINATOR_ENABLED` | Координатор загрузки с фазами, лизом и чекпоинтами | `false` |
+| `INGESTION_LEASE_TTL_SECONDS` | Время жизни лиза загрузчика | `900` |
+| `INGESTION_CHECKPOINT_BATCH_SIZE` | Размер пакета между чекпоинтами | `500` |
+| `INGESTION_CHECKPOINT_INTERVAL_SECONDS` | Интервал записи чекпоинтов | `30` |
+| `INGESTION_TRACKER_BACKEND` | Где хранится состояние загрузки: `json` (без БД) или `neo4j` | `json` |
+| `INGESTION_STATE_DIRECTORY` | Каталог для состояния при бэкенде `json` | — |
+| `GRAPH_STAGING_VALIDATION_ENABLED` | Проверять инварианты staging-поколения перед promote | `false` |
+| `GRAPH_STAGING_VALIDATION_MODE` | Что делает нарушение: `blocking` (отказ в promote) или `report` (promote с отчётом) | `blocking` |
+| `GRAPH_STAGING_VALIDATION_SAMPLE_LIMIT` | Количество примеров нарушений в отчёте | `5` |
+| `GRAPH_STAGING_COVERAGE_EXPECTATIONS` | Ожидания по покрытию для валидации staging | — |
+| `GRAPH_DELETE_VISIBILITY_ENABLED` | Контроль видимости удалённых сущностей между поколениями | `true` |
+| `GRAPH_DELETE_VISIBILITY_MODE` | Режим контроля видимости удалений | `blocking` |
+| `GRAPH_GENERATION_FENCE_ENABLED` | Фенс поколений — защита от чтения из устаревшего поколения | `true` |
+| `GRAPH_GENERATION_FENCE_ATTEMPTS` | Количество повторов при срабатывании фенса | `4` |
+| `REFERENCE_EVIDENCE_ENABLED` | Сохранять evidence для `explain_graph_evidence` / `explain_path` | `false` |
+| `REFERENCE_EVIDENCE_RETENTION_DAYS` | Срок хранения evidence в днях | `90` |
+| `REFERENCE_EVIDENCE_RETENTION_GENERATIONS` | Сколько поколений evidence хранить | `3` |
+| `SOURCE_UNIT_MANIFEST_ENABLED` | Манифест единиц исходников для инкрементальной пересборки | `false` |
+| `SOURCE_UNIT_MANIFEST_DIRECTORY` | Каталог хранения манифеста | — |
+| `SOURCE_UNIT_IGNORE_PATTERNS` | Шаблоны исключения файлов из манифеста | — |
+| `SOURCE_UNIT_SCAN_PREFIX_BYTES` | Сколько байт файла читается при сканировании | `4096` |
+| `SOURCE_FORMAT_ADAPTERS_ENABLED` | Адаптеры форматов выгрузки (Конфигуратор / EDT) | `false` |
+| `SOURCE_FORMAT` | Явное указание формата выгрузки | *(авто)* |
 
 ### Дополнительные
 
@@ -99,6 +166,10 @@
 | `MCP_PORT` | Порт MCP | `8006` |
 | `MCP_PATH` | URL-путь для MCP эндпоинта | `/mcp` |
 | `MCP_USE_SSE` | SSE транспорт (для legacy клиентов) | `false` |
+| `NEO4J_DATABASE` | Имя базы Neo4j | `neo4j` |
+| `NEO4J_PARALLEL_WRITE_WORKERS` | Количество параллельных воркеров записи в Neo4j | `4` |
+| `NEO4J_WRITE_BATCH_SIZE` | Размер пакета записи в Neo4j | `1000` |
+| `NEO4J_WRITE_RETRIES` | Количество повторов при ошибке записи | `5` |
 | `PROJECT_NAME` | Название проекта (для логов, интерфейса и мультипроектности) | `1C Metadata Project` |
 | `DEBUG` | Режим отладки — дополнительные логи | `false` |
 

@@ -38,13 +38,13 @@
 
 | Переменная | Описание | По умолчанию | Серверы |
 |------------|----------|--------------|---------|
-| `INDEX_BATCH_SIZE` | Размер пакета при добавлении в ChromaDB | `25`–`50` | CodeMetadata, Graph |
+| `INDEX_BATCH_SIZE` | Размер пакета при добавлении в векторное хранилище | `25` (CodeMetadata) / `512` (Graph) | CodeMetadata, Graph |
 | `CHUNK_SIZE` | Размер фрагмента текста при разбивке | `1000` | CodeMetadata |
 | `CHUNK_SIZE_UNIT` | Единица измерения чанков: `chars` или `tokens` | `chars` | CodeMetadata |
 | `CHUNK_OVERLAP` | Перекрытие чанков | `100` | CodeMetadata |
 | `CHUNK_OVERLAP_CODE` | Перекрытие чанков для BSL-кода | `100` | CodeMetadata |
 | `CHUNK_OVERLAP_TEXT` | Перекрытие чанков для метаданных/XML/справки | `200` | CodeMetadata |
-| `MAX_TOKENS_PER_BATCH` | Максимум токенов в одном пакете API | `7500` | Graph |
+| `MAX_TOKENS_PER_BATCH` | Максимум токенов в одном пакете API | `28000` | Graph |
 | `EMBEDDING_MAX_TOKENS` | Максимум токенов на текст для эмбеддингов | *(авто)* | Graph |
 | `REINDEX_INTERVAL_HOURS` | Интервал автоматической переиндексации (часы) | `24` | CodeMetadata |
 | `ENABLE_RERANKER` | Нейронный реранкер (cross-encoder) | `false` | CodeMetadata |
@@ -132,31 +132,45 @@
 | `NEO4J_USERNAME` | Пользователь | `neo4j` |
 | `NEO4J_PASSWORD` | Пароль | Обязательно |
 | `METADATA_DIRECTORY` | Путь к метаданным | `/app/metadata` |
+| `NEO4J_DATABASE` | Имя базы Neo4j | `neo4j` |
 | `PROJECT_NAME` | Название проекта | `1C Metadata Project` |
-| `INDEX_BATCH_SIZE` | Размер пакета индексации | `50` |
-| `MAX_TOKENS_PER_BATCH` | Макс. токенов на пакет API | `7500` |
+| `RESET_DATABASE` | Переиндексировать при запуске | `false` |
+| `INDEX_BATCH_SIZE` | Размер пакета индексации | `512` |
+| `MAX_TOKENS_PER_BATCH` | Макс. токенов на пакет API | `28000` |
+| `EMBEDDING_REQUEST_CONCURRENCY` | Параллельные запросы к API эмбеддингов | `6` |
 | `OPENAI_EMBEDDING_DIMENSIONS` | Размерность эмбеддингов | *(авто)* |
 | `ENABLE_CODE_SEARCH` | Поиск по BSL-коду | `true` |
 | `ENABLE_BUSINESS_SEARCH` | Семантический поиск по бизнес-описаниям | `true` |
 | `CALCULATE_BUSINESS_INFO` | Генерировать AI бизнес-описания | `false` |
-| `ENABLE_METADATA_DESCRIPTION_EMBEDDING` | Эмбеддинги для описательных полей | `false` |
+| `ENABLE_METADATA_DESCRIPTION_EMBEDDING` | Эмбеддинги для описательных полей | `true` |
 | `MCP_HOST` | Хост MCP-сервера | `0.0.0.0` |
 | `MCP_PORT` | Порт MCP | `8006` |
 | `MCP_PATH` | URL-путь MCP эндпоинта | `/mcp` |
+| `MCP_TOOL_PROFILE` | Профиль публикуемых инструментов: `admin` или `read-only` | `admin` |
+| `MCP_NAMESPACE` | Namespace регистрации графовых проектов | `default` |
+| `GRAPH_SCOPE_ENFORCED` | Требовать явный `project_id` в project-scoped вызовах | `false` |
+| `GRAPH_SCOPE_MIGRATION_WINDOW` | Разрешить вызовы без `project_id` при единственном проекте | `false` |
+| `GRAPH_MAX_ITEMS` | Жёсткий предел элементов в ответе | `200` |
+| `GRAPH_TOOL_TIMEOUT_SECONDS` | Таймаут выполнения инструмента | `300` |
 | `EMBEDDING_ALLOW_OFFLINE_FALLBACK` | Автопереход на локальную модель | `true` |
 | `TEMPLATE_MODE_ENABLED` | Шаблонный режим (JSON-запросы без LLM) | `true` |
 | `TEMPLATE_MODE_ONLY` | Только шаблоны, без LLM | `false` |
 | `CODE_SEARCH_MAX_FILE_SIZE` | Макс. размер BSL-файла (байт) | `50000` |
 | `CODE_EXPORT_PATH` | Путь к XML-выгрузке в файлы | — |
-| `LOAD_BSL_SIGNATURES` | Загружать BSL-граф (Module/Routine/CALLS) | `false` |
+| `LOAD_BSL_SIGNATURES` | Загружать BSL-граф (Module/Routine/CALLS) | `true` |
 | `ENABLE_ROUTINE_EMBEDDINGS` | Эмбеддинги для процедур/функций | `true` |
-| `LOAD_FORMS_FROM_XML` | Загружать структуру форм из XML | `false` |
+| `LOAD_FORMS_FROM_XML` | Загружать структуру управляемых форм из XML | `false` |
+| `LOAD_ORDINARY_FORMS` | Загружать структуру обычных форм | `true` |
 | `LOAD_EVENT_SUBSCRIPTIONS` | Загружать подписки на события | `false` |
 | `LOAD_PREDEFINED_VALUES` | Загружать предопределённые элементы | `false` |
 | `LOAD_ROLE_RIGHTS` | Загружать права ролей | `false` |
 | `LOAD_HELP_FROM_HTML` | Загружать справку из HTML | `false` |
+| `LOAD_DCS_TEMPLATES` | Загружать схемы компоновки данных (СКД) | `false` |
 | `EXTENSION_NAME` | Имя расширения | — |
 | `EXTENSION_BASE_PROJECT` | Имя базового проекта для расширения | — |
+| `EXTENSION_APPLY_ORDER` | Порядок применения слоя расширения | `1` |
+
+Полный список переменных Graph Metadata Search, включая лимиты графовых ответов, поколения и загрузку данных: [Конфигурация Graph Metadata Search](../servery/graph-metadata-search/konfiguraciya.md).
 
 ### 1CCodeChecker (порт 8007)
 
