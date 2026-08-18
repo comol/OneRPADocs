@@ -26,34 +26,53 @@
 | Переменная | Описание | По умолчанию |
 |------------|----------|--------------|
 | `RESET_DATABASE` | Переиндексировать при запуске | `false` |
-| `INDEX_BATCH_SIZE` | Размер пакета при добавлении записей в индекс. Увеличение ускоряет индексацию, но требует больше памяти | `25` |
-| `REINDEX_INTERVAL_HOURS` | Интервал автоматической переиндексации в часах. `0` — отключить | `24` |
-
-### Настройки разбиения текста (чанкинг)
-
-| Переменная | Описание | По умолчанию |
-|------------|----------|--------------|
-| `CHUNK_SIZE` | Максимальный размер фрагмента текста. Больше — меньше фрагментов, но менее точный поиск | `1000` |
-| `CHUNK_SIZE_UNIT` | Единица измерения: `chars` (символы) или `tokens` (токены через tiktoken) | `chars` |
-| `CHUNK_OVERLAP` | Перекрытие чанков при дроблении крупных процедур/объектов. Не применяется к атомарным чанкам | `100` |
-| `CHUNK_OVERLAP_CODE` | Перекрытие чанков для BSL-кода. Приоритет над `CHUNK_OVERLAP` | `100` |
-| `CHUNK_OVERLAP_TEXT` | Перекрытие чанков для метаданных, XML и справки. Приоритет над `CHUNK_OVERLAP` | `200` |
-
-### Расширение контекста результатов поиска
-
-| Переменная | Описание | По умолчанию |
-|------------|----------|--------------|
-| `CONTEXT_EXPANSION` | Режим расширения контекста: `none` — без расширения, `siblings` — все суб-фрагменты той же процедуры/функции (для кода), `window` — соседние фрагменты из того же файла (для метаданных/справки) | `none` |
-| `CONTEXT_WINDOW_SIZE` | Количество соседних фрагментов с каждой стороны для режима `window`. `1` = 3 фрагмента итого, `2` = 5 фрагментов | `1` |
+| `BACKGROUND_INDEXING` | Выполнять стартовую индексацию в фоне, не блокируя запуск MCP | `true` |
+| `INCREMENTAL_INDEXING` | Сверять SHA-256 файлов и обновлять только изменившиеся данные | `true` |
+| `INCREMENTAL_HASH_CHUNK_BYTES` | Размер блока чтения при расчёте SHA-256 | `65536` |
+| `REINDEX_INTERVAL_SEC` | Интервал периодической инкрементальной индексации в секундах. `0` — отключить | `7200` |
+| `REINDEX_INTERVAL_HOURS` | Пользовательский алиас интервала в часах; явный `REINDEX_INTERVAL_SEC` имеет приоритет | *(не задано)* |
+| `PARSE_WORKERS` | Число параллельных обработчиков файлов | от 1 до 8, по числу CPU |
+| `EMBEDDING_CONCURRENCY` | Максимум параллельных запросов эмбеддингов | `6` |
+| `SUB_INDEX_WORKERS` | Число параллельно строящихся вспомогательных индексов | `4` |
+| `SUB_INDEX_BULK_LOAD` | Загружать вспомогательные индексы пакетно | `true` |
+| `SHUTDOWN_GRACE_SEC` | Время ожидания активных HTTP-запросов при остановке | `5` |
+| `INDEX_METADATA` | Индексировать метаданные | `true` |
+| `INDEX_CODE` | Индексировать BSL-код | `true` |
+| `INDEX_HELP` | Индексировать HTML-справку | `true` |
+| `INDEX_PHASE_ORDER` | Порядок фаз; метаданные всегда выполняются первыми | `metadata,code,help` |
 
 ### Качество поиска
 
 | Переменная | Описание | По умолчанию |
 |------------|----------|--------------|
 | `BM25_ALPHA` | Вес семантического поиска при гибридном ранжировании (0–1). Остаток `1 - alpha` уходит на BM25. Меньше — больший вес точным совпадениям, больше — больший вес семантической близости | `0.5` |
-| `OVERFETCH_MULTIPLIER` | Множитель расширения выборки перед BM25-ранжированием. Больше — шире пул кандидатов, но медленнее | `2` |
+| `OVERFETCH_MULTIPLIER` | Множитель расширения выборки для запросов по пути или идентификатору | `4` |
+| `SEMANTIC_OVERFETCH_MULTIPLIER` | Множитель расширения выборки для семантических запросов | `6` |
+| `OVERFETCH_HARD_CAP` | Жёсткий предел пула кандидатов до ранжирования | `200` |
+| `OVERFETCH_COLLECTION_FRACTION` | Максимальная доля коллекции в пуле кандидатов | `0.1` |
+| `MAX_CHUNKS_PER_SOURCE` | Максимум фрагментов одного источника в итоговой выдаче | `2` |
+| `RRF_K` | Константа reciprocal-rank fusion | `20` |
+| `FUSION_PRIOR_WEIGHT` | Вес априорной релевантности при объединении результатов | `0.2` |
+| `FALLBACK_ON_EMPTY` | Выполнять резервный поиск, если основной маршрут ничего не вернул | `true` |
 | `MIN_SCORE_THRESHOLD` | Минимальный порог combined_score для включения результата (0–1). `0` — без отсечения, `0.3` — агрессивное | `0.15` |
 | `EMBEDDING_CACHE_SIZE` | Размер LRU-кэша для эмбеддингов поисковых запросов. Сокращает вызовы API при повторных запросах. `0` — отключить | `256` |
+
+### Векторное хранилище zvec
+
+| Переменная | Описание | По умолчанию |
+|------------|----------|--------------|
+| `VECTOR_PROFILE` | Профиль zvec: `fast_index`, `balanced`, `memory_saver` или `quality` | `fast_index` |
+| `VECTOR_INDEX_TYPE` | Тип индекса: `hnsw`, `ivf` или `flat` | из профиля |
+| `VECTOR_QUANTIZATION` | Квантизация: `none`, `fp16` или `int8` | из профиля |
+| `VECTOR_STORAGE_MODE` | Режим хранения: `memory` или `mmap` | из профиля |
+| `VECTOR_HNSW_M` | Параметр связности HNSW | из профиля |
+| `VECTOR_HNSW_EF_CONSTRUCTION` | Глубина построения HNSW | из профиля |
+| `VECTOR_HNSW_EF_SEARCH` | Явная глубина поиска HNSW | *(авто)* |
+| `VECTOR_IVF_NLIST` | Число кластеров IVF | из профиля |
+| `VECTOR_IVF_NPROBE` | Число просматриваемых кластеров IVF | из профиля |
+| `VECTOR_MEMORY_LIMIT_MB` | Ограничение памяти zvec в МБ | *(не задано)* |
+| `VECTOR_QUERY_THREADS` | Число потоков поиска | *(авто)* |
+| `VECTOR_OPTIMIZE_THREADS` | Число потоков оптимизации | *(авто)* |
 
 ### Нейронный реранкер (cross-encoder)
 
@@ -77,9 +96,9 @@
 
 | Переменная | Описание | Пример |
 |------------|----------|--------|
-| `OPENAI_API_BASE` | URL API сервера. При использовании OpenRouter: `https://openrouter.ai/api`. Суффикс `/v1` добавляется автоматически | `http://host.docker.internal:1234/v1` |
-| `OPENAI_API_KEY` | Ключ API (для LM Studio — любой, для OpenRouter — ваш ключ) | `lm-studio` |
-| `OPENAI_MODEL` | Название модели (для OpenRouter: `qwen/qwen3-embedding-8b`) | `Qwen3-Embedding-4B` |
+| `EMBEDDING_API_BASE` | URL API сервера. При использовании OpenRouter: `https://openrouter.ai/api`. Суффикс `/v1` добавляется автоматически | `http://host.docker.internal:1234/v1` |
+| `EMBEDDING_API_KEY` | Ключ API (для LM Studio — любой, для OpenRouter — ваш ключ) | `lm-studio` |
+| `EMBEDDING_MODEL` | Название модели для API или локального режима (для OpenRouter: `qwen/qwen3-embedding-8b`) | `sentence-transformers/paraphrase-multilingual-mpnet-base-v2` |
 | `EMBEDDING_DIMENSIONS` | Явное указание размерности эмбеддингов. Поддерживается моделями с переменной размерностью (Qwen3, text-embedding-3). Если не указано — определяется автоматически | *(авто)* |
 
 {% hint style="info" %}
@@ -90,13 +109,9 @@
 
 | Переменная | Описание | Пример |
 |------------|----------|--------|
-| `EMBEDDING_MODEL` | Модель с Hugging Face | `intfloat/multilingual-e5-base` |
+| `EMBEDDING_MODEL` | Модель с Hugging Face; та же переменная выбирает модель и в API-режиме | `sentence-transformers/paraphrase-multilingual-mpnet-base-v2` |
 
-### Отладка
-
-| Переменная | Описание | По умолчанию |
-|------------|----------|--------------|
-| `LOG_LEVEL` | Уровень логирования: `debug` — все сообщения, `normal` — основные, `none` — отключено | `normal` |
+Старые имена `OPENAI_API_BASE`, `OPENAI_API_KEY` и `OPENAI_MODEL` пока принимаются как совместимые алиасы, но новые конфигурации следует создавать с `EMBEDDING_*`.
 
 ## Монтируемые тома
 
@@ -130,9 +145,9 @@ docker run -d -p 8000:8000 `
   -e METADATA_PATH="/app/metadata" `
   -e CODE_PATH="/app/code" `
   -e RESET_DATABASE=false `
-  -e OPENAI_API_BASE=http://host.docker.internal:1234/v1 `
-  -e OPENAI_API_KEY=lm-studio `
-  -e OPENAI_MODEL=Qwen3-Embedding-4B `
+  -e EMBEDDING_API_BASE=http://host.docker.internal:1234/v1 `
+  -e EMBEDDING_API_KEY=lm-studio `
+  -e EMBEDDING_MODEL=Qwen3-Embedding-4B `
   -v "E:/1C_Export/Report:/app/metadata" `
   -v "E:/1C_Export/Files:/app/code" `
   -v "E:/bases/mcp_codemetadata:/app/chroma_db" `
@@ -148,9 +163,9 @@ docker run -d -p 8000:8000 `
   -e METADATA_PATH="/app/metadata" `
   -e CODE_PATH="/app/code" `
   -e RESET_DATABASE=false `
-  -e OPENAI_API_BASE=https://openrouter.ai/api `
-  -e OPENAI_API_KEY=YOUR_OPENROUTER_KEY `
-  -e OPENAI_MODEL=qwen/qwen3-embedding-8b `
+  -e EMBEDDING_API_BASE=https://openrouter.ai/api `
+  -e EMBEDDING_API_KEY=YOUR_OPENROUTER_KEY `
+  -e EMBEDDING_MODEL=qwen/qwen3-embedding-8b `
   -v "E:/1C_Export/Report:/app/metadata" `
   -v "E:/1C_Export/Files:/app/code" `
   -v "E:/bases/mcp_codemetadata:/app/chroma_db" `
@@ -166,9 +181,9 @@ docker run -d -p 8000:8000 `
   -e METADATA_PATH="/app/metadata" `
   -e CODE_PATH="/app/code" `
   -e RESET_DATABASE=false `
-  -e OPENAI_API_BASE=http://host.docker.internal:1234/v1 `
-  -e OPENAI_API_KEY=lm-studio `
-  -e OPENAI_MODEL=Qwen3-Embedding-4B `
+  -e EMBEDDING_API_BASE=http://host.docker.internal:1234/v1 `
+  -e EMBEDDING_API_KEY=lm-studio `
+  -e EMBEDDING_MODEL=Qwen3-Embedding-4B `
   -v "E:/1C_Export/Report:/app/metadata" `
   -v "E:/1C_Export/Files:/app/code" `
   -v "E:/bases/mcp_codemetadata:/app/chroma_db" `
@@ -186,10 +201,9 @@ docker run -d -p 8000:8000 `
   -e RESET_DATABASE=false `
   -e ENABLE_RERANKER=true `
   -e BM25_ALPHA=0.5 `
-  -e CONTEXT_EXPANSION=siblings `
-  -e OPENAI_API_BASE=http://host.docker.internal:1234/v1 `
-  -e OPENAI_API_KEY=lm-studio `
-  -e OPENAI_MODEL=Qwen3-Embedding-4B `
+  -e EMBEDDING_API_BASE=http://host.docker.internal:1234/v1 `
+  -e EMBEDDING_API_KEY=lm-studio `
+  -e EMBEDDING_MODEL=Qwen3-Embedding-4B `
   -v "E:/1C_Export/Report:/app/metadata" `
   -v "E:/1C_Export/Files:/app/code" `
   -v "E:/bases/mcp_codemetadata:/app/chroma_db" `
@@ -208,12 +222,9 @@ docker run -d -p 8000:8000 `
   -e INDEX_CODE=true `
   -e INDEX_METADATA=true `
   -e INDEX_HELP=true `
-  -e INDEX_FORMS_SEMANTIC=true `
-  -e INDEX_BATCH_SIZE=25 `
-  -e CHUNK_SIZE=1000 `
-  -e OPENAI_API_BASE=http://host.docker.internal:1234/v1 `
-  -e OPENAI_API_KEY=lm-studio `
-  -e OPENAI_MODEL=Qwen3-Embedding-4B `
+  -e EMBEDDING_API_BASE=http://host.docker.internal:1234/v1 `
+  -e EMBEDDING_API_KEY=lm-studio `
+  -e EMBEDDING_MODEL=Qwen3-Embedding-4B `
   -v "E:/1C_Export/Report:/app/metadata" `
   -v "E:/1C_Export/Files:/app/code" `
   -v "E:/bases/mcp_codemetadata:/app/chroma_db" `

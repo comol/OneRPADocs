@@ -227,7 +227,7 @@ comol/template-search-mcp:latest
 docker run -d -p 8004:8004 `
   --name template_search_mcp `
   -e LICENSE_KEY=YOUR_LICENSE_KEY `
-  -v "E:/bases/mcp_templates:/app/data" `
+  -v "E:/bases/mcp_templates:/app/chroma_db" `
   comol/template-search-mcp:latest
 ```
 
@@ -249,4 +249,3 @@ docker run -d -p 8004:8004 `
 - [Установка](ustanovka.md) — команды запуска
 - [Редактирование шаблонов](redaktirovanie-shablonov.md) — веб-интерфейс
 - [Свои шаблоны](svoi-shablony.md) — добавление собственных
-

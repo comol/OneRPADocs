@@ -21,10 +21,10 @@ docker run -d -p 8004:8004 `
   -e LICENSE_KEY=YOUR_LICENSE_KEY `
   -e RESET_CACHE=false `
   -e RESET_DATABASE=false `
-  -e OPENAI_API_BASE=http://host.docker.internal:1234/v1 `
-  -e OPENAI_API_KEY=lm-studio `
-  -e OPENAI_MODEL=Qwen3-Embedding-4B `
-  -v "E:/bases/mcp_templates:/app/data" `
+  -e EMBEDDING_API_BASE=http://host.docker.internal:1234/v1 `
+  -e EMBEDDING_API_KEY=lm-studio `
+  -e EMBEDDING_MODEL=Qwen3-Embedding-4B `
+  -v "E:/bases/mcp_templates:/app/chroma_db" `
   comol/template-search-mcp:latest
 ```
 
@@ -37,7 +37,7 @@ docker run -d -p 8004:8004 `
   -e RESET_CACHE=false `
   -e RESET_DATABASE=false `
   -e EMBEDDING_MODEL=ai-forever/FRIDA `
-  -v "E:/bases/mcp_templates:/app/data" `
+  -v "E:/bases/mcp_templates:/app/chroma_db" `
   comol/template-search-mcp:latest
 ```
 
@@ -50,11 +50,15 @@ docker run -d -p 8004:8004 `
 | `RESET_CACHE` | Перезагрузить модель | `true` |
 | `USESSE` | SSE транспорт (для legacy клиентов) | `false` |
 | `HTTP_PORT` | Порт HTTP-сервера | `8004` |
-| `EMBEDDING_MODEL` | CPU модель с Hugging Face | `intfloat/multilingual-e5-small` |
-| `OPENAI_API_BASE` | URL API сервера (LM Studio, Ollama, OpenRouter). Суффикс `/v1` добавляется автоматически | `http://host.docker.internal:1234` |
-| `OPENAI_API_KEY` | Ключ API | `lm-studio` |
-| `OPENAI_MODEL` | Название модели для внешнего API | — |
+| `EMBEDDING_MODEL` | Модель для внешнего API или локальная CPU-модель с Hugging Face | `intfloat/multilingual-e5-small` |
+| `EMBEDDING_API_BASE` | URL API сервера (LM Studio, Ollama, OpenRouter). Суффикс `/v1` добавляется автоматически | — |
+| `EMBEDDING_API_KEY` | Ключ API | `lm-studio` |
 | `EMBEDDING_DIMENSIONS` | Явное указание размерности эмбеддингов. Для моделей с переменной размерностью (Qwen3, text-embedding-3). Если не указано — определяется автоматически | *(авто)* |
+| `TEMPLATES_DB_PATH` | Путь к SQLite-базе шаблонов и заметок | `/app/chroma_db/templates.db` |
+| `ZVEC_DB_PATH` | Каталог коллекций zvec | `/app/chroma_db/zvec_db` |
+| `RECALL_RELEVANCE_THRESHOLD` | Максимальная cosine-distance для результата `recall` | `1.0` |
+
+Старые имена `OPENAI_API_BASE`, `OPENAI_API_KEY` и `OPENAI_MODEL` остаются совместимыми алиасами.
 
 ## Первый запуск
 

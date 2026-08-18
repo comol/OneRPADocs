@@ -29,7 +29,7 @@
 
 ### 3. Через файлы
 
-Шаблоны хранятся в SQLite-базе в папке `/app/data` (на хосте `E:\bases\mcp_templates`).
+Шаблоны хранятся в SQLite-базе в папке `/app/chroma_db` (на хосте `E:\bases\mcp_templates`). В том же каталоге находится индекс zvec.
 
 ## Рекомендации по созданию
 
@@ -101,11 +101,11 @@ docker run -d -p 8004:8004 `
   --name template_search_mcp `
   -e LICENSE_KEY=YOUR_LICENSE_KEY `
   -e RESET_DATABASE=true `
-  -v "E:/bases/mcp_templates:/app/data" `
+  -v "E:/bases/mcp_templates:/app/chroma_db" `
   comol/template-search-mcp:latest
 ```
 
-`RESET_DATABASE=true` перестраивает только векторный индекс (ChromaDB). SQLite-база с шаблонами и заметками сохраняется.
+`RESET_DATABASE=true` перестраивает только векторный индекс zvec. SQLite-база с шаблонами и заметками сохраняется.
 
 ## Импорт/Экспорт
 

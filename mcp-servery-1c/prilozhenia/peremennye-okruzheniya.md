@@ -17,9 +17,9 @@
 
 | Переменная | Описание | Пример |
 |------------|----------|--------|
-| `OPENAI_API_BASE` | URL API. Суффикс `/v1` добавляется автоматически | `http://host.docker.internal:1234/v1` |
-| `OPENAI_API_KEY` | Ключ API | `lm-studio` |
-| `OPENAI_MODEL` | Модель embedding | `Qwen3-Embedding-4B` |
+| `EMBEDDING_API_BASE` | URL API. Суффикс `/v1` добавляется автоматически | `http://host.docker.internal:1234/v1` |
+| `EMBEDDING_API_KEY` | Ключ API | `lm-studio` |
+| `EMBEDDING_MODEL` | Модель embedding для API или локального режима | `Qwen3-Embedding-4B` |
 | `EMBEDDING_DIMENSIONS` | Явное указание размерности эмбеддингов (для моделей с переменной размерностью) | *(авто)* |
 
 ## Embedding модели (CPU)
@@ -29,7 +29,7 @@
 | `EMBEDDING_MODEL` | Модель с Hugging Face | `intfloat/multilingual-e5-base` |
 
 {% hint style="info" %}
-Если указан `OPENAI_API_KEY`, используется внешнее API. Иначе — встроенная CPU модель.
+Если задан `EMBEDDING_API_BASE` или используется light-образ, сервер обращается к внешнему API. Старые `OPENAI_API_BASE`, `OPENAI_API_KEY` и `OPENAI_MODEL` поддерживаются CodeMetadataSearchServer, SSLSearchServer и TemplatesSearchServer как совместимые алиасы. CloudEmbeddingsServer по-прежнему использует provider-specific ключи (`OPENAI_API_KEY`, `OPENROUTER_API_KEY`, `COHERE_API_KEY`, `JINA_API_KEY`).
 {% endhint %}
 
 ## Настройки индексации
@@ -38,15 +38,11 @@
 
 | Переменная | Описание | По умолчанию | Серверы |
 |------------|----------|--------------|---------|
-| `INDEX_BATCH_SIZE` | Размер пакета при добавлении в векторное хранилище | `25` (CodeMetadata) / `512` (Graph) | CodeMetadata, Graph |
-| `CHUNK_SIZE` | Размер фрагмента текста при разбивке | `1000` | CodeMetadata |
-| `CHUNK_SIZE_UNIT` | Единица измерения чанков: `chars` или `tokens` | `chars` | CodeMetadata |
-| `CHUNK_OVERLAP` | Перекрытие чанков | `100` | CodeMetadata |
-| `CHUNK_OVERLAP_CODE` | Перекрытие чанков для BSL-кода | `100` | CodeMetadata |
-| `CHUNK_OVERLAP_TEXT` | Перекрытие чанков для метаданных/XML/справки | `200` | CodeMetadata |
+| `INDEX_BATCH_SIZE` | Размер пакета при добавлении в векторное хранилище | `512` | Graph |
 | `MAX_TOKENS_PER_BATCH` | Максимум токенов в одном пакете API | `28000` | Graph |
 | `EMBEDDING_MAX_TOKENS` | Максимум токенов на текст для эмбеддингов | *(авто)* | Graph |
-| `REINDEX_INTERVAL_HOURS` | Интервал автоматической переиндексации (часы) | `24` | CodeMetadata |
+| `REINDEX_INTERVAL_SEC` | Интервал автоматической инкрементальной индексации (секунды) | `7200` | CodeMetadata |
+| `REINDEX_INTERVAL_HOURS` | Алиас интервала в часах; `REINDEX_INTERVAL_SEC` имеет приоритет | *(не задано)* | CodeMetadata |
 | `ENABLE_RERANKER` | Нейронный реранкер (cross-encoder) | `false` | CodeMetadata |
 | `RERANKER_MODEL` | Модель реранкера | *(авто)* | CodeMetadata |
 | `RERANKER_TOP_K` | Макс. кандидатов для реранкера | `20` | CodeMetadata |
@@ -72,26 +68,25 @@
 | `MCP_HOST` | Хост для привязки сервера | `0.0.0.0` |
 | `MCP_PORT` | Порт сервера | `8000` |
 | `MCP_PATH` | Путь MCP-эндпоинта | `/mcp` |
-| `CHROMA_DB_PATH` | Путь к директории ChromaDB | `/app/chroma_db` |
+| `VECTOR_DB_PATH` | Путь к директории векторного хранилища zvec | `/app/chroma_db` |
+| `CHROMA_DB_PATH` | Устаревший совместимый алиас `VECTOR_DB_PATH` | `/app/chroma_db` |
+| `EMBEDDING_API_BASE` | URL OpenAI-совместимого API эмбеддингов | — |
+| `EMBEDDING_API_KEY` | Ключ API эмбеддингов | — |
+| `EMBEDDING_MODEL` | Модель API или локальная модель | `sentence-transformers/paraphrase-multilingual-mpnet-base-v2` |
 | `RESET_DATABASE` | Переиндексировать | `false` |
-| `REINDEX_INTERVAL_HOURS` | Интервал автоматической переиндексации (часы) | `24` |
-| `INDEX_BATCH_SIZE` | Размер пакета индексации | `25` |
-| `CHUNK_SIZE` | Размер фрагмента текста | `1000` |
-| `CHUNK_SIZE_UNIT` | Единица измерения: `chars` или `tokens` | `chars` |
-| `CHUNK_OVERLAP` | Перекрытие чанков | `100` |
-| `CHUNK_OVERLAP_CODE` | Перекрытие чанков для BSL-кода | `100` |
-| `CHUNK_OVERLAP_TEXT` | Перекрытие чанков для метаданных/XML/справки | `200` |
-| `CONTEXT_EXPANSION` | Расширение контекста: `none`, `siblings`, `window` | `none` |
-| `CONTEXT_WINDOW_SIZE` | Размер окна для режима `window` | `1` |
+| `BACKGROUND_INDEXING` | Индексировать в фоне, не блокируя запуск MCP | `true` |
+| `INCREMENTAL_INDEXING` | Обновлять только изменившиеся файлы по SHA-256 | `true` |
+| `REINDEX_INTERVAL_SEC` | Интервал автоматической индексации (секунды) | `7200` |
+| `REINDEX_INTERVAL_HOURS` | Алиас интервала в часах | *(не задано)* |
 | `BM25_ALPHA` | Вес семантического поиска (0–1) | `0.5` |
-| `OVERFETCH_MULTIPLIER` | Множитель расширения выборки перед BM25 | `2` |
+| `OVERFETCH_MULTIPLIER` | Множитель выборки для запросов по пути/идентификатору | `4` |
+| `SEMANTIC_OVERFETCH_MULTIPLIER` | Множитель выборки для семантических запросов | `6` |
 | `MIN_SCORE_THRESHOLD` | Минимальный порог оценки результата (0–1) | `0.15` |
 | `EMBEDDING_CACHE_SIZE` | Размер LRU-кэша эмбеддингов запросов | `256` |
 | `EMBEDDING_DIMENSIONS` | Размерность эмбеддингов | *(авто)* |
 | `ENABLE_RERANKER` | Включить нейронный реранкер (cross-encoder) | `false` |
 | `RERANKER_MODEL` | Модель реранкера | *(авто)* |
 | `RERANKER_TOP_K` | Макс. кандидатов для реранкера | `20` |
-| `LOG_LEVEL` | Уровень логирования: `debug`, `normal`, `none` | `normal` |
 
 ### CloudEmbeddingsServer (порт 8000 по умолчанию)
 
@@ -101,15 +96,21 @@
 | `USESSE` | Включить SSE-транспорт. При `false` используется `streamable-http` | `false` |
 | `EMBEDDING_PROVIDER` | Провайдер embedding | `openai` |
 | `OPENAI_API_KEY` | Ключ OpenAI-совместимого API | Обязательно для cloud-режима |
-| `SOURCE_PATH` | Каталог исходных данных для индексации | `./src` |
-| `CHROMA_PATH` | Каталог векторной БД | `./chroma_db` |
-| `MCP_PORT` | Порт MCP-сервера. При совместном запуске с CodeMetadataSearchServer задайте свободный порт | `8000` |
+| `OPENROUTER_API_KEY` | Ключ OpenRouter | — |
+| `COHERE_API_KEY` | Ключ Cohere | — |
+| `JINA_API_KEY` | Ключ Jina | — |
+| `OPENAI_API_BASE` | URL OpenAI-совместимого API | — |
+| `EMBEDDING_MODEL` | Явное имя модели провайдера | *(по умолчанию провайдера)* |
+| `SOURCE_PATH` | Каталог исходных данных для индексации | `/data/source` |
+| `CHROMA_PATH` | Каталог векторной БД | `/data/chroma_db` |
+| `HOST` | Адрес привязки приложения | `0.0.0.0` |
+| `PORT` | Внутренний порт приложения | `8000` |
 | `AUTO_INDEX` | Индексировать каталог при запуске | `true` |
 | `CHUNK_SIZE` | Размер чанка | `1000` |
 | `CHUNK_OVERLAP` | Перекрытие чанков | `100` |
 | `MAX_BATCH_SIZE` | Максимальный размер пакета индексации | `100` |
 | `DEFAULT_SEARCH_LIMIT` | Количество результатов поиска по умолчанию | `10` |
-| `EMBEDDING_CONCURRENCY` | Количество параллельных embedding-запросов | `10` |
+| `EMBEDDING_CONCURRENCY` | Количество параллельных embedding-запросов | `1` |
 | `EMBEDDING_BATCH_SIZE` | Размер пакета embedding-запроса | `10` |
 
 ### SSLSearchServer (порт 8008)
@@ -119,6 +120,10 @@
 | `LICENSE_KEY` | Лицензионный ключ | Обязательно |
 | `SSL_VERSION` | Версия БСП | Обязательно |
 | `RESET_DATABASE` | Переиндексировать | `false` |
+| `EMBEDDING_API_BASE` | URL OpenAI-совместимого API эмбеддингов | — |
+| `EMBEDDING_API_KEY` | Ключ API эмбеддингов | — |
+| `EMBEDDING_MODEL` | Модель API или локальная модель | `intfloat/multilingual-e5-small` |
+| `INDEXING_THREADS` | Потоки индексации | `5` |
 | `EMBEDDING_DIMENSIONS` | Размерность эмбеддингов | *(авто)* |
 | `EMBEDDING_INPUT_TYPE_ENABLED` | Различение query/document для эмбеддингов | `true` |
 | `FORCE_REINDEX_ON_DIMENSION_MISMATCH` | Автопересоздание при несовпадении размерности | `true` |
@@ -139,6 +144,10 @@
 | `MAX_TOKENS_PER_BATCH` | Макс. токенов на пакет API | `28000` |
 | `EMBEDDING_REQUEST_CONCURRENCY` | Параллельные запросы к API эмбеддингов | `6` |
 | `OPENAI_EMBEDDING_DIMENSIONS` | Размерность эмбеддингов | *(авто)* |
+| `EMBEDDING_API_BASE` | URL API эмбеддингов | — |
+| `EMBEDDING_API_KEY` | Ключ API эмбеддингов | — |
+| `EMBEDDING_MODEL` | Модель API эмбеддингов | `text-embedding-ada-002` |
+| `LOCAL_EMBEDDING_MODEL` | Резервная локальная CPU-модель | `intfloat/multilingual-e5-small` |
 | `ENABLE_CODE_SEARCH` | Поиск по BSL-коду | `true` |
 | `ENABLE_BUSINESS_SEARCH` | Семантический поиск по бизнес-описаниям | `true` |
 | `CALCULATE_BUSINESS_INFO` | Генерировать AI бизнес-описания | `false` |
@@ -206,7 +215,13 @@
 | `LICENSE_KEY` | Лицензионный ключ | Обязательно |
 | `RESET_DATABASE` | Переиндексировать | `true` |
 | `HTTP_PORT` | Порт HTTP-сервера | `8004` |
+| `EMBEDDING_API_BASE` | URL OpenAI-совместимого API эмбеддингов | — |
+| `EMBEDDING_API_KEY` | Ключ API эмбеддингов | — |
+| `EMBEDDING_MODEL` | Модель API или локальная модель | `intfloat/multilingual-e5-small` |
 | `EMBEDDING_DIMENSIONS` | Размерность эмбеддингов | *(авто)* |
+| `TEMPLATES_DB_PATH` | Путь к SQLite-базе шаблонов и заметок | `/app/chroma_db/templates.db` |
+| `ZVEC_DB_PATH` | Каталог векторного индекса zvec | `/app/chroma_db/zvec_db` |
+| `RECALL_RELEVANCE_THRESHOLD` | Максимальная cosine-distance для `recall` | `1.0` |
 
 ## Примеры
 
@@ -221,9 +236,9 @@
 ```powershell
 -e LICENSE_KEY=YOUR_LICENSE_KEY `
 -e RESET_DATABASE=false `
--e OPENAI_API_BASE=http://host.docker.internal:1234/v1 `
--e OPENAI_API_KEY=lm-studio `
--e OPENAI_MODEL=Qwen3-Embedding-4B
+-e EMBEDDING_API_BASE=http://host.docker.internal:1234/v1 `
+-e EMBEDDING_API_KEY=lm-studio `
+-e EMBEDDING_MODEL=Qwen3-Embedding-4B
 ```
 
 ### С OpenRouter
@@ -231,9 +246,9 @@
 ```powershell
 -e LICENSE_KEY=YOUR_LICENSE_KEY `
 -e RESET_DATABASE=false `
--e OPENAI_API_BASE=https://openrouter.ai/api `
--e OPENAI_API_KEY=YOUR_OPENROUTER_KEY `
--e OPENAI_MODEL=qwen/qwen3-embedding-8b
+-e EMBEDDING_API_BASE=https://openrouter.ai/api `
+-e EMBEDDING_API_KEY=YOUR_OPENROUTER_KEY `
+-e EMBEDDING_MODEL=qwen/qwen3-embedding-8b
 ```
 
 ### С Ollama
@@ -241,7 +256,7 @@
 ```powershell
 -e LICENSE_KEY=YOUR_LICENSE_KEY `
 -e RESET_DATABASE=false `
--e OPENAI_API_BASE=http://host.docker.internal:11434/v1 `
--e OPENAI_API_KEY=ollama `
--e OPENAI_MODEL=qwen3:embedding-4b
+-e EMBEDDING_API_BASE=http://host.docker.internal:11434/v1 `
+-e EMBEDDING_API_KEY=ollama `
+-e EMBEDDING_MODEL=qwen3:embedding-4b
 ```

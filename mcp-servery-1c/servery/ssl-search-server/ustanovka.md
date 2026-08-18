@@ -29,10 +29,10 @@ docker run -d -p 8008:8008 `
   -e LICENSE_KEY=YOUR_LICENSE_KEY `
   -e SSL_VERSION=3.1.11 `
   -e RESET_DATABASE=false `
-  -e OPENAI_API_BASE=http://host.docker.internal:1234/v1 `
-  -e OPENAI_API_KEY=lm-studio `
-  -e OPENAI_MODEL=Qwen3-Embedding-4B `
-  -v "E:/bases/mcp_ssl:/app/chroma_db" `
+  -e EMBEDDING_API_BASE=http://host.docker.internal:1234/v1 `
+  -e EMBEDDING_API_KEY=lm-studio `
+  -e EMBEDDING_MODEL=Qwen3-Embedding-4B `
+  -v "E:/bases/mcp_ssl:/app/zvec_db" `
   comol/mcp_ssl_server:latest
 ```
 
@@ -44,7 +44,7 @@ docker run -d -p 8008:8008 `
   -e LICENSE_KEY=YOUR_LICENSE_KEY `
   -e SSL_VERSION=3.1.11 `
   -e RESET_DATABASE=false `
-  -v "E:/bases/mcp_ssl:/app/chroma_db" `
+  -v "E:/bases/mcp_ssl:/app/zvec_db" `
   comol/mcp_ssl_server:latest
 ```
 
@@ -99,6 +99,6 @@ docker run -d -p 8008:8008 `
   -e LICENSE_KEY=YOUR_LICENSE_KEY `
   -e SSL_VERSION=3.2.1 `
   -e RESET_DATABASE=true `
-  -v "E:/bases/mcp_ssl:/app/chroma_db" `
+  -v "E:/bases/mcp_ssl:/app/zvec_db" `
   comol/mcp_ssl_server:latest
 ```

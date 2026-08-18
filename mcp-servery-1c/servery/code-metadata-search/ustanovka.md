@@ -39,9 +39,9 @@ docker run -d -p 8000:8000 `
   -e METADATA_PATH="/app/metadata" `
   -e CODE_PATH="/app/code" `
   -e RESET_DATABASE=false `
-  -e OPENAI_API_BASE=http://host.docker.internal:1234/v1 `
-  -e OPENAI_API_KEY=lm-studio `
-  -e OPENAI_MODEL=Qwen3-Embedding-4B `
+  -e EMBEDDING_API_BASE=http://host.docker.internal:1234/v1 `
+  -e EMBEDDING_API_KEY=lm-studio `
+  -e EMBEDDING_MODEL=Qwen3-Embedding-4B `
   -v "E:/1C_Export/Report:/app/metadata" `
   -v "E:/1C_Export/Files:/app/code" `
   -v "E:/bases/mcp_codemetadata:/app/chroma_db" `
@@ -57,9 +57,9 @@ docker run -d -p 8000:8000 `
   -e METADATA_PATH="/app/metadata" `
   -e CODE_PATH="/app/code" `
   -e RESET_DATABASE=false `
-  -e OPENAI_API_BASE=http://host.docker.internal:1234/v1 `
-  -e OPENAI_API_KEY=lm-studio `
-  -e OPENAI_MODEL=Qwen3-Embedding-4B `
+  -e EMBEDDING_API_BASE=http://host.docker.internal:1234/v1 `
+  -e EMBEDDING_API_KEY=lm-studio `
+  -e EMBEDDING_MODEL=Qwen3-Embedding-4B `
   -v "E:/1C_Export/Report:/app/metadata" `
   -v "E:/1C_Export/Files:/app/code" `
   -v "E:/bases/mcp_codemetadata:/app/chroma_db" `

@@ -36,12 +36,14 @@
 | `OPENAI_TEMPERATURE` | Температура генерации (0–1). Для reasoning-моделей (o1, o3, gpt-5) игнорируется | `0.1` |
 | `OPENAI_MAX_COMPLETION_TOKENS` | Максимальное количество токенов в ответе LLM | `2000` |
 | `OPENAI_MODEL_IS_REASONING` | Принудительное указание, является ли модель «рассуждающей». Если не указано — определяется автоматически по имени модели (o1*, o3*, gpt-5*) | *(авто)* |
-| `OPENAI_EMBEDDING_API_BASE` | Отдельный URL для API эмбеддингов (если отличается от основного) | — |
-| `OPENAI_EMBEDDING_API_KEY` | Отдельный ключ для API эмбеддингов | — |
-| `OPENAI_EMBEDDING_MODEL` | Модель для эмбеддингов | `Qwen3-Embedding-4B` |
+| `EMBEDDING_API_BASE` | Отдельный URL для API эмбеддингов (если отличается от LLM API) | — |
+| `EMBEDDING_API_KEY` | Отдельный ключ для API эмбеддингов | — |
+| `EMBEDDING_MODEL` | Модель для API эмбеддингов | `text-embedding-ada-002` |
 | `OPENAI_EMBEDDING_DIMENSIONS` | Явное указание размерности эмбеддингов | *(авто)* |
-| `EMBEDDING_MODEL` | Локальная CPU модель (sentence-transformers) | `intfloat/multilingual-e5-small` |
+| `LOCAL_EMBEDDING_MODEL` | Локальная CPU модель (sentence-transformers) | `intfloat/multilingual-e5-small` |
 | `EMBEDDING_ALLOW_OFFLINE_FALLBACK` | Разрешить автопереход на локальную модель при недоступности API | `true` |
+
+Старые имена `OPENAI_EMBEDDING_API_BASE`, `OPENAI_EMBEDDING_API_KEY` и `OPENAI_EMBEDDING_MODEL` остаются совместимыми алиасами.
 
 ### Шаблонный режим
 
@@ -243,7 +245,7 @@ services:
       - OPENAI_API_BASE=http://host.docker.internal:1234/v1
       - OPENAI_API_KEY=lm-studio
       - OPENAI_MODEL=gpt-5
-      - OPENAI_EMBEDDING_MODEL=Qwen3-Embedding-4B
+      - EMBEDDING_MODEL=Qwen3-Embedding-4B
       # === Шаблонный режим ===
       - TEMPLATE_MODE_ENABLED=true
       # === BSL-граф ===
@@ -293,7 +295,7 @@ services:
       - EXTENSION_BASE_PROJECT=МояКонфигурация
       - OPENAI_API_BASE=http://host.docker.internal:1234/v1
       - OPENAI_API_KEY=lm-studio
-      - OPENAI_EMBEDDING_MODEL=Qwen3-Embedding-4B
+      - EMBEDDING_MODEL=Qwen3-Embedding-4B
       - CODE_EXPORT_PATH=/app/metadata_files
       - LOAD_BSL_SIGNATURES=true
     volumes:

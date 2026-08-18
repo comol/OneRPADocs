@@ -17,7 +17,7 @@
 | 1CCodeChecker | 8007 | `/mcp` | `/health` |
 | SSLSearchServer | 8008 | `/mcp` | — |
 
-`*` CloudEmbeddingsServer имеет настраиваемый `MCP_PORT`; при совместном запуске с CodeMetadataSearchServer используйте свободный внешний порт, например 8001.
+`*` CloudEmbeddingsServer внутри контейнера слушает `PORT=8000`. В `docker-compose.yml` подстановка `MCP_PORT` управляет только внешним портом публикации; при совместном запуске с CodeMetadataSearchServer используйте свободный внешний порт, например 8001.
 
 ## Neo4j (для Graph Metadata Search)
 

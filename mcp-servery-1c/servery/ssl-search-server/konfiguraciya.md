@@ -14,7 +14,8 @@
 | Переменная | Описание | По умолчанию |
 |------------|----------|--------------|
 | `RESET_DATABASE` | Переиндексировать при запуске | `false` |
-| `FORCE_REINDEX_ON_DIMENSION_MISMATCH` | Автоматически пересоздать коллекцию ChromaDB при несовпадении размерности эмбеддингов. Если `false` — сервер остановится с ошибкой | `true` |
+| `FORCE_REINDEX_ON_DIMENSION_MISMATCH` | Автоматически пересоздать коллекцию zvec при несовпадении размерности эмбеддингов. Если `false` — сервер остановится с ошибкой | `true` |
+| `INDEXING_THREADS` | Число параллельных потоков генерации эмбеддингов при индексации | `5` |
 
 ### Транспорт
 
@@ -26,18 +27,19 @@
 
 | Переменная | Описание | Пример |
 |------------|----------|--------|
-| `OPENAI_API_BASE` | URL API сервера. Суффикс `/v1` добавляется автоматически | `http://host.docker.internal:1234/v1` |
-| `OPENAI_API_KEY` | Ключ API | `lm-studio` |
-| `OPENAI_MODEL` | Название модели (переопределяет `EMBEDDING_MODEL` для API) | `Qwen3-Embedding-4B` |
-| `EMBEDDING_MODEL` | Модель для локальных эмбеддингов (CPU) | `intfloat/multilingual-e5-small` |
+| `EMBEDDING_API_BASE` | URL API сервера. Суффикс `/v1` добавляется автоматически | `http://host.docker.internal:1234/v1` |
+| `EMBEDDING_API_KEY` | Ключ API | `lm-studio` |
+| `EMBEDDING_MODEL` | Модель для API или локальных эмбеддингов (CPU) | `intfloat/multilingual-e5-small` |
 | `EMBEDDING_DIMENSIONS` | Явное указание размерности эмбеддингов. Для моделей с переменной размерностью (Qwen3, text-embedding-3). Если не указано — определяется автоматически | *(авто)* |
 | `EMBEDDING_INPUT_TYPE_ENABLED` | Включить параметр `input_type` для различения query/document при генерации эмбеддингов. Полезно для моделей Qwen3, BGE, E5 | `true` |
+
+Старые имена `OPENAI_API_BASE`, `OPENAI_API_KEY` и `OPENAI_MODEL` остаются совместимыми алиасами.
 
 ## Монтируемые тома
 
 | Хост | Контейнер | Назначение |
 |------|-----------|------------|
-| `E:/bases/mcp_ssl` | `/app/chroma_db` | Векторная база данных |
+| `E:/bases/mcp_ssl` | `/app/zvec_db` | Векторная база данных zvec |
 
 ## Доступные версии БСП
 
@@ -69,10 +71,10 @@ docker run -d -p 8008:8008 `
   -e LICENSE_KEY=YOUR_LICENSE_KEY `
   -e SSL_VERSION=3.1.11 `
   -e RESET_DATABASE=false `
-  -e OPENAI_API_BASE=http://host.docker.internal:1234/v1 `
-  -e OPENAI_API_KEY=lm-studio `
-  -e OPENAI_MODEL=Qwen3-Embedding-4B `
-  -v "E:/bases/mcp_ssl:/app/chroma_db" `
+  -e EMBEDDING_API_BASE=http://host.docker.internal:1234/v1 `
+  -e EMBEDDING_API_KEY=lm-studio `
+  -e EMBEDDING_MODEL=Qwen3-Embedding-4B `
+  -v "E:/bases/mcp_ssl:/app/zvec_db" `
   comol/mcp_ssl_server:latest
 ```
 

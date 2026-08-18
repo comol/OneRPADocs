@@ -60,7 +60,7 @@ services:
       - RESET_DATABASE=false
       - OPENAI_API_BASE=http://host.docker.internal:1234/v1
       - OPENAI_API_KEY=lm-studio
-      - OPENAI_EMBEDDING_MODEL=Qwen3-Embedding-4B
+      - EMBEDDING_MODEL=Qwen3-Embedding-4B
       - TEMPLATE_MODE_ENABLED=true
       - CODE_EXPORT_PATH=/app/metadata_files
       - LOAD_BSL_SIGNATURES=true
