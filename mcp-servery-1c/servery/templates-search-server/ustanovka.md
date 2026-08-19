@@ -57,8 +57,12 @@ docker run -d -p 8004:8004 `
 | `TEMPLATES_DB_PATH` | Путь к SQLite-базе шаблонов и заметок | `/app/chroma_db/templates.db` |
 | `ZVEC_DB_PATH` | Каталог коллекций zvec | `/app/chroma_db/zvec_db` |
 | `RECALL_RELEVANCE_THRESHOLD` | Максимальная cosine-distance для результата `recall` | `1.0` |
+| `PLUGIN_DIR` | Каталог Python-плагинов внутри контейнера | `/app/plugins` |
+| `PLUGIN_STRICT_DERIVED_STATE` | Останавливать индексацию при ошибке derived-state hook | `false` |
 
 Старые имена `OPENAI_API_BASE`, `OPENAI_API_KEY` и `OPENAI_MODEL` остаются совместимыми алиасами.
+
+Свой каталог плагинов можно подключить томом в `/app/plugins`. Текущее состояние показывает `plugin_state`, а `plugin_reload` перечитывает каталог без перезапуска контейнера.
 
 ## Первый запуск
 

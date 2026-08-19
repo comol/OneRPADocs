@@ -127,6 +127,8 @@
 | `EMBEDDING_DIMENSIONS` | Размерность эмбеддингов | *(авто)* |
 | `EMBEDDING_INPUT_TYPE_ENABLED` | Различение query/document для эмбеддингов | `true` |
 | `FORCE_REINDEX_ON_DIMENSION_MISMATCH` | Автопересоздание при несовпадении размерности | `true` |
+| `PLUGIN_DIR` | Каталог Python-плагинов | `/app/plugins` |
+| `PLUGIN_STRICT_DERIVED_STATE` | Останавливать индексацию при ошибке derived-state hook | `false` |
 
 ### Graph Metadata Search (порт 8006)
 
@@ -178,6 +180,10 @@
 | `EXTENSION_NAME` | Имя расширения | — |
 | `EXTENSION_BASE_PROJECT` | Имя базового проекта для расширения | — |
 | `EXTENSION_APPLY_ORDER` | Порядок применения слоя расширения | `1` |
+| `GRAPH_PLUGINS_ENABLED` | Загружать плагины Graph Metadata Search | `false` |
+| `GRAPH_PLUGINS_DIRECTORY` | Каталог плагинов | `plugins` |
+| `GRAPH_PLUGIN_STRICT_BUILD` | Останавливать построение поколения при ошибке derived-state hook | `false` |
+| `GRAPH_PLUGIN_HOOK_TIMEOUT_SECONDS` | Бюджет времени одного plugin hook; `0` отключает контроль | `5.0` |
 
 Полный список переменных Graph Metadata Search, включая лимиты графовых ответов, поколения и загрузку данных: [Конфигурация Graph Metadata Search](../servery/graph-metadata-search/konfiguraciya.md).
 
@@ -207,6 +213,8 @@
 | `LICENSE_KEY` | Лицензионный ключ | Обязательно |
 | `USESSE` | SSE транспорт | `false` |
 | `FILES_DIR` | Каталог с файлами BSL внутри контейнера. Если каталог задан и существует, сервер регистрирует инструмент `syntaxcheck_file` | *(пусто)* |
+| `PLUGINS_DIR` | Каталог Python-плагинов; пустое значение использует `/app/plugins` | *(пусто)* |
+| `LOG_LEVEL` | Уровень журналирования | `INFO` |
 
 ### TemplatesSearchServer (порт 8004)
 
@@ -222,6 +230,8 @@
 | `TEMPLATES_DB_PATH` | Путь к SQLite-базе шаблонов и заметок | `/app/chroma_db/templates.db` |
 | `ZVEC_DB_PATH` | Каталог векторного индекса zvec | `/app/chroma_db/zvec_db` |
 | `RECALL_RELEVANCE_THRESHOLD` | Максимальная cosine-distance для `recall` | `1.0` |
+| `PLUGIN_DIR` | Каталог Python-плагинов | `/app/plugins` |
+| `PLUGIN_STRICT_DERIVED_STATE` | Останавливать индексацию при ошибке derived-state hook | `false` |
 
 ## Примеры
 

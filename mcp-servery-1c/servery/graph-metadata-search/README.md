@@ -126,6 +126,7 @@ Graph Metadata Search строит граф связей метаданных в
 | `get_graph_capabilities` | Что сервис анализирует сам, а что делегирует |
 | `list_graph_capabilities` | Список опубликованных инструментов с версией, хешем и feature-gate |
 | `get_graph_tool_schema` | JSON Schema, аннотации и пример вызова инструмента |
+| `list_plugins` | Загруженные плагины, их hooks, таблицы, порядок выполнения, ошибки и текущая plugin epoch |
 | `metadata_report` | Заглушка удалённого монолитного отчёта: сообщает, чем он заменён |
 
 ### Управление проектами (профиль `admin`)
@@ -137,6 +138,7 @@ Graph Metadata Search строит граф связей метаданных в
 | `register_graph_project` | Регистрация проекта в текущем namespace |
 | `refresh_graph_project` | Пересборка проекта в staging-поколение с последующим promote |
 | `delete_graph_project` | Удаление данных проекта и его регистрации |
+| `reload_plugins` | Атомарно перечитать каталог плагинов; требует уникальный `operation_id` |
 
 {% hint style="warning" %}
 Инструмент `execute_metadata_cypher` (произвольный Cypher от клиента) удалён. Его заменяет `run_graph_cypher_template`, который выполняет только разрешённые read-only шаблоны в рамках scope, который вызывающая сторона не может расширить.
@@ -148,8 +150,8 @@ Graph Metadata Search строит граф связей метаданных в
 
 | Профиль | Поведение |
 |---------|-----------|
-| `admin` (по умолчанию) | Публикуются все инструменты, включая `register_graph_project`, `refresh_graph_project`, `delete_graph_project` |
-| `read-only` | Три инструмента жизненного цикла проектов не регистрируются вообще — клиент их не видит |
+| `admin` (по умолчанию) | Публикуются все инструменты, включая `register_graph_project`, `refresh_graph_project`, `delete_graph_project`, `reload_plugins` |
+| `read-only` | Инструменты изменения состояния (`register_graph_project`, `refresh_graph_project`, `delete_graph_project`, `reload_plugins`) не регистрируются — клиент их не видит |
 
 ## Общие параметры контракта
 
