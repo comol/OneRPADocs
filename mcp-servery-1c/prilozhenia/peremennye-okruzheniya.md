@@ -68,6 +68,13 @@
 | `MCP_HOST` | Хост для привязки сервера | `0.0.0.0` |
 | `MCP_PORT` | Порт сервера | `8000` |
 | `MCP_PATH` | Путь MCP-эндпоинта | `/mcp` |
+| `FASTMCP_STATELESS_HTTP` | Stateless-режим HTTP | `true` |
+| `MCP_SESSION_IDLE_TTL_SEC` | Таймаут простоя MCP-сессии | `1800` |
+| `MCP_SESSION_MAX_LIFETIME_SEC` | Максимальное время жизни MCP-сессии | `86400` |
+| `MCP_SESSION_MAX_CONCURRENT` | Максимум одновременных MCP-сессий | `64` |
+| `MCP_SESSION_CLEANUP_INTERVAL_SEC` | Интервал очистки сессий | `60` |
+| `MCP_SESSION_BOUNDS_MODE` | Применять лимиты (`enforce`) или только сообщать (`report`) | `enforce` |
+| `MCP_IMAGE_REF` | Неизменяемая ссылка на образ с digest для release identity | *(не задано)* |
 | `VECTOR_DB_PATH` | Путь к директории векторного хранилища zvec | `/app/chroma_db` |
 | `CHROMA_DB_PATH` | Устаревший совместимый алиас `VECTOR_DB_PATH` | `/app/chroma_db` |
 | `EMBEDDING_API_BASE` | URL OpenAI-совместимого API эмбеддингов | — |
@@ -76,6 +83,8 @@
 | `RESET_DATABASE` | Переиндексировать | `false` |
 | `BACKGROUND_INDEXING` | Индексировать в фоне, не блокируя запуск MCP | `true` |
 | `INCREMENTAL_INDEXING` | Обновлять только изменившиеся файлы по SHA-256 | `true` |
+| `INDEX_NESTED_CONFIGURATIONS` | Индексировать вложенные конфигурации поставщика отдельными источниками | `false` |
+| `NESTED_CONFIGURATION_PATHS` | Каталоги-контейнеры вложенных конфигураций через запятую | `Ext/ParentConfigurations` |
 | `REINDEX_INTERVAL_SEC` | Интервал автоматической индексации (секунды) | `7200` |
 | `REINDEX_INTERVAL_HOURS` | Алиас интервала в часах | *(не задано)* |
 | `BM25_ALPHA` | Вес семантического поиска (0–1) | `0.5` |
@@ -87,6 +96,15 @@
 | `ENABLE_RERANKER` | Включить нейронный реранкер (cross-encoder) | `false` |
 | `RERANKER_MODEL` | Модель реранкера | *(авто)* |
 | `RERANKER_TOP_K` | Макс. кандидатов для реранкера | `20` |
+| `EMBEDDING_PROVIDER` | Явный выбор `remote` или `local` | *(авто)* |
+| `EMBEDDING_PROVIDER_AMBIGUITY` | Политика неоднозначной legacy-конфигурации | `error` |
+| `EMBEDDING_MEMORY_BUDGET_MB` | Бюджет памяти локальной embedding-модели | `4096` |
+| `EMBEDDING_MEMORY_BUDGET_MODE` | `refuse`, `warn` или `off` | `refuse` |
+| `VECTOR_PROFILE` | Профиль zvec: `fast_index`, `balanced`, `memory_saver`, `quality` | `fast_index` |
+| `VECTOR_OPTIMIZE_ENABLED` | Разрешить оптимизацию zvec | `true` |
+| `VECTOR_OPTIMIZE_DEADLINE_SEC` | Таймаут фоновой оптимизации | `1800` |
+| `VECTOR_OPTIMIZE_CANCEL_DEADLINE_SEC` | Таймаут оптимизации из запроса | `5` |
+| `VECTOR_WRITE_FAILURE_THRESHOLD` | Ошибки записи до терминального состояния | `5` |
 
 ### CloudEmbeddingsServer (порт 8000 по умолчанию)
 
@@ -127,6 +145,8 @@
 | `EMBEDDING_DIMENSIONS` | Размерность эмбеддингов | *(авто)* |
 | `EMBEDDING_INPUT_TYPE_ENABLED` | Различение query/document для эмбеддингов | `true` |
 | `FORCE_REINDEX_ON_DIMENSION_MISMATCH` | Автопересоздание при несовпадении размерности | `true` |
+| `MIN_SCORE` | Порог cosine similarity для результатов `ssl_search` | `0.3826` |
+| `LOG_QUERIES` | Записывать полный текст поисковых запросов вместо длины и хеша | `false` |
 | `PLUGIN_DIR` | Каталог Python-плагинов | `/app/plugins` |
 | `PLUGIN_STRICT_DERIVED_STATE` | Останавливать индексацию при ошибке derived-state hook | `false` |
 
@@ -215,6 +235,14 @@
 | `FILES_DIR` | Каталог с файлами BSL внутри контейнера. Если каталог задан и существует, сервер регистрирует инструмент `syntaxcheck_file` | *(пусто)* |
 | `PLUGINS_DIR` | Каталог Python-плагинов; пустое значение использует `/app/plugins` | *(пусто)* |
 | `LOG_LEVEL` | Уровень журналирования | `INFO` |
+| `MCP_HTTP_PATH` | Endpoint `streamable-http` | `/mcp` |
+| `MCP_SSE_PATH` | Endpoint потока событий при `USESSE=true` | `/sse` |
+| `MCP_MESSAGE_PATH` | Endpoint сообщений при `USESSE=true` | `/messages/` |
+| `BSL_ANALYZER_TIMEOUT_SECONDS` | Таймаут анализатора | `30` |
+| `BSL_ANALYZER_STDOUT_LIMIT_BYTES` | Лимит JSONL-отчёта анализатора | `16777216` |
+| `BSL_ANALYZER_STDERR_LIMIT_BYTES` | Лимит диагностического вывода анализатора | `4194304` |
+| `BSL_ANALYZER_KILL_GRACE_SECONDS` | Ожидание перед принудительной остановкой | `2` |
+| `BSL_SOURCE_ENCODING` | Явная кодировка файлов; если не задана, пробуются UTF-8 с BOM и CP1251 | *(пусто)* |
 
 ### TemplatesSearchServer (порт 8004)
 

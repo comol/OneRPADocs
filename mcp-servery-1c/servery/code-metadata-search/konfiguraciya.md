@@ -18,6 +18,13 @@
 | `MCP_PORT` | Порт сервера | `8000` |
 | `MCP_PATH` | Путь MCP-эндпоинта | `/mcp` |
 | `USESSE` | Включить SSE-транспорт для legacy-клиентов. По умолчанию используется `streamable-http` | `false` |
+| `FASTMCP_STATELESS_HTTP` | Не хранить состояние между HTTP-вызовами; уменьшает число долгоживущих сессий | `true` |
+| `MCP_SESSION_IDLE_TTL_SEC` | Время простоя сессии до освобождения; `0` отключает ограничение | `1800` |
+| `MCP_SESSION_MAX_LIFETIME_SEC` | Максимальное время жизни сессии; `0` отключает ограничение | `86400` |
+| `MCP_SESSION_MAX_CONCURRENT` | Максимум одновременных MCP-сессий | `64` |
+| `MCP_SESSION_CLEANUP_INTERVAL_SEC` | Интервал очистки завершённых и просроченных сессий | `60` |
+| `MCP_SESSION_BOUNDS_MODE` | `enforce` применяет лимиты, `report` только считает нарушения | `enforce` |
+| `MCP_IMAGE_REF` | Неизменяемая ссылка на образ с digest для проверки release identity в `stats` | *(не задано)* |
 | `VECTOR_DB_PATH` | Путь к общей директории векторного хранилища и служебных индексов | `/app/chroma_db` |
 | `CHROMA_DB_PATH` | Совместимый старый алиас для `VECTOR_DB_PATH`; внутри каталога теперь используются zvec-коллекции и SQLite-индексы | `/app/chroma_db` |
 
@@ -40,6 +47,8 @@
 | `INDEX_CODE` | Индексировать BSL-код | `true` |
 | `INDEX_HELP` | Индексировать HTML-справку | `true` |
 | `INDEX_PHASE_ORDER` | Порядок фаз; метаданные всегда выполняются первыми | `metadata,code,help` |
+| `INDEX_NESTED_CONFIGURATIONS` | Индексировать вложенные конфигурации поставщика отдельными источниками | `false` |
+| `NESTED_CONFIGURATION_PATHS` | Список относительных каталогов-контейнеров вложенных конфигураций через запятую | `Ext/ParentConfigurations` |
 
 ### Качество поиска
 
@@ -73,6 +82,11 @@
 | `VECTOR_MEMORY_LIMIT_MB` | Ограничение памяти zvec в МБ | *(не задано)* |
 | `VECTOR_QUERY_THREADS` | Число потоков поиска | *(авто)* |
 | `VECTOR_OPTIMIZE_THREADS` | Число потоков оптимизации | *(авто)* |
+| `VECTOR_OPTIMIZE_ENABLED` | Разрешить периодическую и финальную оптимизацию zvec | `true` |
+| `VECTOR_OPTIMIZE_EVERY` | Число новых документов между оптимизациями; `0` — только финальная | `100000` |
+| `VECTOR_OPTIMIZE_DEADLINE_SEC` | Максимальное ожидание оптимизации в фоновой индексации | `1800` |
+| `VECTOR_OPTIMIZE_CANCEL_DEADLINE_SEC` | Максимальное ожидание оптимизации из запроса или принудительной переиндексации | `5` |
+| `VECTOR_WRITE_FAILURE_THRESHOLD` | Последовательные ошибки записи до перевода коллекции в терминальное состояние | `5` |
 
 ### Нейронный реранкер (cross-encoder)
 
@@ -100,6 +114,12 @@
 | `EMBEDDING_API_KEY` | Ключ API (для LM Studio — любой, для OpenRouter — ваш ключ) | `lm-studio` |
 | `EMBEDDING_MODEL` | Название модели для API или локального режима (для OpenRouter: `qwen/qwen3-embedding-8b`) | `sentence-transformers/paraphrase-multilingual-mpnet-base-v2` |
 | `EMBEDDING_DIMENSIONS` | Явное указание размерности эмбеддингов. Поддерживается моделями с переменной размерностью (Qwen3, text-embedding-3). Если не указано — определяется автоматически | *(авто)* |
+| `EMBEDDING_PROVIDER` | Явно выбрать `remote` или `local`; если не задано, сервер выводит режим из варианта образа и настроек endpoint | *(авто)* |
+| `EMBEDDING_PROVIDER_AMBIGUITY` | Поведение при неоднозначной legacy-конфигурации: ошибка или вывод режима | `error` |
+| `EMBEDDING_MEMORY_BUDGET_MB` | Допустимая оценка памяти для локальной модели до загрузки весов | `4096` |
+| `EMBEDDING_MEMORY_BUDGET_MODE` | `refuse`, `warn` или `off` при превышении бюджета | `refuse` |
+| `EMBEDDING_MEMORY_SAMPLE_SEC` | Интервал измерения памяти локального embedding-процесса | `30` |
+| `EMBEDDING_MEMORY_WARN_RATIO` | Доля бюджета, после которой состояние помечается предупреждением | `0.9` |
 
 {% hint style="info" %}
 **Поддержка OpenRouter:** Сервер автоматически определяет OpenRouter по URL и добавляет необходимые HTTP-заголовки (`HTTP-Referer`, `X-Title`).

@@ -24,10 +24,20 @@ docker run -d -p 8002:8002 `
 | `FILES_DIR` | Каталог BSL-файлов; включает инструмент `syntaxcheck_file`, если каталог существует | Нет |
 | `PLUGINS_DIR` | Каталог Python-плагинов; пустое значение использует `/app/plugins` | Нет |
 | `LOG_LEVEL` | Уровень журналирования сервера и ошибок плагинов | Нет (`INFO`) |
+| `MCP_HTTP_PATH` | Endpoint `streamable-http` | Нет (`/mcp`) |
+| `MCP_SSE_PATH` | Endpoint потока событий в SSE-режиме | Нет (`/sse`) |
+| `MCP_MESSAGE_PATH` | Endpoint отправки сообщений в SSE-режиме | Нет (`/messages/`) |
+| `BSL_ANALYZER_TIMEOUT_SECONDS` | Таймаут запуска анализатора | Нет (`30`) |
+| `BSL_ANALYZER_STDOUT_LIMIT_BYTES` | Максимальный размер JSONL-отчёта анализатора | Нет (`16777216`) |
+| `BSL_ANALYZER_STDERR_LIMIT_BYTES` | Максимальный размер диагностического вывода анализатора | Нет (`4194304`) |
+| `BSL_ANALYZER_KILL_GRACE_SECONDS` | Ожидание между terminate и принудительным kill | Нет (`2`) |
+| `BSL_SOURCE_ENCODING` | Кодировка файлов из `FILES_DIR`; пустое значение пробует UTF-8 с BOM, затем CP1251 | Нет |
 
 Свой каталог плагинов можно подключить томом в `/app/plugins`. Инструмент `plugin_state` показывает текущий набор, а `plugin_reload` перечитывает его без перезапуска контейнера.
 
 ### SSE транспорт
+
+При `USESSE=true` клиент подключается к `http://localhost:8002/sse`; `/messages/` — служебный endpoint, который сообщает сам SSE-поток, его не указывают как URL сервера в конфигурации клиента.
 
 Если ваш клиент требует SSE:
 
@@ -55,7 +65,7 @@ docker logs 1c_syntaxcheck_mcp
 
 ## Конфигурация Cursor
 
-### mcp.json
+### mcp.json для streamable-http
 
 ```json
 {
@@ -63,6 +73,19 @@ docker logs 1c_syntaxcheck_mcp
     "1c-syntax-checker-mcp": {
       "url": "http://localhost:8002/mcp",
       "connection_id": "1c_lsp_service_001"
+    }
+  }
+}
+```
+
+Для SSE укажите endpoint потока событий:
+
+```json
+{
+  "mcpServers": {
+    "1c-syntax-checker-mcp": {
+      "url": "http://localhost:8002/sse",
+      "transport": "sse"
     }
   }
 }

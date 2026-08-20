@@ -99,7 +99,7 @@ docker run -d -p 8002:8002 `
   comol/1c_syntaxcheck_mcp:latest
 ```
 
-По умолчанию используется `streamable-http` на `/mcp`. Для SSE включите `-e USESSE=true`.
+По умолчанию используется `streamable-http` на `/mcp`. Для SSE включите `-e USESSE=true`: поток событий будет доступен на `/sse`, а сообщения отправляются на `/messages/`. Старое размещение SSE-потока на `/mcp` можно временно сохранить через `MCP_SSE_PATH=/mcp`.
 
 ## Конфигурация Cursor
 
