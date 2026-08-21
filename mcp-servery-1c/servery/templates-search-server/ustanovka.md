@@ -57,6 +57,14 @@ docker run -d -p 8004:8004 `
 | `TEMPLATES_DB_PATH` | Путь к SQLite-базе шаблонов и заметок | `/app/chroma_db/templates.db` |
 | `ZVEC_DB_PATH` | Каталог коллекций zvec | `/app/chroma_db/zvec_db` |
 | `RECALL_RELEVANCE_THRESHOLD` | Максимальная cosine-distance для результата `recall` | `1.0` |
+| `TEMPLATE_RELEVANCE_THRESHOLD` | Максимальная cosine-distance для результата `templatesearch`; задаётся отдельно от `recall`, потому что описания кода и свободные заметки — разный текст | `1.0` |
+| `FUSION_RANK_CONSTANT` | Константа reciprocal rank fusion при объединении семантического и полнотекстового маршрутов | `60` |
+| `FTS_DEFAULT_OPERATOR` | Как объединяются соседние термины в полнотекстовом маршруте: `OR` или `AND` | `OR` |
+| `GROUP_RESULT_CAP` | Максимум документов одного шаблона в ответе | `1` |
+| `GROUP_CANDIDATE_BUDGET` | Сколько различных шаблонов запрашивается в выборке кандидатов | `11` |
+| `INDEX_GENERATION_RETENTION` | Сколько поколений каждой коллекции хранится на диске; значение меньше 2 повышается до 2, потому что откатиться на удалённый индекс нельзя | `2` |
+| `EMBEDDING_QUERY_PREFIX` | Префикс, добавляемый к тексту запроса перед эмбеддингом | *(пусто)* |
+| `EMBEDDING_PASSAGE_PREFIX` | Префикс, добавляемый к индексируемому тексту перед эмбеддингом | *(пусто)* |
 | `PLUGIN_DIR` | Каталог Python-плагинов внутри контейнера | `/app/plugins` |
 | `PLUGIN_STRICT_DERIVED_STATE` | Останавливать индексацию при ошибке derived-state hook | `false` |
 
@@ -83,6 +91,17 @@ docker logs -f template_search_mcp
 
 ```powershell
 docker ps --filter name=template_search_mcp
+```
+
+### Liveness и readiness
+
+| Endpoint | Назначение |
+|----------|------------|
+| `http://localhost:8004/health` | Процесс жив |
+| `http://localhost:8004/ready` | Индексы построены и сервер готов отвечать |
+
+```powershell
+Invoke-RestMethod http://localhost:8004/ready
 ```
 
 ### Веб-интерфейс

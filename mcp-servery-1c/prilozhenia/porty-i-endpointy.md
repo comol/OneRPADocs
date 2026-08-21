@@ -12,7 +12,7 @@
 | CloudEmbeddingsServer | 8000* | `/mcp` | `/health`, `/reindex` |
 | SyntaxCheckServer | 8002 | `/mcp` (`streamable-http`) или `/sse` (SSE) | `/messages/` (SSE) |
 | HelpSearchServer | 8003 | `/mcp` | `/health` |
-| TemplatesSearchServer | 8004 | `/mcp` | `/extend/`, `/extend/memory` (веб-интерфейс) |
+| TemplatesSearchServer | 8004 | `/mcp` | `/health`, `/ready`, `/extend/`, `/extend/memory` (веб-интерфейс) |
 | Graph Metadata Search | 8006 | `/mcp` | `/search`, `/healthz`, `/readyz`, `/status`, `/search/index-status`, `/docs` |
 | 1CCodeChecker | 8007 | `/mcp` | `/health` |
 | SSLSearchServer | 8008 | `/mcp` | `/ready` |

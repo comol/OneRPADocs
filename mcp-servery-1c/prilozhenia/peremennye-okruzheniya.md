@@ -84,6 +84,10 @@
 | `BACKGROUND_INDEXING` | Индексировать в фоне, не блокируя запуск MCP | `true` |
 | `INCREMENTAL_INDEXING` | Обновлять только изменившиеся файлы по SHA-256 | `true` |
 | `INDEX_NESTED_CONFIGURATIONS` | Индексировать вложенные конфигурации поставщика отдельными источниками | `false` |
+| `PROJECT_ID` | Явное закрепление идентификатора проекта индекса | *(выводится из путей)* |
+| `GENERATION_RETENTION_COUNT` | Сколько поколений индекса хранить | `2` |
+| `SUB_INDEX_INTEGRITY_GATE` | Режим проверки целостности вспомогательных индексов: `auto`, `blocking`, `report_only`, `off` | `auto` |
+| `LIVE_XML_FALLBACK` | Дочитывать XML-выгрузку, когда индекс не содержит факта | `true` |
 | `NESTED_CONFIGURATION_PATHS` | Каталоги-контейнеры вложенных конфигураций через запятую | `Ext/ParentConfigurations` |
 | `REINDEX_INTERVAL_SEC` | Интервал автоматической индексации (секунды) | `7200` |
 | `REINDEX_INTERVAL_HOURS` | Алиас интервала в часах | *(не задано)* |
@@ -142,11 +146,19 @@
 | `EMBEDDING_API_KEY` | Ключ API эмбеддингов | — |
 | `EMBEDDING_MODEL` | Модель API или локальная модель | `intfloat/multilingual-e5-small` |
 | `INDEXING_THREADS` | Потоки индексации | `5` |
+| `MIGRATE_VECTOR_STORE` | Выполнить миграцию векторного хранилища на этом старте | `false` |
+| `DEMOTE_VECTOR_STORE` | Вернуть обслуживание предыдущему поколению | `false` |
 | `EMBEDDING_DIMENSIONS` | Размерность эмбеддингов | *(авто)* |
 | `EMBEDDING_INPUT_TYPE_ENABLED` | Различение query/document для эмбеддингов | `true` |
-| `FORCE_REINDEX_ON_DIMENSION_MISMATCH` | Автопересоздание при несовпадении размерности | `true` |
+| `FORCE_REINDEX_ON_DIMENSION_MISMATCH` | Автопересоздание при несовпадении размерности; иначе старт останавливается с ошибкой | `false` |
 | `MIN_SCORE` | Порог cosine similarity для результатов `ssl_search` | `0.3826` |
+| `EXACT_LOOKUP` | Точный поиск по имени символа перед семантическим (`lane=exact`) | `true` |
 | `LOG_QUERIES` | Записывать полный текст поисковых запросов вместо длины и хеша | `false` |
+| `LOG_DIR` | Каталог файла журнала; относительный путь от корня приложения | `<app>/logs` |
+| `SESSION_IDLE_TTL` | Время простоя HTTP-сессии до освобождения, секунды | `900` |
+| `SESSION_MAX_LIFETIME` | Максимальное время жизни HTTP-сессии, секунды | `14400` |
+| `SESSION_MAX_CONCURRENT` | Максимум одновременных HTTP-сессий | `128` |
+| `SESSION_CLEANUP_INTERVAL` | Интервал очистки просроченных сессий, секунды | `30` |
 | `PLUGIN_DIR` | Каталог Python-плагинов | `/app/plugins` |
 | `PLUGIN_STRICT_DERIVED_STATE` | Останавливать индексацию при ошибке derived-state hook | `false` |
 
@@ -258,6 +270,12 @@
 | `TEMPLATES_DB_PATH` | Путь к SQLite-базе шаблонов и заметок | `/app/chroma_db/templates.db` |
 | `ZVEC_DB_PATH` | Каталог векторного индекса zvec | `/app/chroma_db/zvec_db` |
 | `RECALL_RELEVANCE_THRESHOLD` | Максимальная cosine-distance для `recall` | `1.0` |
+| `TEMPLATE_RELEVANCE_THRESHOLD` | Максимальная cosine-distance для `templatesearch` | `1.0` |
+| `FUSION_RANK_CONSTANT` | Константа reciprocal rank fusion | `60` |
+| `FTS_DEFAULT_OPERATOR` | Объединение соседних терминов в полнотекстовом маршруте: `OR` или `AND` | `OR` |
+| `GROUP_RESULT_CAP` | Максимум документов одного шаблона в ответе | `1` |
+| `GROUP_CANDIDATE_BUDGET` | Сколько различных шаблонов запрашивается в выборке кандидатов | `11` |
+| `INDEX_GENERATION_RETENTION` | Сколько поколений каждой коллекции хранится на диске | `2` |
 | `PLUGIN_DIR` | Каталог Python-плагинов | `/app/plugins` |
 | `PLUGIN_STRICT_DERIVED_STATE` | Останавливать индексацию при ошибке derived-state hook | `false` |
 
