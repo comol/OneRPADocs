@@ -6,7 +6,7 @@
 
 | Сервер | Порт | Назначение | Сложность |
 |--------|------|------------|-----------|
-| [HelpSearchServer](help-search-server/) | 8003 | Справка платформы 1С | Средняя |
+| [HelpSearchServer](help-search-server/) | 8003 | Справка платформы 1С, руководства, спецификации форматов, стандарты | Средняя |
 | [CodeMetadataSearchServer](code-metadata-search/) | 8000 | Метаданные и код конфигурации | Средняя |
 | [CloudEmbeddingsServer](cloud-embeddings-server/) | 8000* | Метаданные, код и справка через cloud embeddings | Средняя |
 | [Graph Metadata Search](graph-metadata-search/) | 8006 | Графовый поиск связей | Высокая |
@@ -35,7 +35,7 @@
 
 Нужна подготовка данных из конфигурации:
 
-5. **HelpSearchServer** — нужна папка bin платформы 1С
+5. **HelpSearchServer** — работает сразу (корпуса в образе); папка bin платформы нужна только для справки своей версии
 6. **CodeMetadataSearchServer** — нужна выгрузка конфигурации
 7. **Graph Metadata Search** — нужна выгрузка + Neo4j
 8. **CloudEmbeddingsServer** — нужна выгрузка и внешний embedding API
@@ -63,7 +63,7 @@ docker run -d -p 8002:8002 --name 1c_syntaxcheck_mcp `
 docker run -d -p 8008:8008 --name mcp_ssl_server `
   -e LICENSE_KEY=YOUR_LICENSE_KEY `
   -e SSL_VERSION=3.1.11 `
-  -v "E:/bases/mcp_ssl:/app/chroma_db" `
+  -v "E:/bases/mcp_ssl:/app/zvec_db" `
   comol/mcp_ssl_server:latest
 ```
 
@@ -73,10 +73,11 @@ docker run -d -p 8008:8008 --name mcp_ssl_server `
 # HelpSearchServer
 docker run -d -p 8003:8003 --name 1c_help_mcp `
   -e LICENSE_KEY=YOUR_LICENSE_KEY `
-  -v "C:/Program Files/1cv8/8.3.23.1997/bin:/1c_docs" `
-  -v "E:/bases/mcp_docs:/app/chroma_db" `
+  -v "E:/bases/mcp_docs:/app/index" `
   comol/1c_help_mcp:latest
 ```
+
+Справка платформы поставляется внутри образа. Чтобы индексировать справку своей версии, добавьте `-v "C:/Program Files/1cv8/8.3.23.1997/bin:/1c_docs"` и `-e 1C_BIN_PATH=/1c_docs`.
 
 ### Этап 4: Метаданные конфигурации
 
@@ -89,18 +90,19 @@ docker run -d -p 8003:8003 --name 1c_help_mcp `
 | Переменная | Описание | Обязательная |
 |------------|----------|--------------|
 | `LICENSE_KEY` | Лицензионный ключ | Да |
-| `RESET_DATABASE` | Переиндексировать данные | Нет (default: true) |
-| `RESET_CACHE` | Перезагрузить модель | Нет (default: true) |
+| `RESET_DATABASE` | Переиндексировать данные | Нет (default: false) |
+| `RESET_CACHE` | Очистить кэш моделей | Нет (default: false) |
 | `USESSE` | SSE транспорт | Нет (default: false) |
 
 ### Embedding модели
 
 | Переменная | Описание |
 |------------|----------|
-| `OPENAI_API_BASE` | URL API (LM Studio: `http://host.docker.internal:1234/v1`) |
-| `OPENAI_API_KEY` | Ключ API (любой для LM Studio) |
-| `OPENAI_MODEL` | Название модели |
-| `EMBEDDING_MODEL` | Встроенная CPU модель |
+| `EMBEDDING_API_BASE` | URL API (LM Studio: `http://host.docker.internal:1234/v1`) |
+| `EMBEDDING_API_KEY` | Ключ API (любой для LM Studio) |
+| `EMBEDDING_MODEL` | Модель API или встроенная CPU-модель |
+
+Старые имена `OPENAI_API_BASE`, `OPENAI_API_KEY` и `OPENAI_MODEL` остаются совместимыми алиасами.
 
 ## Мониторинг контейнеров
 

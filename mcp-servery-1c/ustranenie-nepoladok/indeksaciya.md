@@ -153,11 +153,16 @@ Get-ChildItem "C:\Program Files\1cv8\8.3.23.1997\bin"
 
 ```powershell
 # Правильно
+-e 1C_BIN_PATH=/1c_docs `
 -v "C:/Program Files/1cv8/8.3.23.1997/bin:/1c_docs"
 
 # Неправильно (обратные слеши без экранирования)
 -v "C:\Program Files\1cv8\8.3.23.1997\bin:/1c_docs"
 ```
+
+{% hint style="info" %}
+Одного монтирования мало: без `1C_BIN_PATH` HelpSearchServer возьмёт архив справки, поставляемый с образом, и смонтированная папка `bin` останется незамеченной.
+{% endhint %}
 
 ## Логи индексации
 

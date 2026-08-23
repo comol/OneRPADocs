@@ -25,8 +25,9 @@ docker run -d -p 8003:8003 `
   --name 1c_help_mcp_8323 `
   -e LICENSE_KEY=YOUR_LICENSE_KEY `
   -e RESET_DATABASE=false `
+  -e 1C_BIN_PATH=/1c_docs `
   -v "C:/Program Files/1cv8/8.3.23.1997/bin:/1c_docs" `
-  -v "E:/bases/mcp_docs_8323:/app/chroma_db" `
+  -v "E:/bases/mcp_docs_8323:/app/index" `
   comol/1c_help_mcp:latest
 
 # HelpSearchServer для платформы 8.3.25
@@ -34,8 +35,9 @@ docker run -d -p 8013:8003 `
   --name 1c_help_mcp_8325 `
   -e LICENSE_KEY=YOUR_LICENSE_KEY `
   -e RESET_DATABASE=false `
+  -e 1C_BIN_PATH=/1c_docs `
   -v "C:/Program Files/1cv8/8.3.25.1234/bin:/1c_docs" `
-  -v "E:/bases/mcp_docs_8325:/app/chroma_db" `
+  -v "E:/bases/mcp_docs_8325:/app/index" `
   comol/1c_help_mcp:latest
 ```
 

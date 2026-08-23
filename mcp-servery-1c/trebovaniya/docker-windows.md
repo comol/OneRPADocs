@@ -182,13 +182,14 @@ docker run -d -p 8003:8003 `
   --name 1c_help_mcp `
   -e LICENSE_KEY=YOUR_LICENSE_KEY `
   -e RESET_DATABASE=false `
+  -e 1C_BIN_PATH=/1c_docs `
   -v "C:/Program Files/1cv8/8.3.23.1997/bin:/1c_docs" `
-  -v "E:/bases/mcp_docs:/app/chroma_db" `
+  -v "E:/bases/mcp_docs:/app/index" `
   comol/1c_help_mcp:latest
 ```
 
 {% hint style="info" %}
-Благодаря монтированию тома (`-v "E:/bases/mcp_docs:/app/chroma_db"`) ваш индекс сохранится при обновлении контейнера. Переиндексация не потребуется!
+Благодаря монтированию тома (`-v "E:/bases/mcp_docs:/app/index"`) ваш индекс сохранится при обновлении контейнера. Переиндексация не потребуется!
 {% endhint %}
 
 ### Откат на предыдущую версию
@@ -205,8 +206,9 @@ docker run -d -p 8003:8003 `
   --name 1c_help_mcp `
   -e LICENSE_KEY=YOUR_LICENSE_KEY `
   -e RESET_DATABASE=false `
+  -e 1C_BIN_PATH=/1c_docs `
   -v "C:/Program Files/1cv8/8.3.23.1997/bin:/1c_docs" `
-  -v "E:/bases/mcp_docs:/app/chroma_db" `
+  -v "E:/bases/mcp_docs:/app/index" `
   comol/1c_help_mcp:previous
 ```
 

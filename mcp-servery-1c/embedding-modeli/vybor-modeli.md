@@ -23,9 +23,9 @@
 **Рекомендация: LM Studio + Qwen3-Embedding-4B**
 
 ```env
-OPENAI_API_BASE=http://host.docker.internal:1234/v1
-OPENAI_API_KEY=lm-studio
-OPENAI_MODEL=Qwen3-Embedding-4B
+EMBEDDING_API_BASE=http://host.docker.internal:1234/v1
+EMBEDDING_API_KEY=lm-studio
+EMBEDDING_MODEL=Qwen3-Embedding-4B
 ```
 
 Плюсы:
@@ -39,9 +39,9 @@ OPENAI_MODEL=Qwen3-Embedding-4B
 **Рекомендация: LM Studio + Qwen3-Embedding-8B**
 
 ```env
-OPENAI_API_BASE=http://host.docker.internal:1234/v1
-OPENAI_API_KEY=lm-studio
-OPENAI_MODEL=Qwen3-Embedding-8B
+EMBEDDING_API_BASE=http://host.docker.internal:1234/v1
+EMBEDDING_API_KEY=lm-studio
+EMBEDDING_MODEL=Qwen3-Embedding-8B
 ```
 
 Плюсы:
@@ -114,11 +114,12 @@ docker run -d -p 8003:8003 `
   --name 1c_help_mcp `
   -e LICENSE_KEY=YOUR_LICENSE_KEY `
   -e RESET_DATABASE=true `
-  -e OPENAI_API_BASE=http://host.docker.internal:1234/v1 `
-  -e OPENAI_API_KEY=lm-studio `
-  -e OPENAI_MODEL=Qwen3-Embedding-8B `
+  -e EMBEDDING_API_BASE=http://host.docker.internal:1234/v1 `
+  -e EMBEDDING_API_KEY=lm-studio `
+  -e EMBEDDING_MODEL=Qwen3-Embedding-8B `
+  -e 1C_BIN_PATH=/1c_docs `
   -v "C:/Program Files/1cv8/8.3.23.1997/bin:/1c_docs" `
-  -v "E:/bases/mcp_docs:/app/chroma_db" `
+  -v "E:/bases/mcp_docs:/app/index" `
   comol/1c_help_mcp:latest
 ```
 

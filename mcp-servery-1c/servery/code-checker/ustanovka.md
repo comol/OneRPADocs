@@ -49,8 +49,25 @@ docker logs 1c_code_checker
 
 ```
 License key validated successfully.
-Starting 1C Code Checker MCP server on http://0.0.0.0:8007/mcp using streamable-http
+Starting 1C Code Checker MCP server on http://0.0.0.0:8007/mcp using streamable-http (health: /health)
 ```
+
+### Проверка состояния
+
+```powershell
+# Состояние: config_ok, direct_mode_ok, доступность upstream-возможностей
+Invoke-RestMethod -Uri "http://localhost:8007/health"
+
+# Счётчики транспортных сессий MCP
+Invoke-RestMethod -Uri "http://localhost:8007/metrics/sessions"
+
+# Идентичность выпуска (версия, digest образа, время сборки)
+Invoke-RestMethod -Uri "http://localhost:8007/release"
+```
+
+{% hint style="info" %}
+`/health` не обращается к 1С.ai и не раскрывает токен. Пока конфигурация не прошла проверку при старте, эндпоинт отвечает `503` — в логе при этом перечислены **все** проблемные настройки сразу, а не только первая.
+{% endhint %}
 
 ## Конфигурация Cursor
 

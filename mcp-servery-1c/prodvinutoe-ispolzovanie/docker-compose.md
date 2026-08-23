@@ -42,12 +42,12 @@ services:
       - LICENSE_KEY=${LICENSE_KEY}
       - 1C_BIN_PATH=/1c_docs
       - RESET_DATABASE=false
-      - OPENAI_API_BASE=http://host.docker.internal:1234/v1
-      - OPENAI_API_KEY=lm-studio
-      - OPENAI_MODEL=Qwen3-Embedding-4B
+      - EMBEDDING_API_BASE=http://host.docker.internal:1234/v1
+      - EMBEDDING_API_KEY=lm-studio
+      - EMBEDDING_MODEL=Qwen3-Embedding-4B
     volumes:
       - ${1C_BIN_PATH}:/1c_docs:ro
-      - E:/bases/mcp_docs:/app/chroma_db
+      - E:/bases/mcp_docs:/app/index
       - E:/bases/mcp_model_cache:/app/model_cache
 
   ssl-search:
@@ -60,11 +60,11 @@ services:
       - LICENSE_KEY=${LICENSE_KEY}
       - SSL_VERSION=${SSL_VERSION:-3.1.11}
       - RESET_DATABASE=false
-      - OPENAI_API_BASE=http://host.docker.internal:1234/v1
-      - OPENAI_API_KEY=lm-studio
-      - OPENAI_MODEL=Qwen3-Embedding-4B
+      - EMBEDDING_API_BASE=http://host.docker.internal:1234/v1
+      - EMBEDDING_API_KEY=lm-studio
+      - EMBEDDING_MODEL=Qwen3-Embedding-4B
     volumes:
-      - E:/bases/mcp_ssl:/app/chroma_db
+      - E:/bases/mcp_ssl:/app/zvec_db
 
   templates-search:
     image: comol/template-search-mcp:latest
@@ -75,9 +75,9 @@ services:
     environment:
       - LICENSE_KEY=${LICENSE_KEY}
       - RESET_DATABASE=false
-      - OPENAI_API_BASE=http://host.docker.internal:1234/v1
-      - OPENAI_API_KEY=lm-studio
-      - OPENAI_MODEL=Qwen3-Embedding-4B
+      - EMBEDDING_API_BASE=http://host.docker.internal:1234/v1
+      - EMBEDDING_API_KEY=lm-studio
+      - EMBEDDING_MODEL=Qwen3-Embedding-4B
     volumes:
       - E:/bases/mcp_templates:/app/data
 ```
@@ -153,9 +153,9 @@ services:
       - METADATA_PATH=/app/metadata
       - CODE_PATH=/app/code
       - RESET_DATABASE=false
-      - OPENAI_API_BASE=http://host.docker.internal:1234/v1
-      - OPENAI_API_KEY=lm-studio
-      - OPENAI_MODEL=Qwen3-Embedding-4B
+      - EMBEDDING_API_BASE=http://host.docker.internal:1234/v1
+      - EMBEDDING_API_KEY=lm-studio
+      - EMBEDDING_MODEL=Qwen3-Embedding-4B
     volumes:
       - E:/1C_Export/Report:/app/metadata:ro
       - E:/1C_Export/Files:/app/code:ro
@@ -196,9 +196,9 @@ services:
       - NEO4J_PASSWORD=password123
       - METADATA_DIRECTORY=/app/metadata
       - RESET_DATABASE=false
-      - OPENAI_API_BASE=http://host.docker.internal:1234/v1
-      - OPENAI_API_KEY=lm-studio
-      - OPENAI_MODEL=Qwen3-Embedding-4B
+      - EMBEDDING_API_BASE=http://host.docker.internal:1234/v1
+      - EMBEDDING_API_KEY=lm-studio
+      - EMBEDDING_MODEL=Qwen3-Embedding-4B
     volumes:
       - E:/1C_Export/Report:/app/metadata:ro
     depends_on:
@@ -215,7 +215,7 @@ services:
   help-search:
     # ... остальные параметры ...
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8003/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:8003/ready"]
       interval: 30s
       timeout: 10s
       retries: 3

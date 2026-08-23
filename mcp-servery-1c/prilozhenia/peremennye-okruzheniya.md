@@ -10,7 +10,7 @@
 |------------|----------|--------------|--------------|
 | `LICENSE_KEY` | Лицензионный ключ | Да | — |
 | `RESET_DATABASE` | Переиндексировать данные | Нет | `true` / `false` (зависит от сервера) |
-| `RESET_CACHE` | Перезагрузить модель | Нет | `true` |
+| `RESET_CACHE` | Очистить кэш моделей при старте | Нет | `false` (в HelpSearchServer, SSL, Templates) |
 | `USESSE` | Включить SSE-транспорт для legacy-клиентов. При `false` используется `streamable-http` | Нет | `false` |
 
 ## Embedding модели (LM Studio / Ollama / OpenRouter)
@@ -29,7 +29,7 @@
 | `EMBEDDING_MODEL` | Модель с Hugging Face | `intfloat/multilingual-e5-base` |
 
 {% hint style="info" %}
-Если задан `EMBEDDING_API_BASE` или используется light-образ, сервер обращается к внешнему API. Старые `OPENAI_API_BASE`, `OPENAI_API_KEY` и `OPENAI_MODEL` поддерживаются CodeMetadataSearchServer, SSLSearchServer и TemplatesSearchServer как совместимые алиасы. CloudEmbeddingsServer по-прежнему использует provider-specific ключи (`OPENAI_API_KEY`, `OPENROUTER_API_KEY`, `COHERE_API_KEY`, `JINA_API_KEY`).
+Если задан `EMBEDDING_API_BASE` или используется light-образ, сервер обращается к внешнему API. Старые `OPENAI_API_BASE`, `OPENAI_API_KEY` и `OPENAI_MODEL` поддерживаются HelpSearchServer, CodeMetadataSearchServer, SSLSearchServer и TemplatesSearchServer как совместимые алиасы. CloudEmbeddingsServer по-прежнему использует provider-specific ключи (`OPENAI_API_KEY`, `OPENROUTER_API_KEY`, `COHERE_API_KEY`, `JINA_API_KEY`).
 {% endhint %}
 
 ## Настройки индексации
@@ -54,15 +54,39 @@
 | Переменная | Описание | По умолчанию |
 |------------|----------|--------------|
 | `LICENSE_KEY` | Лицензионный ключ | Обязательно |
-| `1C_BIN_PATH` | Путь к bin в контейнере | `/1c_docs` |
-| `RESET_DATABASE` | Переиндексировать | `true` |
-| `RESET_CACHE` | Перезагрузить модель | `true` |
+| `1C_BIN_PATH` | Смонтированный каталог с `shcntx_ru.hbk`; не задан — берётся архив из образа | *(не задано)* |
+| `EMBEDDING_API_BASE` | URL OpenAI-совместимого API, включая `/v1` | `http://host.docker.internal:1234/v1` |
+| `EMBEDDING_API_KEY` | Ключ API эмбеддингов | `lm-studio` |
+| `EMBEDDING_MODEL` | Модель API или локальная модель | `intfloat/multilingual-e5-small` |
+| `HF_HOME` | Каталог кэша модели | `/app/model_cache` |
+| `HF_HUB_OFFLINE` | Запрет загрузок при старте; `0` разрешает докачку | `1` |
+| `RESET_CACHE` | Очистить кэш моделей при старте | `false` |
+| `RESET_DATABASE` | Разрешить разрушающие операции и очистить индекс | `false` |
+| `INDEX_RETAIN_GENERATIONS` | Сколько прошлых поколений индекса хранить | `1` |
+| `INDEXING_WORKERS` | Потоки индексации | `5` |
+| `INDEXING_BATCH_SIZE` | Строк в одной записи при индексации | `100` |
+| `USESSE` | SSE-транспорт вместо streamable-http | `false` |
+| `MCP_SESSION_IDLE_TTL_SECONDS` | Простой сессии Streamable HTTP до уборки | `1800` |
+| `MCP_SESSION_MAX_LIFETIME_SECONDS` | Максимальное время жизни сессии | `86400` |
+| `MCP_SESSION_CAP` | Максимум одновременных stateful-сессий | `1000` |
+| `MCP_SESSION_CLEANUP_INTERVAL_SECONDS` | Интервал уборки сессий | `60` |
+| `PLUGIN_DIR` | Каталог Python-плагинов | `/app/plugins` |
+| `PLUGIN_STRICT_DERIVED_STATE` | Ронять сборку индекса при ошибке hook `on_document` | `false` |
+| `RELEVANCE_MAX_VECTOR_DISTANCE` | Порог cosine-distance векторной дорожки | `0.13` |
+| `RELEVANCE_MIN_LEXICAL_SCORE` | Порог лексической дорожки | `0.0` |
+| `LEXICAL_PROFILE` | Токенизация лексической дорожки; смена вызывает переиндексацию | `stemmed` |
+
+{% hint style="warning" %}
+Индекс HelpSearchServer лежит в `/app/index` (поколения zvec), а не в `/app/chroma_db`. Полный список параметров, включая чанкование и журналирование: [Конфигурация HelpSearchServer](../servery/help-search-server/konfiguraciya.md).
+{% endhint %}
 
 ### CodeMetadataSearchServer (порт 8000)
 
 | Переменная | Описание | По умолчанию |
 |------------|----------|--------------|
 | `LICENSE_KEY` | Лицензионный ключ | Обязательно |
+| `LICENSE_KEY_FILE` | Путь к файлу с лицензионным ключом; предпочтительнее `LICENSE_KEY`, значение ключа не попадает в окружение процесса | *(не задано)* |
+| `LICENSE_KEY_FILE_CONSUME` | Удалить файл ключа сразу после чтения | `false` |
 | `METADATA_PATH` | Путь к метаданным | `/app/metadata` |
 | `CODE_PATH` | Путь к коду | `/app/code` |
 | `MCP_HOST` | Хост для привязки сервера | `0.0.0.0` |
@@ -153,6 +177,10 @@
 | `FORCE_REINDEX_ON_DIMENSION_MISMATCH` | Автопересоздание при несовпадении размерности; иначе старт останавливается с ошибкой | `false` |
 | `MIN_SCORE` | Порог cosine similarity для результатов `ssl_search` | `0.3826` |
 | `EXACT_LOOKUP` | Точный поиск по имени символа перед семантическим (`lane=exact`) | `true` |
+| `HYBRID_SEARCH` | Гибридное извлечение: векторная + полнотекстовая (BM25) дорожки с RRF | `true` |
+| `MAX_RESPONSE_CHARS` | Бюджет длины ответа `ssl_search` в символах (минимум 1024) | `4000` |
+| `SHUTDOWN_GRACE_SECONDS` | Бюджет корректного завершения контейнера, секунды | `10` |
+| `SHUTDOWN_FLUSH_SECONDS` | Часть бюджета на сброс векторного хранилища, секунды | `5` |
 | `LOG_QUERIES` | Записывать полный текст поисковых запросов вместо длины и хеша | `false` |
 | `LOG_DIR` | Каталог файла журнала; относительный путь от корня приложения | `<app>/logs` |
 | `SESSION_IDLE_TTL` | Время простоя HTTP-сессии до освобождения, секунды | `900` |
@@ -212,6 +240,10 @@
 | `EXTENSION_NAME` | Имя расширения | — |
 | `EXTENSION_BASE_PROJECT` | Имя базового проекта для расширения | — |
 | `EXTENSION_APPLY_ORDER` | Порядок применения слоя расширения | `1` |
+| `EXTENSION_CATALOG_ENABLED` | Загружать все расширения из каталога массовой выгрузки за один прогон | `false` |
+| `EXTENSIONS_PATH` | Каталог с выгрузками расширений; пусто — подкаталоги каталога выгрузки | *(пусто)* |
+| `EXTENSION_ORDER_MANIFEST` | JSON с порядком применения расширений внутри одного назначения | *(пусто)* |
+| `EXTENSION_CATALOG_SYNC` | Синхронизировать слои с каталогом (удалять исчезнувшие расширения) | `true` |
 | `GRAPH_PLUGINS_ENABLED` | Загружать плагины Graph Metadata Search | `false` |
 | `GRAPH_PLUGINS_DIRECTORY` | Каталог плагинов | `plugins` |
 | `GRAPH_PLUGIN_STRICT_BUILD` | Останавливать построение поколения при ошибке derived-state hook | `false` |
@@ -227,15 +259,23 @@
 | `ONEC_AI_TOKEN` | Токен 1С:Напарник | Обязательно |
 | `MCP_TOOL_CALL_MODE` | Режим вызова upstream: `direct` (прямые вызовы) или `standard` (промпты) | `direct` |
 | `ONEC_AI_BASE_URL` | Базовый URL API 1С.ai | `https://code.1c.ai` |
-| `ONEC_AI_TIMEOUT` | Таймаут запросов к API (секунды) | `30` |
+| `ONEC_AI_TIMEOUT` | Таймаут отдельного запроса к API (секунды) | `30` |
+| `ONEC_AI_OPERATION_TIMEOUT` | Бюджет времени на всю операцию, включая чтение SSE (секунды) | `120` |
 | `ONEC_AI_SKILL_NAME` | Режим сессии: `custom` (с инструментами) или `raw` | `custom` |
-| `ONEC_AI_INPUT_MAX_LENGTH` | Максимальная длина входных данных | `100000` |
+| `ONEC_AI_INPUT_MAX_LENGTH` | Максимальная длина каждого входного поля | `100000` |
+| `ONEC_AI_DOC_VERSION` | Версия документации платформы по умолчанию (конкретная версия, не `latest`) | `v8.5.1` |
 | `ONEC_AI_UI_LANGUAGE` | Язык интерфейса | `russian` |
 | `ONEC_AI_PROGRAMMING_LANGUAGE` | Язык программирования | *(пусто)* |
 | `ONEC_AI_SCRIPT_LANGUAGE` | Скриптовый язык (`ru` / `en`) | `ru` |
 | `ONEC_CONFIG_NAME` | Конфигурация 1С по умолчанию для `config_help` | *(пусто)* |
-| `MAX_ACTIVE_SESSIONS` | Макс. активных сессий | `10` |
-| `SESSION_TTL` | Время жизни сессии (секунды) | `3600` |
+| `MAX_ACTIVE_SESSIONS` | Макс. активных upstream-дискуссий | `10` |
+| `SESSION_TTL` | Время жизни upstream-дискуссии (секунды) | `3600` |
+| `ONEC_AI_CONVERSATION_BUSY_TIMEOUT` | Ожидание освобождения занятой дискуссии (секунды) | `60` |
+| `MCP_TRANSPORT_SESSION_IDLE_TIMEOUT` | Простой транспортной сессии MCP до закрытия (секунды) | `900` |
+| `MCP_TRANSPORT_SESSION_MAX_LIFETIME` | Абсолютное время жизни транспортной сессии MCP (секунды) | `28800` |
+| `MCP_MAX_TRANSPORT_SESSIONS` | Максимум одновременных транспортных сессий MCP | `100` |
+| `MCP_TRANSPORT_SESSION_SWEEP_INTERVAL` | Период уборки истёкших сессий (секунды) | `30` |
+| `MCP_TRANSPORT_SESSION_SWEEP_BATCH` | Максимум сессий, закрываемых за один проход уборки | `100` |
 | `HTTP_PORT` | Порт HTTP-сервера | `8007` |
 
 ### SyntaxCheckServer (порт 8002)
@@ -261,7 +301,8 @@
 | Переменная | Описание | По умолчанию |
 |------------|----------|--------------|
 | `LICENSE_KEY` | Лицензионный ключ | Обязательно |
-| `RESET_DATABASE` | Переиндексировать | `true` |
+| `RESET_DATABASE` | Построить новое поколение индекса шаблонов | `false` |
+| `RESET_CACHE` | Удалить кэш весов embedding-модели и скачать заново | `false` |
 | `HTTP_PORT` | Порт HTTP-сервера | `8004` |
 | `EMBEDDING_API_BASE` | URL OpenAI-совместимого API эмбеддингов | — |
 | `EMBEDDING_API_KEY` | Ключ API эмбеддингов | — |

@@ -459,6 +459,8 @@ Graph Metadata Search строит граф связей метаданных в
 | `list_objects_by_name` | `name_pattern` | Поиск объектов по подстроке имени |
 | `find_by_guid` | `guid` | Поиск узла по GUID |
 | `resolve_qn` | `qualified_name` | Резолв квалифицированного имени (например, `Справочник.Контрагенты.Реквизит.ИНН`) |
+| `find_objects_by_command` | `command_name` | Объекты, содержащие команду с указанным именем |
+| `find_objects_by_layout` | `layout_name` | Объекты, содержащие макет с указанным именем |
 
 #### Типы данных
 
@@ -491,6 +493,7 @@ Graph Metadata Search строит граф связей метаданных в
 |----------|-----------|----------|
 | `list_event_subscriptions` | — | Все подписки на события в конфигурации |
 | `list_event_subscriptions_of_object` | `object_name` | Подписки, в которых объект является источником |
+| `get_event_subscription_sources` | `subscription_name` | Объекты-источники указанной подписки на событие |
 
 #### Предопределённые элементы
 
@@ -498,6 +501,7 @@ Graph Metadata Search строит граф связей метаданных в
 |----------|-----------|----------|
 | `list_predefined_of_object` | `object_name` | Предопределённые элементы объекта с иерархией |
 | `find_predefined_by_flag` | `object_name`, `flag_name`, `flag_value` | Поиск предопределённых по значению свойства |
+| `find_predefined_by_name_in_object` | `object_name`, `item_name` | Поиск предопределённого элемента объекта по имени |
 
 #### Права доступа
 
@@ -512,6 +516,7 @@ Graph Metadata Search строит граф связей метаданных в
 | Операция | Параметры | Описание |
 |----------|-----------|----------|
 | `list_form_controls` | `object_name`, `form_name` | Элементы управления формы с иерархией |
+| `list_form_attributes` | `object_name`, `form_name` | Реквизиты управляемой формы |
 | `list_form_events` | `object_name`, `form_name` | События формы и её элементов |
 | `list_form_commands` | `object_name`, `form_name` | Команды формы |
 | `list_form_bindings` | `object_name`, `form_name` | Привязки элементов к данным и командам |
@@ -523,6 +528,12 @@ Graph Metadata Search строит граф связей метаданных в
 | Операция | Параметры | Описание |
 |----------|-----------|----------|
 | `get_routine_body` | `routine_name`, `owner_name` | Полное тело процедуры с сигнатурой и описанием |
+| `list_modules_of_owner` | `object_name` | BSL-модули объекта метаданных |
+| `list_module_routines` | `object_name`, `module_type` (опц.) | Процедуры и функции модулей объекта |
+| `list_common_module_routines` | `module_name` | Процедуры и функции общего модуля |
+| `find_routines_by_name` | `routine_name` | Поиск процедур и функций по имени (полнотекстовый индекс) |
+| `find_routines_by_signature` | `search_text` | Поиск процедур и функций по тексту сигнатуры |
+| `find_calls_between_owners` | `source_object`, `target_object` | Вызовы между процедурами двух объектов метаданных |
 | `list_callers_of_routine` | `routine_name`, `owner_name` | Кто вызывает указанную процедуру |
 | `list_callees_of_routine` | `routine_name`, `owner_name` | Кого вызывает указанная процедура |
 | `call_graph_subtree` | `routine_name`, `owner_name`, `depth`, `direction` | Поддерево вызовов на указанную глубину |

@@ -55,7 +55,7 @@ EMBEDDING_MODEL=intfloat/multilingual-e5-large
 
 ### Использование CPU модели
 
-Чтобы использовать встроенную CPU модель, **НЕ указывайте** параметры `OPENAI_API_*`:
+Чтобы использовать встроенную CPU модель, **НЕ указывайте** параметры `EMBEDDING_API_*`:
 
 ```powershell
 docker run -d -p 8003:8003 `
@@ -63,14 +63,15 @@ docker run -d -p 8003:8003 `
   -e LICENSE_KEY=YOUR_LICENSE_KEY `
   -e RESET_DATABASE=false `
   -e EMBEDDING_MODEL=intfloat/multilingual-e5-base `
+  -e 1C_BIN_PATH=/1c_docs `
   -v "C:/Program Files/1cv8/8.3.23.1997/bin:/1c_docs" `
-  -v "E:/bases/mcp_docs:/app/chroma_db" `
+  -v "E:/bases/mcp_docs:/app/index" `
   -v "E:/bases/mcp_model_cache:/app/model_cache" `
   comol/1c_help_mcp:latest
 ```
 
 {% hint style="warning" %}
-Если указать `OPENAI_API_KEY`, сервер будет пытаться использовать внешнее API вместо встроенной модели.
+Если указать `EMBEDDING_API_KEY`, сервер будет пытаться использовать внешнее API вместо встроенной модели.
 {% endhint %}
 
 ### Кэширование модели
@@ -168,7 +169,7 @@ docker run -d -p 8003:8003 `
   -e RESET_DATABASE=false `
   -e EMBEDDING_MODEL=intfloat/multilingual-e5-base `
   -v "C:/Program Files/1cv8/8.3.23.1997/bin:/1c_docs" `
-  -v "E:/bases/mcp_docs:/app/chroma_db" `
+  -v "E:/bases/mcp_docs:/app/index" `
   -v "E:/bases/mcp_model_cache:/app/model_cache" `
   comol/1c_help_mcp:latest
 ```
@@ -182,7 +183,7 @@ docker run -d -p 8008:8008 `
   -e SSL_VERSION=3.1.11 `
   -e RESET_DATABASE=false `
   -e EMBEDDING_MODEL=intfloat/multilingual-e5-base `
-  -v "E:/bases/mcp_ssl:/app/chroma_db" `
+  -v "E:/bases/mcp_ssl:/app/zvec_db" `
   -v "E:/bases/mcp_model_cache:/app/model_cache" `
   comol/mcp_ssl_server:latest
 ```

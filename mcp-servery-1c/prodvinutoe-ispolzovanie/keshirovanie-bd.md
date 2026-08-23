@@ -15,11 +15,17 @@
 
 ## Ключевые тома
 
-| Том в контейнере | Назначение |
-|-----------------|------------|
-| `/app/chroma_db` | Векторная база данных ChromaDB |
-| `/app/model_cache` | Кэш embedding моделей |
-| `/app/data` | Данные сервера (шаблоны и т.д.) |
+| Том в контейнере | Сервер | Назначение |
+|-----------------|--------|------------|
+| `/app/index` | HelpSearchServer | Индекс zvec (поколения) |
+| `/app/zvec_db` | SSLSearchServer | Векторная база zvec |
+| `/app/chroma_db` | CodeMetadataSearchServer, TemplatesSearchServer | Каталог векторного хранилища (историческое имя тома; движок — zvec) |
+| `/app/model_cache` | Все | Кэш embedding моделей |
+| `/app/data` | Отдельные серверы | Прочие данные сервера |
+
+{% hint style="info" %}
+Имя `chroma_db` у части серверов сохранено как путь тома ради совместимости с существующими установками — ChromaDB внутри уже не используется. У CodeMetadataSearchServer каталог задаётся переменной `VECTOR_DB_PATH` (старое имя `CHROMA_DB_PATH` работает как алиас).
+{% endhint %}
 
 ## Рекомендуемые пути на хосте
 
@@ -29,11 +35,11 @@
 
 ```
 E:\bases\                    # <-- Пример, используйте свой путь
-├── mcp_docs\                # HelpSearchServer - chroma_db
-├── mcp_codemetadata\        # CodeMetadataSearchServer - chroma_db
-├── mcp_ssl\                 # SSLSearchServer - chroma_db
-├── mcp_templates\           # TemplatesSearchServer - data
-├── mcp_graph\               # Graph Metadata Search - neo4j
+├── mcp_docs\                # HelpSearchServer — index (zvec)
+├── mcp_codemetadata\        # CodeMetadataSearchServer — chroma_db (zvec)
+├── mcp_ssl\                 # SSLSearchServer — zvec_db
+├── mcp_templates\           # TemplatesSearchServer — chroma_db (zvec + SQLite)
+├── mcp_graph\               # Graph Metadata Search — Neo4j
 └── mcp_model_cache\         # Общий кэш моделей
 ```
 
@@ -76,8 +82,9 @@ docker run -d -p 8003:8003 `
     --name 1c_help_mcp `
     -e LICENSE_KEY=YOUR_LICENSE_KEY `
     -e RESET_DATABASE=false `
+    -e 1C_BIN_PATH=/1c_docs `
     -v "C:/Program Files/1cv8/8.3.23.1997/bin:/1c_docs" `
-    -v "E:/bases/mcp_docs:/app/chroma_db" `
+    -v "E:/bases/mcp_docs:/app/index" `
     -v "E:/bases/mcp_model_cache:/app/model_cache" `
     comol/1c_help_mcp:latest
 ```
@@ -90,7 +97,7 @@ docker run -d -p 8008:8008 `
     -e LICENSE_KEY=YOUR_LICENSE_KEY `
     -e SSL_VERSION=3.1.11 `
     -e RESET_DATABASE=false `
-    -v "E:/bases/mcp_ssl:/app/chroma_db" `
+    -v "E:/bases/mcp_ssl:/app/zvec_db" `
     comol/mcp_ssl_server:latest
 ```
 
@@ -101,7 +108,7 @@ docker run -d -p 8004:8004 `
     --name template_search_mcp `
     -e LICENSE_KEY=YOUR_LICENSE_KEY `
     -e RESET_DATABASE=false `
-    -v "E:/bases/mcp_templates:/app/data" `
+    -v "E:/bases/mcp_templates:/app/chroma_db" `
     comol/template-search-mcp:latest
 ```
 
@@ -116,7 +123,7 @@ Get-ChildItem "E:\bases" -Directory | ForEach-Object {
 }
 ```
 
-### Содержимое ChromaDB
+### Содержимое индекса
 
 ```powershell
 Get-ChildItem "E:\bases\mcp_docs" -Recurse
@@ -158,7 +165,6 @@ Remove-Item -Recurse -Force "E:\bases\mcp_templates\*"
 
 ```powershell
 # Сохранить кэш моделей, удалить только индексы
-Remove-Item -Recurse -Force "E:\bases\mcp_docs\chroma.sqlite3" 2>$null
 Remove-Item -Recurse -Force "E:\bases\mcp_docs\*" -Exclude "model_cache" 2>$null
 ```
 

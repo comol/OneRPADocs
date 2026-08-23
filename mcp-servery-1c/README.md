@@ -17,7 +17,7 @@ MCP-серверы решают эту проблему, предоставля�
 
 | Сервер | Порт | Назначение | Требует данных |
 |--------|------|------------|----------------|
-| [HelpSearchServer](servery/help-search-server/) | 8003 | Поиск по справке платформы 1С | Да (папка bin) |
+| [HelpSearchServer](servery/help-search-server/) | 8003 | Справка платформы, руководства, спецификации форматов, стандарты | Нет (папка bin — только для своей версии платформы) |
 | [CodeMetadataSearchServer](servery/code-metadata-search/) | 8000 | Поиск по метаданным и коду конфигурации | Да (выгрузка) |
 | [Graph Metadata Search](servery/graph-metadata-search/) | 8006 | Графовый поиск связей метаданных | Да (выгрузка) |
 | [SSLSearchServer](servery/ssl-search-server/) | 8008 | Поиск по БСП | Нет |
@@ -36,10 +36,11 @@ MCP-серверы решают эту проблему, предоставля�
 1. **SyntaxCheckServer** — проверка синтаксиса кода
 2. **SSLSearchServer** — если используете БСП
 3. **TemplatesSearchServer** — шаблоны кода
+4. **HelpSearchServer** — справка платформы, руководства и стандарты поставляются в образе
 
 ### Полная настройка (требуется подготовка)
 
-5. **HelpSearchServer** — справка по вашей версии платформы
+5. **HelpSearchServer с папкой bin** — справка именно вашей версии платформы
 6. **CodeMetadataSearchServer** — метаданные вашей конфигурации
 7. **Graph Metadata Search** — анализ связей объектов
 8. **1CCodeChecker** — если есть токен 1С:Напарник

@@ -11,10 +11,10 @@
 | CodeMetadataSearchServer | 8000 | `/mcp` | `/live`, `/ready`, `/health` (устаревший алиас `/live`) |
 | CloudEmbeddingsServer | 8000* | `/mcp` | `/health`, `/reindex` |
 | SyntaxCheckServer | 8002 | `/mcp` (`streamable-http`) или `/sse` (SSE) | `/messages/` (SSE) |
-| HelpSearchServer | 8003 | `/mcp` | `/health` |
+| HelpSearchServer | 8003 | `/mcp` | `/health`, `/ready`, `/plugins`, `/plugins/reload` |
 | TemplatesSearchServer | 8004 | `/mcp` | `/health`, `/ready`, `/extend/`, `/extend/memory` (веб-интерфейс) |
 | Graph Metadata Search | 8006 | `/mcp` | `/search`, `/healthz`, `/readyz`, `/status`, `/search/index-status`, `/docs` |
-| 1CCodeChecker | 8007 | `/mcp` | `/health` |
+| 1CCodeChecker | 8007 | `/mcp` | `/health`, `/metrics/sessions`, `/release` |
 | SSLSearchServer | 8008 | `/mcp` | `/ready` |
 
 `*` CloudEmbeddingsServer внутри контейнера слушает `PORT=8000`. В `docker-compose.yml` подстановка `MCP_PORT` управляет только внешним портом публикации; при совместном запуске с CodeMetadataSearchServer используйте свободный внешний порт, например 8001.

@@ -68,8 +68,9 @@ docker run -d -p 8003:8003 `
     --gpus all `
     --name 1c_help_mcp `
     -e LICENSE_KEY=YOUR_LICENSE_KEY `
+    -e 1C_BIN_PATH=/1c_docs `
     -v "C:/Program Files/1cv8/8.3.23.1997/bin:/1c_docs" `
-    -v "E:/bases/mcp_docs:/app/chroma_db" `
+    -v "E:/bases/mcp_docs:/app/index" `
     comol/1c_help_mcp:latest
 ```
 
@@ -83,15 +84,15 @@ docker run -d -p 8003:8003 `
 
 ```env
 # Минимальная конфигурация (LM Studio на localhost:1234)
-OPENAI_MODEL=Qwen3-Embedding-4B
+EMBEDDING_MODEL=Qwen3-Embedding-4B
 ```
 
 Полная конфигурация, если нужно указать явно:
 
 ```env
-OPENAI_API_BASE=http://host.docker.internal:1234/v1
-OPENAI_API_KEY=lm-studio
-OPENAI_MODEL=Qwen3-Embedding-4B
+EMBEDDING_API_BASE=http://host.docker.internal:1234/v1
+EMBEDDING_API_KEY=lm-studio
+EMBEDDING_MODEL=Qwen3-Embedding-4B
 ```
 
 ## Сравнение производительности

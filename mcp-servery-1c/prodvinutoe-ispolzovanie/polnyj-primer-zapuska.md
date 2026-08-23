@@ -53,11 +53,11 @@ docker run -d -p 8003:8003 `
     -e LICENSE_KEY=$LICENSE_KEY `
     -e 1C_BIN_PATH=/1c_docs `
     -e RESET_DATABASE=false `
-    -e OPENAI_API_BASE=$LM_STUDIO_URL `
-    -e OPENAI_API_KEY=lm-studio `
-    -e OPENAI_MODEL=$EMBEDDING_MODEL `
+    -e EMBEDDING_API_BASE=$LM_STUDIO_URL `
+    -e EMBEDDING_API_KEY=lm-studio `
+    -e EMBEDDING_MODEL=$EMBEDDING_MODEL `
     -v "C:/Program Files/1cv8/$1C_VERSION/bin:/1c_docs" `
-    -v "E:/bases/mcp_docs:/app/chroma_db" `
+    -v "E:/bases/mcp_docs:/app/index" `
     -v "E:/bases/mcp_model_cache:/app/model_cache" `
     comol/1c_help_mcp:latest
 
@@ -70,10 +70,10 @@ docker run -d -p 8008:8008 `
     -e LICENSE_KEY=$LICENSE_KEY `
     -e SSL_VERSION=3.1.11 `
     -e RESET_DATABASE=false `
-    -e OPENAI_API_BASE=$LM_STUDIO_URL `
-    -e OPENAI_API_KEY=lm-studio `
-    -e OPENAI_MODEL=$EMBEDDING_MODEL `
-    -v "E:/bases/mcp_ssl:/app/chroma_db" `
+    -e EMBEDDING_API_BASE=$LM_STUDIO_URL `
+    -e EMBEDDING_API_KEY=lm-studio `
+    -e EMBEDDING_MODEL=$EMBEDDING_MODEL `
+    -v "E:/bases/mcp_ssl:/app/zvec_db" `
     comol/mcp_ssl_server:latest
 
 # --------------------------------------------
@@ -84,9 +84,9 @@ docker run -d -p 8004:8004 `
     --name template_search_mcp `
     -e LICENSE_KEY=$LICENSE_KEY `
     -e RESET_DATABASE=false `
-    -e OPENAI_API_BASE=$LM_STUDIO_URL `
-    -e OPENAI_API_KEY=lm-studio `
-    -e OPENAI_MODEL=$EMBEDDING_MODEL `
+    -e EMBEDDING_API_BASE=$LM_STUDIO_URL `
+    -e EMBEDDING_API_KEY=lm-studio `
+    -e EMBEDDING_MODEL=$EMBEDDING_MODEL `
     -v "E:/bases/mcp_templates:/app/data" `
     comol/template-search-mcp:latest
 

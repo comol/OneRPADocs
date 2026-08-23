@@ -70,7 +70,20 @@ docker logs -f mcp_ssl_server
 
 ```powershell
 docker ps --filter name=mcp_ssl_server
+
+# Готовность отвечать на поиск (её же читает HEALTHCHECK образа)
+Invoke-RestMethod -Uri "http://localhost:8008/ready"
 ```
+
+Состояние компонентов доступно и через MCP-инструменты: `vector_store_state` (рантайм zvec, обслуживающее поколение, итог последней миграции), `embedding_state` (провайдер эмбеддингов и его режим), `session_state` (границы и счётчики HTTP-сессий), `plugin_state` (загруженные плагины).
+
+## Остановка
+
+```powershell
+docker stop mcp_ssl_server
+```
+
+По сигналу остановки сервер перестаёт принимать новые пакеты индексации, доводит начатое до контрольной точки и сбрасывает векторное хранилище — всё в пределах `SHUTDOWN_GRACE_SECONDS` (по умолчанию 10 секунд, ровно столько даёт `docker stop` до SIGKILL). Прерванная индексация не повреждает обслуживающее поколение.
 
 ## Конфигурация Cursor
 

@@ -74,9 +74,9 @@ MCP-серверы автоматически определяют размер�
 **LM Studio + Qwen3-Embedding-4B**
 
 ```env
-OPENAI_API_BASE=http://host.docker.internal:1234/v1
-OPENAI_API_KEY=lm-studio
-OPENAI_MODEL=Qwen3-Embedding-4B
+EMBEDDING_API_BASE=http://host.docker.internal:1234/v1
+EMBEDDING_API_KEY=lm-studio
+EMBEDDING_MODEL=Qwen3-Embedding-4B
 ```
 
 ### Для Development (нет GPU)
@@ -85,7 +85,7 @@ OPENAI_MODEL=Qwen3-Embedding-4B
 
 ```env
 EMBEDDING_MODEL=intfloat/multilingual-e5-base
-# НЕ указывайте OPENAI_API_KEY
+# НЕ указывайте EMBEDDING_API_KEY
 ```
 
 ### Минимальные требования
@@ -94,7 +94,7 @@ EMBEDDING_MODEL=intfloat/multilingual-e5-base
 
 ```env
 EMBEDDING_MODEL=intfloat/multilingual-e5-small
-# НЕ указывайте OPENAI_API_KEY
+# НЕ указывайте EMBEDDING_API_KEY
 ```
 
 ## Содержание раздела
