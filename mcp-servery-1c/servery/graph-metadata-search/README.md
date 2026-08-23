@@ -680,3 +680,7 @@ comol/1c_graph_metadata:latest
 - [Установка](ustanovka.md) — docker-compose
 - [Подготовка данных](podgotovka-dannyh.md) — выгрузка из Конфигуратора
 - [Конфигурация](konfiguraciya.md) — все параметры
+
+## Доработка
+
+Сервер расширяется плагинами при `GRAPH_PLUGINS_ENABLED=true`: восемь hooks (четыре в рамках вызова и четыре формирующих граф, полнотекстовый и векторный маршруты) и таблицы `ALIASES`, `TOOL_PRESETS`, `CYPHER_TEMPLATES`. См. [Систему плагинов](../../sistema-pluginov/) и [Конфигурацию](konfiguraciya.md).

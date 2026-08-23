@@ -319,6 +319,12 @@
 | `INDEX_GENERATION_RETENTION` | Сколько поколений каждой коллекции хранится на диске | `2` |
 | `PLUGIN_DIR` | Каталог Python-плагинов | `/app/plugins` |
 | `PLUGIN_STRICT_DERIVED_STATE` | Останавливать индексацию при ошибке derived-state hook | `false` |
+| `MCP_ENABLE_WRITE_TOOLS` | Регистрировать изменяющие инструменты `add_template`, `remember`, `plugin_reload` | *(не задано — инструменты не публикуются)* |
+| `MCP_OPERATOR_TOKEN` | Операторский токен для изменяющих инструментов; передаётся в заголовке `Authorization`. Обязателен вместе с `MCP_ENABLE_WRITE_TOOLS`, иначе сервер не стартует | *(не задано)* |
+
+{% hint style="info" %}
+Переменные `PLUGIN_DIR`, `PLUGINS_DIR`, `PLUGIN_STRICT_DERIVED_STATE` и `GRAPH_PLUGIN*` относятся к системе плагинов — общему механизму доработки серверов. Что они включают и чем это оплачивается: [Доработка MCP: система плагинов](../sistema-pluginov/).
+{% endhint %}
 
 ## Примеры
 

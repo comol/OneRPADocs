@@ -55,7 +55,23 @@ docker run -d -p 8002:8002 `
 | `BSL_ANALYZER_KILL_GRACE_SECONDS` | Ожидание между terminate и принудительным kill | Нет (`2`) |
 | `BSL_SOURCE_ENCODING` | Кодировка файлов из `FILES_DIR`; пустое значение пробует UTF-8 с BOM, затем CP1251 | Нет |
 
+## Плагины
+
 Свой каталог плагинов можно подключить томом в `/app/plugins`. Инструмент `plugin_state` показывает текущий набор, а `plugin_reload` перечитывает его без перезапуска контейнера.
+
+Плагин — **один Python-файл**: ни базового класса, ни декоратора, ни регистрации, ни манифеста. Объявлены четыре hooks — `on_startup`, `on_request`, `on_diagnostics`, `on_result` — и таблица `SUPPRESSED_DIAGNOSTICS` (код диагностики → причина, по которой она не попадает в отчёт). **Все хуки call-scoped:** сервер ничего не хранит между вызовами, поэтому здесь нет ни пересборок, ни отпечатков годности, ни курсоров.
+
+```powershell
+# Проверить плагин без запущенного сервера и без анализатора
+docker run --rm -v "E:/plugins/mcp_syntax/10-profile.py:/tmp/my_plugin.py" `
+  comol/1c_syntaxcheck_mcp:latest python mcp_server.py --dry-run /tmp/my_plugin.py
+```
+
+{% hint style="warning" %}
+Номера строк в payload хуков **нулевые** — публикуемая база применяется уже после хуков. Аргумент `file_name` присутствует в каждом запросе `syntaxcheck` (пустая строка, если вызывающая сторона его не задала); из-за его появления версия набора хуков этого сервера — `HOOKS_VERSION = 2`.
+{% endhint %}
+
+Полный контракт — в образе (`/app/plugin_api.py`, `/app/plugins/AGENTS.md`, `/app/plugins/example.py`). Общие правила и рецепты: [Доработка MCP: система плагинов](../../sistema-pluginov/) и [справочник хуков SyntaxCheckServer](../../sistema-pluginov/spravochnik-hukov.md#syntaxcheckserver).
 
 ### SSE транспорт
 

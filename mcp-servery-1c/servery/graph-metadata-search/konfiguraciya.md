@@ -220,6 +220,20 @@
 
 Для контейнера обычно монтируют каталог хоста в `/app/plugins`. `list_plugins` доступен для диагностики в обоих профилях, а изменяющий состояние `reload_plugins(operation_id)` — только в профиле `admin`. После перезагрузки call-scoped hooks действуют со следующего вызова, а derived-state hooks — со следующего построения индекса.
 
+Плагин — **один Python-файл** в каталоге плагинов. Объявлены восемь hooks: `on_startup`, `on_request`, `on_result`, `on_search_candidates` (в рамках вызова) и `on_source_unit`, `on_metadata_object`, `on_routine`, `on_embedding_document` (формируют граф, полнотекстовый и векторный маршруты) — плюс три таблицы: `ALIASES`, `TOOL_PRESETS` и `CYPHER_TEMPLATES` (дополнительные read-only Cypher-шаблоны для `run_graph_cypher_template`). Полный контракт лежит в образе: `/app/plugin_api.py`, `/app/plugins/AGENTS.md`, `/app/plugins/example.py`.
+
+```powershell
+# Проверить плагин без Neo4j, метаданных, поколения и лицензии
+docker run --rm -v "E:/plugins/mcp_graph/10-facts.py:/tmp/my_plugin.py" `
+  comol/1c_graph_metadata:latest python run.py plugin-dry-run /tmp/my_plugin.py
+```
+
+{% hint style="warning" %}
+Без `GRAPH_PLUGINS_ENABLED=true` каталог не читается вообще, а `reload_plugins` отвечает, что подсистема отключена.
+{% endhint %}
+
+Правка любого derived-state hook делает сохранённое состояние проекта устаревшим и вызывает пересборку; call-scoped hooks и таблицы обходятся перезагрузкой. Подробно: [Доработка MCP: система плагинов](../../sistema-pluginov/) и [справочник хуков Graph Metadata Search](../../sistema-pluginov/spravochnik-hukov.md#graph-metadata-search).
+
 ### Поколения графа и загрузка данных
 
 | Переменная | Описание | По умолчанию |

@@ -285,3 +285,9 @@ docker run -d -p 8000:8000 `
   }
 }
 ```
+
+## Доработка
+
+Система плагинов в этом сервере не поставляется: в образе нет `/app/plugin_api.py`, и файлы из каталога плагинов не читаются. Проверить это можно командой `docker run --rm comol/1c_code_metadata_mcp:latest ls /app/plugin_api.py`.
+
+Поведение сервера настраивается составом индексируемых данных (`METADATA_PATH`, `CODE_PATH`, вложенные конфигурации) и параметрами поиска: `BM25_ALPHA`, `MIN_SCORE_THRESHOLD`, `ENABLE_RERANKER`, `VECTOR_PROFILE` и множителями выборки. Разбор рычагов и того, что делать, когда их не хватает: [Серверы без плагинов](../../sistema-pluginov/dorabotka-bez-pluginov.md).

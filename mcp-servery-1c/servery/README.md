@@ -4,16 +4,18 @@
 
 ## Список серверов
 
-| Сервер | Порт | Назначение | Сложность |
-|--------|------|------------|-----------|
-| [HelpSearchServer](help-search-server/) | 8003 | Справка платформы 1С, руководства, спецификации форматов, стандарты | Средняя |
-| [CodeMetadataSearchServer](code-metadata-search/) | 8000 | Метаданные и код конфигурации | Средняя |
-| [CloudEmbeddingsServer](cloud-embeddings-server/) | 8000* | Метаданные, код и справка через cloud embeddings | Средняя |
-| [Graph Metadata Search](graph-metadata-search/) | 8006 | Графовый поиск связей | Высокая |
-| [SSLSearchServer](ssl-search-server/) | 8008 | Библиотека стандартных подсистем | Низкая |
-| [SyntaxCheckServer](syntax-check-server/) | 8002 | Проверка синтаксиса BSL | Низкая |
-| [TemplatesSearchServer](templates-search-server/) | 8004 | Шаблоны кода 1С и проектная память | Низкая |
-| [1CCodeChecker](code-checker/) | 8007 | Проверка через 1С:Напарник | Низкая |
+| Сервер | Порт | Назначение | Сложность | Плагины |
+|--------|------|------------|-----------|---------|
+| [HelpSearchServer](help-search-server/) | 8003 | Справка платформы 1С, руководства, спецификации форматов, стандарты | Средняя | Да |
+| [CodeMetadataSearchServer](code-metadata-search/) | 8000 | Метаданные и код конфигурации | Средняя | Нет |
+| [CloudEmbeddingsServer](cloud-embeddings-server/) | 8000* | Метаданные, код и справка через cloud embeddings | Средняя | Нет |
+| [Graph Metadata Search](graph-metadata-search/) | 8006 | Графовый поиск связей | Высокая | Да (`GRAPH_PLUGINS_ENABLED`) |
+| [SSLSearchServer](ssl-search-server/) | 8008 | Библиотека стандартных подсистем | Низкая | Да |
+| [SyntaxCheckServer](syntax-check-server/) | 8002 | Проверка синтаксиса BSL | Низкая | Да |
+| [TemplatesSearchServer](templates-search-server/) | 8004 | Шаблоны кода 1С и проектная память | Низкая | Да |
+| [1CCodeChecker](code-checker/) | 8007 | Проверка через 1С:Напарник | Низкая | Нет |
+
+Колонка «Плагины» — поддерживает ли сервер доработку одним Python-файлом без пересборки образа. Общие правила, справочник хуков по серверам и рецепты: [Доработка MCP: система плагинов](../sistema-pluginov/).
 
 {% hint style="info" %}
 Актуальные версии серверов по умолчанию используют транспорт `streamable-http` на endpoint `/mcp`. Для старых клиентов можно включить SSE через `USESSE=true`; URL при этом остаётся `/mcp`, если в документации конкретного сервера не указано иное.

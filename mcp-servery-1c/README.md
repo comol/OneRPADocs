@@ -15,15 +15,21 @@ MCP-серверы решают эту проблему, предоставля�
 
 ## Список MCP-серверов
 
-| Сервер | Порт | Назначение | Требует данных |
-|--------|------|------------|----------------|
-| [HelpSearchServer](servery/help-search-server/) | 8003 | Справка платформы, руководства, спецификации форматов, стандарты | Нет (папка bin — только для своей версии платформы) |
-| [CodeMetadataSearchServer](servery/code-metadata-search/) | 8000 | Поиск по метаданным и коду конфигурации | Да (выгрузка) |
-| [Graph Metadata Search](servery/graph-metadata-search/) | 8006 | Графовый поиск связей метаданных | Да (выгрузка) |
-| [SSLSearchServer](servery/ssl-search-server/) | 8008 | Поиск по БСП | Нет |
-| [SyntaxCheckServer](servery/syntax-check-server/) | 8002 | Проверка синтаксиса BSL | Нет |
-| [TemplatesSearchServer](servery/templates-search-server/) | 8004 | Шаблоны кода 1С | Нет |
-| [1CCodeChecker](servery/code-checker/) | 8007 | Проверка через 1С:Напарник | Нет (нужен токен) |
+| Сервер | Порт | Назначение | Требует данных | Плагины |
+|--------|------|------------|----------------|---------|
+| [HelpSearchServer](servery/help-search-server/) | 8003 | Справка платформы, руководства, спецификации форматов, стандарты | Нет (папка bin — только для своей версии платформы) | Да |
+| [CodeMetadataSearchServer](servery/code-metadata-search/) | 8000 | Поиск по метаданным и коду конфигурации | Да (выгрузка) | Нет |
+| [Graph Metadata Search](servery/graph-metadata-search/) | 8006 | Графовый поиск связей метаданных | Да (выгрузка) | Да (включаются флагом) |
+| [SSLSearchServer](servery/ssl-search-server/) | 8008 | Поиск по БСП | Нет | Да |
+| [SyntaxCheckServer](servery/syntax-check-server/) | 8002 | Проверка синтаксиса BSL | Нет | Да |
+| [TemplatesSearchServer](servery/templates-search-server/) | 8004 | Шаблоны кода 1С | Нет | Да |
+| [1CCodeChecker](servery/code-checker/) | 8007 | Проверка через 1С:Напарник | Нет (нужен токен) | Нет |
+
+## Доработка под свою конфигурацию
+
+Серверы поставляются скомпилированными образами, но пять из них расширяются **плагинами** — одним Python-файлом в каталоге плагинов, без пересборки образа: свои термины и синонимы, пресеты инструментов, фильтрация и переупорядочивание выдачи, разметка того, что попадает в индекс.
+
+Подробно, с расчётом на ИИ-агента, которому поручили доработку: [Доработка MCP: система плагинов](sistema-pluginov/). Для серверов без плагинов — [что настраивается вместо них](sistema-pluginov/dorabotka-bez-pluginov.md).
 
 ## Рекомендуемый порядок установки
 
@@ -136,6 +142,7 @@ docker run -d -p 8002:8002 `
 - [Embedding модели](embedding-modeli/) — LM Studio (рекомендуется), CPU режим
 - [MCP серверы](servery/) — установка и настройка каждого сервера
 - [Интеграция](integraciya/) — mcp.json, несколько серверов
+- [Доработка MCP: система плагинов](sistema-pluginov/) — как расширять серверы без пересборки образов
 - [Продвинутое использование](prodvinutoe-ispolzovanie/) — скрипты, docker-compose, GPU
 - [Устранение неполадок](ustranenie-nepoladok/) — решение типовых проблем
 - [Приложения](prilozhenia/) — справочные таблицы, глоссарий

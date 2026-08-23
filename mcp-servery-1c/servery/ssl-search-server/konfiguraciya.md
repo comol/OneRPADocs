@@ -90,6 +90,15 @@
 
 Свой каталог можно подключить томом в `/app/plugins`. Текущее состояние показывает `plugin_state`, а `plugin_reload` перечитывает каталог без перезапуска контейнера.
 
+Сервер расширяется плагинами: плагин — **один Python-файл** в `/app/plugins`, без базового класса, декоратора, регистрации и манифеста. Объявлены четыре hooks — `on_startup`, `on_request`, `on_result` (в рамках вызова) и `on_entry` (формирует векторную коллекцию) — и таблица `QUERY_ALIASES` (замены терминов в запросе перед эмбеддингом). Полный контракт лежит в образе: `/app/plugin_api.py`, `/app/plugins/AGENTS.md`, `/app/plugins/example.py`. Проверить файл без данных и индекса:
+
+```powershell
+docker run --rm -v "E:/plugins/mcp_ssl/10-terms.py:/tmp/my_plugin.py" `
+  comol/mcp_ssl_server:latest python launcher.py --dry-run /tmp/my_plugin.py
+```
+
+Правка `on_entry` делает сохранённую коллекцию устаревшей и вызывает переэмбеддирование выбранной базы БСП; call-scoped хуки и таблица ничего не пересобирают. Подробно: [Доработка MCP: система плагинов](../../sistema-pluginov/) и [справочник хуков SSLSearchServer](../../sistema-pluginov/spravochnik-hukov.md#sslsearchserver).
+
 ### Embedding модели (LM Studio / Ollama / OpenRouter)
 
 | Переменная | Описание | Пример |

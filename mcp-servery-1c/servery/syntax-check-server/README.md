@@ -167,3 +167,7 @@ docker run -d -p 8002:8002 `
 ## Структура раздела
 
 - [Установка](ustanovka.md) — команды запуска
+
+## Доработка
+
+Сервер расширяется плагинами: четыре hooks (`on_startup`, `on_request`, `on_diagnostics`, `on_result`) и таблица `SUPPRESSED_DIAGNOSTICS`. Производного состояния нет — все хуки действуют в рамках вызова. См. [Систему плагинов](../../sistema-pluginov/) и [Установку](ustanovka.md).

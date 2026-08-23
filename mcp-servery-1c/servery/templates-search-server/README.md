@@ -55,6 +55,10 @@ TemplatesSearchServer предоставляет ИИ библиотеку го�
 | `plugin_state`   | Состояние плагинов, hooks, ошибок и fingerprint индекса       |
 | `plugin_reload`  | Атомарно перечитать каталог плагинов без перезапуска          |
 
+{% hint style="info" %}
+`add_template`, `remember` и `plugin_reload` — изменяющие инструменты. По умолчанию они не регистрируются: их включает `MCP_ENABLE_WRITE_TOOLS` вместе с обязательным `MCP_OPERATOR_TOKEN` (токен передаётся в заголовке `Authorization`). Про доработку сервера плагинами: [система плагинов](../../sistema-pluginov/).
+{% endhint %}
+
 
 ---
 
@@ -252,3 +256,7 @@ docker run -d -p 8004:8004 `
 - [Установка](ustanovka.md) — команды запуска
 - [Редактирование шаблонов](redaktirovanie-shablonov.md) — веб-интерфейс
 - [Свои шаблоны](svoi-shablony.md) — добавление собственных
+
+## Доработка
+
+Сервер расширяется плагинами: шесть hooks (`on_startup`, `on_request`, `on_rank`, `on_result`, `on_template`, `on_memory`) и таблица `QUERY_ALIASES`. См. [Систему плагинов](../../sistema-pluginov/) и [Установку](ustanovka.md).

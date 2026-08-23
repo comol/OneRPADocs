@@ -131,3 +131,7 @@ docker run -d -p 8008:8008 `
 
 - [Установка](ustanovka.md) — команды запуска
 - [Конфигурация](konfiguraciya.md) — все параметры
+
+## Доработка
+
+Сервер расширяется плагинами: четыре hooks (`on_startup`, `on_request`, `on_result`, `on_entry`) и таблица `QUERY_ALIASES`. См. [Систему плагинов](../../sistema-pluginov/) и [Конфигурацию](konfiguraciya.md).

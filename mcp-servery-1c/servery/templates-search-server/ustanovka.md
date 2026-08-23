@@ -70,7 +70,25 @@ docker run -d -p 8004:8004 `
 
 Старые имена `OPENAI_API_BASE`, `OPENAI_API_KEY` и `OPENAI_MODEL` остаются совместимыми алиасами.
 
+## Плагины
+
 Свой каталог плагинов можно подключить томом в `/app/plugins`. Текущее состояние показывает `plugin_state`, а `plugin_reload` перечитывает каталог без перезапуска контейнера.
+
+Плагин — **один Python-файл** в каталоге плагинов. Объявлены шесть hooks — `on_startup`, `on_request`, `on_rank`, `on_result` (в рамках вызова) и `on_template`, `on_memory` (формируют векторные коллекции) — и таблица `QUERY_ALIASES` (замены терминов в нормализованном запросе `templatesearch` и `recall`).
+
+```powershell
+# Прогнать плагин на фикстурах образа: без данных, коллекций и модели
+docker run --rm -v "E:/plugins/mcp_templates/10-aliasy.py:/tmp/my_plugin.py" `
+  comol/template-search-mcp:latest python main.py --dry-run /tmp/my_plugin.py
+```
+
+{% hint style="warning" %}
+`plugin_reload` — изменяющий инструмент, как `add_template` и `remember`. По умолчанию изменяющие инструменты не регистрируются: их включает `MCP_ENABLE_WRITE_TOOLS`, и вместе с ним обязателен стойкий `MCP_OPERATOR_TOKEN` (иначе сервер не стартует). Токен передаётся в заголовке `Authorization`. Без них каталог перечитывается перезапуском контейнера, а `plugin_state` доступен всегда.
+{% endhint %}
+
+Правка `on_template` или `on_memory` делает сохранённые коллекции устаревшими, и следующий старт пересобирает их — отпечаток хранится в `index_meta.json`. Записи веб-интерфейса `/extend` проходят через `on_template` и `on_memory`, но не через `on_request` и `on_result`: те срабатывают только на вызовах MCP-инструментов.
+
+Полный контракт — в образе (`/app/plugin_api.py`, `/app/plugins/AGENTS.md`, `/app/plugins/example.py`). Общие правила и рецепты: [Доработка MCP: система плагинов](../../sistema-pluginov/) и [справочник хуков TemplatesSearchServer](../../sistema-pluginov/spravochnik-hukov.md#templatessearchserver).
 
 ## Первый запуск
 
