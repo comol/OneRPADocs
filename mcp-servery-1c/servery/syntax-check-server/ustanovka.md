@@ -50,7 +50,7 @@ docker run -d -p 8002:8002 `
 | `MCP_SSE_PATH` | Endpoint потока событий в SSE-режиме | Нет (`/sse`) |
 | `MCP_MESSAGE_PATH` | Endpoint отправки сообщений в SSE-режиме | Нет (`/messages/`) |
 | `BSL_ANALYZER_TIMEOUT_SECONDS` | Таймаут запуска анализатора | Нет (`30`) |
-| `BSL_ANALYZER_STDOUT_LIMIT_BYTES` | Максимальный размер JSONL-отчёта анализатора | Нет (`16777216`) |
+| `BSL_ANALYZER_STDOUT_LIMIT_BYTES` | Максимальный размер сырого JSONL-отчёта анализатора до преобразования опубликованной текстовой части beta в TOON | Нет (`16777216`) |
 | `BSL_ANALYZER_STDERR_LIMIT_BYTES` | Максимальный размер диагностического вывода анализатора | Нет (`4194304`) |
 | `BSL_ANALYZER_KILL_GRACE_SECONDS` | Ожидание между terminate и принудительным kill | Нет (`2`) |
 | `BSL_SOURCE_ENCODING` | Кодировка файлов из `FILES_DIR`; пустое значение пробует UTF-8 с BOM, затем CP1251 | Нет |
@@ -64,7 +64,7 @@ docker run -d -p 8002:8002 `
 ```powershell
 # Проверить плагин без запущенного сервера и без анализатора
 docker run --rm -v "E:/plugins/mcp_syntax/10-profile.py:/tmp/my_plugin.py" `
-  comol/1c_syntaxcheck_mcp:latest python mcp_server.py --dry-run /tmp/my_plugin.py
+  comol/1c_syntaxcheck_mcp:latest-beta python mcp_server.py --dry-run /tmp/my_plugin.py
 ```
 
 {% hint style="warning" %}

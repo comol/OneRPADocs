@@ -13,7 +13,7 @@ CodeMetadataSearchServer систему плагинов **поддержива�
 docker run --rm comol/1c_help_mcp:latest ls /app/plugin_api.py
 
 # CodeMetadataSearchServer держит справочник глубже — проверяйте оба пути
-docker run --rm comol/1c_code_metadata_mcp:latest ls /app/src/plugin_api.py
+docker run --rm comol/1c_code_metadata_mcp:latest-beta ls /app/src/plugin_api.py
 
 # 1CCodeChecker тоже хранит справочник не в корне образа
 docker run --rm comol/1c-code-checker:latest-beta `

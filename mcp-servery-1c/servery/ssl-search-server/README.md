@@ -19,6 +19,10 @@ SSLSearchServer предоставляет ИИ доступ к справке �
 | `vector_store_state` | Состояние векторного хранилища: рантайм zvec, обслуживающее поколение, запись манифеста и итог последней миграции |
 | `session_state` | Границы и счётчики HTTP-сессий сервера |
 
+{% hint style="warning" %}
+Расширенная сигнатура `ssl_search` (`limit`, `min_score`, `database`, `detail`, `cursor`, `doc_id`) и пять служебных инструментов опубликованы в beta. Stable-теги сохраняют прежнюю поверхность. Перед автоматическим использованием сверяйтесь с `tools/list` текущего подключения. `plugin_reload` меняет активное поведение процесса: агент вызывает его только по явному поручению оператора, а не как часть обычного поиска.
+{% endhint %}
+
 ### ssl_search
 
 Поиск по документации БСП (Библиотеки стандартных подсистем) с использованием векторного поиска zvec. Рекомендуется всегда использовать, если конфигурация содержит БСП.
@@ -89,7 +93,7 @@ SSLSearchServer предоставляет ИИ доступ к справке �
 ## Образ Docker
 
 ```
-comol/mcp_ssl_server:latest
+comol/mcp_ssl_server:latest-beta
 ```
 
 Stable: `latest`, `light`, `arm64`; beta: `latest-beta`, `light-beta`, `arm64-beta`. Новые функции сначала появляются в beta. Подробнее: [Каналы образов](../../kanaly-obrazov.md).
@@ -101,8 +105,8 @@ docker run -d -p 8008:8008 `
   --name mcp_ssl_server `
   -e LICENSE_KEY=YOUR_LICENSE_KEY `
   -e SSL_VERSION=3.1.11 `
-  -v "E:/bases/mcp_ssl:/app/zvec_db" `
-  comol/mcp_ssl_server:latest
+  -v "E:/bases/mcp_ssl_beta:/app/zvec_db" `
+  comol/mcp_ssl_server:latest-beta
 ```
 
 {% hint style="warning" %}

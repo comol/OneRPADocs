@@ -484,7 +484,7 @@ MCP endpoint: `/mcp`. По умолчанию используется `streamab
 ## Образ Docker
 
 ```
-comol/1c_code_metadata_mcp:latest
+comol/1c_code_metadata_mcp:latest-beta
 ```
 
 ### Варианты образа
@@ -496,7 +496,11 @@ comol/1c_code_metadata_mcp:latest
 | `arm64` | arm64 | ~500 MB | Для Apple Silicon / ARM серверов |
 
 {% hint style="info" %}
-Используйте `light`, если embedding модель работает через внешний API (LM Studio, OpenRouter). Образ в 10 раз легче. Каждый вариант опубликован в stable (`latest`, `light`, `arm64`) и beta (`latest-beta`, `light-beta`, `arm64-beta`); последние контракты и исправления сначала появляются в beta. См. [Каналы образов](../../kanaly-obrazov.md).
+Используйте `light-beta`, если embedding модель работает через внешний API (LM Studio, OpenRouter). Образ в 10 раз легче. Каждый вариант опубликован в stable (`latest`, `light`, `arm64`) и beta (`latest-beta`, `light-beta`, `arm64-beta`); последние контракты и исправления сначала появляются в beta. См. [Каналы образов](../../kanaly-obrazov.md).
+{% endhint %}
+
+{% hint style="warning" %}
+Описанные ниже `METADATA_SOURCE=xml` и форматы Designer XML/1C:EDT опубликованы в beta, поэтому быстрый старт использует `latest-beta`. Stable-теги пока сохраняют прежний контракт с обязательным текстовым отчётом конфигуратора.
 {% endhint %}
 
 ## Подготовка данных
@@ -519,7 +523,7 @@ docker run -d -p 8000:8000 `
   -e SOURCE_FORMAT=auto `
   -v "E:/1C_Export/Files:/app/code" `
   -v "E:/bases/mcp_codemetadata:/app/chroma_db" `
-  comol/1c_code_metadata_mcp:latest
+  comol/1c_code_metadata_mcp:latest-beta
 ```
 
 ## Конфигурация Cursor

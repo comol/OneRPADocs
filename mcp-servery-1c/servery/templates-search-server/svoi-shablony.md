@@ -102,7 +102,7 @@ docker run -d -p 127.0.0.1:8004:8004 `
   -e LICENSE_KEY=YOUR_LICENSE_KEY `
   -e RESET_DATABASE=true `
   -v "E:/bases/mcp_templates:/app/chroma_db" `
-  comol/template-search-mcp:latest
+  comol/template-search-mcp:latest-beta
 ```
 
 `RESET_DATABASE=true` перестраивает только векторный индекс zvec. SQLite-база с шаблонами и заметками сохраняется.

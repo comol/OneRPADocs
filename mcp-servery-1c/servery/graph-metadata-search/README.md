@@ -47,7 +47,7 @@ Graph Metadata Search строит граф связей метаданных в
 - Поддерживает **расширения конфигурации** и сравнение с базой
 - **Фоновая индексация** — сервер доступен сразу, обогащение данных выполняется в фоне
 - **Веб-интерфейс Neo4j Browser** для визуализации графа: `http://localhost:7474`
-- Отдельные HTTP-пробы во всех режимах: `/health` (`/healthz`) проверяет живость процесса и созданный драйвер, `/ready` (`/readyz`) — доступность Neo4j и опубликованный MCP tool surface
+- Отдельные HTTP-пробы во всех режимах: опубликованные beta-образы используют `/healthz` для живости процесса и созданного драйвера, `/readyz` — для доступности Neo4j и опубликованного MCP tool surface
 
 ## Доступные инструменты MCP
 
@@ -177,7 +177,7 @@ Graph Metadata Search строит граф связей метаданных в
 Ответы возвращаются в общем конверте версии `contract_version: "2.0"`. Всегда присутствуют только `contract_version`, `context`, `total` и `returned`; остальные ключи появляются, когда действительно сообщают что-то: `items`, `text`, `nodes`/`edges` или `data`, `truncated` и `truncation_reason`, `cursor`, `warnings`, `degraded`, `evidence`, `limits`, `deprecated`, `request` и `error`. Перечень не исчерпывающий: отдельные инструменты добавляют собственные счётчики. Отсутствие необязательного ключа означает пустое, `false` или `null`; `limits` возвращается только при усечении, а постоянные пределы доступны через capabilities. Подстановка project scope отражается в `deprecated`, а не дублируется в `warnings`. JSON на проводе минифицирован. Инструменты не публикуют `outputSchema`, поэтому FastMCP не дублирует тот же ответ в `structuredContent`. Ошибки типизированы: неизвестный проект, устаревшее поколение, таймаут, некорректный аргумент, некорректный курсор.
 
 {% hint style="warning" %}
-Контракт 2.0 и обновлённая логика scope относятся к beta-кандидату. Для конкретного образа проверьте `contract_version` и `get_graph_capabilities`; stable и старые beta-образы могут сохранять контракт 1.x.
+Контракт 2.0, обновлённая логика scope и файловый источник Designer XML опубликованы в тегах `latest-beta`, `light-beta` и `arm64-beta`. Stable-теги пока сохраняют контракт 1.x и старый режим подготовки данных. Для конкретного развёртывания всё равно проверяйте `contract_version` и `get_graph_capabilities`, а не только имя тега.
 {% endhint %}
 
 Инструменты, не привязанные к проекту (`get_metadata_prompt`, `get_indexing_status`, `health_graph`, `get_graph_capabilities`, `list_graph_capabilities`, `get_graph_tool_schema`, `metadata_report`, `unpack_ordinary_form`, `build_ordinary_form`, а также инструменты управления проектами), получают только `cursor` и `max_items`; `project_id` у административных инструментов — обычный доменный аргумент.
@@ -481,7 +481,7 @@ Graph Metadata Search строит граф связей метаданных в
 | Операция | Параметры | Описание |
 |----------|-----------|----------|
 | `get_attribute_type` | `object_name`, `attribute_name` | Тип указанного реквизита |
-| `list_attributes_with_type` | `type_pattern` | Все реквизиты с указанным типом |
+| `list_attributes_with_type` | `type_name` | Все реквизиты с указанным типом. `type`, `typeName`, `type_pattern` и `typePattern` — совместимые алиасы; `object` и `object_name` вместо типа не принимаются |
 
 #### Связи и зависимости
 
@@ -602,11 +602,11 @@ http://localhost:7474
 
 | Эндпоинт | Назначение |
 |----------|------------|
-| `/health`, `/healthz` | Liveness-проба: процесс жив и драйвер Neo4j создан. Не выполняет запросов к графу |
-| `/ready`, `/readyz` | Readiness-проба: Neo4j доступен и MCP tool surface опубликован |
+| `/healthz` | Liveness-проба опубликованных beta-образов: процесс жив и драйвер Neo4j создан. Не выполняет запросов к графу |
+| `/readyz` | Readiness-проба опубликованных beta-образов: Neo4j доступен и MCP tool surface опубликован |
 
 {% hint style="info" %}
-Healthcheck в docker-compose использует дешёвый `/health`. Серверный режим больше не публикует старые `/search`, `/status`, `/search/index-status` и `/docs`: статус индексации читают через MCP-инструменты `get_indexing_status` и `get_graph_project_status`.
+Healthcheck в docker-compose использует дешёвый `/healthz`. В более новом исходном дереве также есть короткие алиасы `/health` и `/ready`, но инструкции установки используют маршруты, подтверждённые в опубликованной beta. Серверный режим больше не публикует старые `/search`, `/status`, `/search/index-status` и `/docs`: статус индексации читают через MCP-инструменты `get_indexing_status` и `get_graph_project_status`.
 {% endhint %}
 
 ## Требования
@@ -631,7 +631,7 @@ Healthcheck в docker-compose использует дешёвый `/health`. С�
 ## Образ Docker
 
 ```
-comol/1c_graph_metadata:latest
+comol/1c_graph_metadata:latest-beta
 ```
 
 Stable: `latest`, `light`, `arm64`; beta: `latest-beta`, `light-beta`, `arm64-beta`. Новые контракт 2.0, project scope и система плагинов сначала публикуются в beta. Подробнее: [Каналы образов](../../kanaly-obrazov.md).

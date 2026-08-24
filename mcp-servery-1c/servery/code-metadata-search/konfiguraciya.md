@@ -198,7 +198,7 @@ docker run -d -p 8000:8000 `
   -e METADATA_SOURCE=xml `
   -e SOURCE_FORMAT=auto `
   -v "E:/1C_Export/Files:/app/code" `
-  comol/1c_code_metadata_mcp:latest
+  comol/1c_code_metadata_mcp:latest-beta
 ```
 
 ### Рекомендуемая (LM Studio)
@@ -216,7 +216,7 @@ docker run -d -p 8000:8000 `
   -e EMBEDDING_MODEL=Qwen3-Embedding-4B `
   -v "E:/1C_Export/Files:/app/code" `
   -v "E:/bases/mcp_codemetadata:/app/chroma_db" `
-  comol/1c_code_metadata_mcp:latest
+  comol/1c_code_metadata_mcp:latest-beta
 ```
 
 ### С OpenRouter (облачные эмбеддинги)
@@ -234,7 +234,7 @@ docker run -d -p 8000:8000 `
   -e EMBEDDING_MODEL=qwen/qwen3-embedding-8b `
   -v "E:/1C_Export/Files:/app/code" `
   -v "E:/bases/mcp_codemetadata:/app/chroma_db" `
-  comol/1c_code_metadata_mcp:latest
+  comol/1c_code_metadata_mcp:latest-beta
 ```
 
 ### Облегчённый образ (light) с LM Studio
@@ -252,7 +252,7 @@ docker run -d -p 8000:8000 `
   -e EMBEDDING_MODEL=Qwen3-Embedding-4B `
   -v "E:/1C_Export/Files:/app/code" `
   -v "E:/bases/mcp_codemetadata:/app/chroma_db" `
-  comol/1c_code_metadata_mcp:light
+  comol/1c_code_metadata_mcp:light-beta
 ```
 
 ### С реранкером и тюнингом поиска
@@ -272,7 +272,7 @@ docker run -d -p 8000:8000 `
   -e EMBEDDING_MODEL=Qwen3-Embedding-4B `
   -v "E:/1C_Export/Files:/app/code" `
   -v "E:/bases/mcp_codemetadata:/app/chroma_db" `
-  comol/1c_code_metadata_mcp:latest
+  comol/1c_code_metadata_mcp:latest-beta
 ```
 
 ### С настройкой индексации
@@ -293,7 +293,7 @@ docker run -d -p 8000:8000 `
   -e EMBEDDING_MODEL=Qwen3-Embedding-4B `
   -v "E:/1C_Export/Files:/app/code" `
   -v "E:/bases/mcp_codemetadata:/app/chroma_db" `
-  comol/1c_code_metadata_mcp:latest
+  comol/1c_code_metadata_mcp:latest-beta
 ```
 
 ## Конфигурация Cursor
@@ -311,10 +311,10 @@ docker run -d -p 8000:8000 `
 
 ## Доработка
 
-Сервер поддерживает [систему плагинов](../../sistema-pluginov/). В отличие от остальных серверов справочник лежит не в корне образа, а в `/app/src/plugin_api.py` — команда `docker run --rm comol/1c_code_metadata_mcp:latest ls /app/plugin_api.py` даст ложное «нет плагинов». Проверять нужно так:
+Сервер поддерживает [систему плагинов](../../sistema-pluginov/). В отличие от остальных серверов справочник лежит не в корне образа, а в `/app/src/plugin_api.py` — команда `docker run --rm comol/1c_code_metadata_mcp:latest-beta ls /app/plugin_api.py` даст ложное «нет плагинов». Проверять нужно так:
 
 ```powershell
-docker run --rm comol/1c_code_metadata_mcp:latest ls /app/src/plugin_api.py /app/plugins
+docker run --rm comol/1c_code_metadata_mcp:latest-beta ls /app/src/plugin_api.py /app/plugins
 ```
 
 Без плагинов поведение сервера настраивается форматом источника (`METADATA_SOURCE`, `SOURCE_FORMAT`, `CODE_PATH`, вложенные конфигурации) и параметрами поиска: `BM25_ALPHA`, `MIN_SCORE_THRESHOLD`, `ENABLE_RERANKER`, `VECTOR_PROFILE` и множителями выборки.

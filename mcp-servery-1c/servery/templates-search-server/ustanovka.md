@@ -25,7 +25,7 @@ docker run -d -p 127.0.0.1:8004:8004 `
   -e EMBEDDING_API_KEY=lm-studio `
   -e EMBEDDING_MODEL=Qwen3-Embedding-4B `
   -v "E:/bases/mcp_templates:/app/chroma_db" `
-  comol/template-search-mcp:latest
+  comol/template-search-mcp:latest-beta
 ```
 
 ### С CPU (без GPU)
@@ -38,7 +38,7 @@ docker run -d -p 127.0.0.1:8004:8004 `
   -e RESET_DATABASE=false `
   -e EMBEDDING_MODEL=ai-forever/FRIDA `
   -v "E:/bases/mcp_templates:/app/chroma_db" `
-  comol/template-search-mcp:latest
+  comol/template-search-mcp:latest-beta
 ```
 
 ## Переменные окружения
@@ -100,7 +100,7 @@ docker run -d -p 127.0.0.1:8004:8004 `
 Старые имена `OPENAI_API_BASE`, `OPENAI_API_KEY` и `OPENAI_MODEL` остаются совместимыми алиасами.
 
 {% hint style="warning" %}
-Web UI закрыт для изменений по умолчанию. Не включайте `ADMIN_ALLOW_UNAUTHENTICATED` на опубликованном порту. Для MCP-записей нужны одновременно `MCP_ENABLE_WRITE_TOOLS=true` и стойкий `MCP_OPERATOR_TOKEN`; токен передаётся только в `Authorization: Bearer ...`.
+Web UI закрыт для изменений по умолчанию. Не включайте `ADMIN_ALLOW_UNAUTHENTICATED` на опубликованном порту. Для MCP-записей нужны одновременно `MCP_ENABLE_WRITE_TOOLS=true` и стойкий `MCP_OPERATOR_TOKEN`; клиент формирует из него bearer-заголовок `Authorization`, а значение не записывается в документацию или журнал.
 {% endhint %}
 
 Для моделей с пользовательским кодом все три параметра supply chain обязательны: opt-in, allowlist model ID и неизменяемая ревизия. Неполная комбинация отклоняется до загрузки модели.
@@ -114,7 +114,7 @@ Web UI закрыт для изменений по умолчанию. Не вк
 ```powershell
 # Прогнать плагин на фикстурах образа: без данных, коллекций и модели
 docker run --rm -v "E:/plugins/mcp_templates/10-aliasy.py:/tmp/my_plugin.py" `
-  comol/template-search-mcp:latest python main.py --dry-run /tmp/my_plugin.py
+  comol/template-search-mcp:latest-beta python main.py --dry-run /tmp/my_plugin.py
 ```
 
 {% hint style="warning" %}

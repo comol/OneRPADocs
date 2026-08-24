@@ -17,14 +17,18 @@ New-Item -ItemType Directory -Force -Path @(
 
 ## Выбор образа
 
+{% hint style="warning" %}
+Режимы `METADATA_SOURCE=xml`, `SOURCE_FORMAT=designer_xml|edt` и автоматическое получение метаданных прямо из выгрузки опубликованы в beta. Поэтому команды ниже используют `latest-beta`, `light-beta` и `arm64-beta`. Stable-теги `latest`, `light`, `arm64` сохраняют прежний контракт с обязательным текстовым отчётом конфигуратора.
+{% endhint %}
+
 | Тег | Размер | Описание |
 |-----|--------|----------|
-| `latest` | ~2.9 GB | Полная версия: локальные embedding (CPU/GPU) + API |
-| `light` | ~290 MB | Облегчённая: embedding только через API (LM Studio, OpenRouter и т.д.) |
-| `arm64` | ~500 MB | Для Apple Silicon / ARM серверов |
+| `latest-beta` | ~2.9 GB | Полная beta: локальные embedding (CPU/GPU) + API |
+| `light-beta` | ~290 MB | Облегчённая beta: embedding только через API (LM Studio, OpenRouter и т.д.) |
+| `arm64-beta` | ~500 MB | Beta для Apple Silicon / ARM серверов |
 
 {% hint style="info" %}
-Если вы используете LM Studio или OpenRouter для embedding — выбирайте `light`. Образ в 10 раз легче и запускается быстрее.
+Если вы используете LM Studio или OpenRouter для embedding — выбирайте `light-beta`. Образ в 10 раз легче и запускается быстрее.
 {% endhint %}
 
 ## Команды запуска
@@ -44,7 +48,7 @@ docker run -d -p 8000:8000 `
   -e EMBEDDING_MODEL=Qwen3-Embedding-4B `
   -v "E:/1C_Export/Files:/app/code" `
   -v "E:/bases/mcp_codemetadata:/app/chroma_db" `
-  comol/1c_code_metadata_mcp:latest
+  comol/1c_code_metadata_mcp:latest-beta
 ```
 
 ### С LM Studio (облегчённый образ)
@@ -62,7 +66,7 @@ docker run -d -p 8000:8000 `
   -e EMBEDDING_MODEL=Qwen3-Embedding-4B `
   -v "E:/1C_Export/Files:/app/code" `
   -v "E:/bases/mcp_codemetadata:/app/chroma_db" `
-  comol/1c_code_metadata_mcp:light
+  comol/1c_code_metadata_mcp:light-beta
 ```
 
 ### С CPU (без GPU)
@@ -78,7 +82,7 @@ docker run -d -p 8000:8000 `
   -e EMBEDDING_MODEL=intfloat/multilingual-e5-base `
   -v "E:/1C_Export/Files:/app/code" `
   -v "E:/bases/mcp_codemetadata:/app/chroma_db" `
-  comol/1c_code_metadata_mcp:latest
+  comol/1c_code_metadata_mcp:latest-beta
 ```
 
 ## Первый запуск
@@ -146,7 +150,7 @@ docker run -d -p 8000:8000 `
   -e RESET_DATABASE=false `
   -v "E:/1C_Export/Files:/app/code" `
   -v "E:/bases/mcp_codemetadata:/app/chroma_db" `
-  comol/1c_code_metadata_mcp:latest
+  comol/1c_code_metadata_mcp:latest-beta
 ```
 
 При `INCREMENTAL_INDEXING=true` сервер сравнивает SHA-256 исходников и атомарно публикует новое поколение после проверки. `RESET_DATABASE=true` используйте только для осознанной полной перестройки.

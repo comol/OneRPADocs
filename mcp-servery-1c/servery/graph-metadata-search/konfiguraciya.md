@@ -244,7 +244,7 @@
 ```powershell
 # Проверить плагин без Neo4j, метаданных, поколения и лицензии
 docker run --rm -v "E:/plugins/mcp_graph/10-facts.py:/tmp/my_plugin.py" `
-  comol/1c_graph_metadata:latest python run.py plugin-dry-run /tmp/my_plugin.py
+  comol/1c_graph_metadata:latest-beta python run.py plugin-dry-run /tmp/my_plugin.py
 ```
 
 {% hint style="warning" %}
@@ -352,7 +352,7 @@ services:
       retries: 5
 
   mcp-app:
-    image: comol/1c_graph_metadata:latest
+    image: comol/1c_graph_metadata:latest-beta
     container_name: 1c_graph_metadata
     restart: unless-stopped
     ports:
@@ -409,7 +409,7 @@ services:
 
 ```yaml
   mcp-extension:
-    image: comol/1c_graph_metadata:latest
+    image: comol/1c_graph_metadata:latest-beta
     container_name: 1c_graph_metadata_ext
     environment:
       - LICENSE_KEY=YOUR_LICENSE_KEY
@@ -441,7 +441,7 @@ services:
 
 ```yaml
   mcp-extensions:
-    image: comol/1c_graph_metadata:latest
+    image: comol/1c_graph_metadata:latest-beta
     container_name: 1c_graph_metadata_ext
     environment:
       - LICENSE_KEY=YOUR_LICENSE_KEY

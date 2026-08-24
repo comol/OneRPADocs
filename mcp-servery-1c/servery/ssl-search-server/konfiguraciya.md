@@ -96,7 +96,7 @@
 
 ```powershell
 docker run --rm -v "E:/plugins/mcp_ssl/10-terms.py:/tmp/my_plugin.py" `
-  comol/mcp_ssl_server:latest python launcher.py --dry-run /tmp/my_plugin.py
+  comol/mcp_ssl_server:latest-beta python launcher.py --dry-run /tmp/my_plugin.py
 ```
 
 Правка `on_entry` делает сохранённую коллекцию устаревшей и вызывает переэмбеддирование выбранной базы БСП; call-scoped хуки и таблица ничего не пересобирают. Подробно: [Доработка MCP: система плагинов](../../sistema-pluginov/) и [справочник хуков SSLSearchServer](../../sistema-pluginov/spravochnik-hukov.md#sslsearchserver).
@@ -138,7 +138,7 @@ docker run -d -p 8008:8008 `
   --name mcp_ssl_server `
   -e LICENSE_KEY=YOUR_LICENSE_KEY `
   -e SSL_VERSION=3.1.11 `
-  comol/mcp_ssl_server:latest
+  comol/mcp_ssl_server:latest-beta
 ```
 
 ### Рекомендуемая (LM Studio)
@@ -153,7 +153,7 @@ docker run -d -p 8008:8008 `
   -e EMBEDDING_API_KEY=lm-studio `
   -e EMBEDDING_MODEL=Qwen3-Embedding-4B `
   -v "E:/bases/mcp_ssl:/app/zvec_db" `
-  comol/mcp_ssl_server:latest
+  comol/mcp_ssl_server:latest-beta
 ```
 
 ## Конфигурация Cursor

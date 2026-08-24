@@ -45,7 +45,7 @@ services:
       retries: 5
 
   mcp-app:
-    image: comol/1c_graph_metadata:latest
+    image: comol/1c_graph_metadata:latest-beta
     container_name: 1c_graph_metadata
     restart: unless-stopped
     ports:
@@ -69,7 +69,7 @@ services:
       - E:/1C_Export/Files:/app/code:ro
       - E:/bases/mcp_graph/app:/app/data
     healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8006/health', timeout=10).status == 200 else 1)"]
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8006/healthz', timeout=10).status == 200 else 1)"]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -110,16 +110,16 @@ docker-compose ps
 ### MCP сервер — health и readiness
 
 ```powershell
-curl http://localhost:8006/health
+curl http://localhost:8006/healthz
 ```
 
 Дешёвая liveness-проба: отвечает сразу, как только процесс жив и создан драйвер Neo4j, без запросов к графу. Именно её использует healthcheck в `docker-compose.yml`. Готовность проверяется отдельно:
 
 ```powershell
-curl http://localhost:8006/ready
+curl http://localhost:8006/readyz
 ```
 
-Алиасы `/healthz` и `/readyz` дают те же ответы. Статус фоновых задач и поколений читайте MCP-инструментами `get_indexing_status` и `get_graph_project_status`: серверный режим не публикует старые веб-маршруты `/status`, `/search/*` и `/docs`.
+В более новом исходном дереве есть алиасы `/health` и `/ready`, однако опубликованная beta подтверждённо предоставляет `/healthz` и `/readyz`, поэтому автоматические проверки используют именно их. Статус фоновых задач и поколений читайте MCP-инструментами `get_indexing_status` и `get_graph_project_status`: серверный режим не публикует старые веб-маршруты `/status`, `/search/*` и `/docs`.
 
 ## Конвейер запуска (Startup Pipeline)
 
