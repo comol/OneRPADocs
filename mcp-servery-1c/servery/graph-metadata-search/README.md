@@ -129,6 +129,17 @@ Graph Metadata Search строит граф связей метаданных в
 | `list_plugins` | Загруженные плагины, их hooks, таблицы, порядок выполнения, ошибки и текущая plugin epoch |
 | `metadata_report` | Заглушка удалённого монолитного отчёта: сообщает, чем он заменён |
 
+### Обычные формы (профиль `admin`)
+
+| Инструмент | Описание |
+|------------|----------|
+| `unpack_ordinary_form` | Распаковка двоичного `Form.bin` обычной формы в редактируемый рабочий каталог |
+| `build_ordinary_form` | Обратная сборка рабочего каталога в `Form.bin` с проверкой логической полезной нагрузки |
+
+Обычная форма выгружается Конфигуратором как `Forms/<Имя>/Ext/Form.bin` — двоичный контейнер, а не XML, и обычные разборщики форм её не читают. Пара публикуется под теми же именами, с теми же аргументами и той же полезной нагрузкой, что и у [CodeMetadataSearchServer](../code-metadata-search/README.md#unpack_ordinary_form): контракт один, и пара, изученная на одном сервере, вызывается так же на другом. Здесь полезная нагрузка приходит в секции `data` общего конверта ответа.
+
+Пара пишет файлы на хосте — рабочий каталог при распаковке и `Form.bin` при сборке, — поэтому публикуется только в профиле `admin`. Ничего не заменяется без явного `overwrite`, но профиль `read-only` существует ровно затем, чтобы клиент не мог изменить вообще ничего, включая файловую систему. К проекту инструменты не привязаны: `project_id` и `generation` к ним не добавляются.
+
 ### Управление проектами (профиль `admin`)
 
 | Инструмент | Описание |
@@ -150,8 +161,8 @@ Graph Metadata Search строит граф связей метаданных в
 
 | Профиль | Поведение |
 |---------|-----------|
-| `admin` (по умолчанию) | Публикуются все инструменты, включая `register_graph_project`, `refresh_graph_project`, `delete_graph_project`, `reload_plugins` |
-| `read-only` | Инструменты изменения состояния (`register_graph_project`, `refresh_graph_project`, `delete_graph_project`, `reload_plugins`) не регистрируются — клиент их не видит |
+| `admin` (по умолчанию) | Публикуются все инструменты, включая `register_graph_project`, `refresh_graph_project`, `delete_graph_project`, `reload_plugins`, `unpack_ordinary_form`, `build_ordinary_form` |
+| `read-only` | Инструменты изменения состояния (`register_graph_project`, `refresh_graph_project`, `delete_graph_project`, `reload_plugins`) и пишущая на диск пара `unpack_ordinary_form` / `build_ordinary_form` не регистрируются — клиент их не видит |
 
 ## Общие параметры контракта
 
@@ -159,14 +170,14 @@ Graph Metadata Search строит граф связей метаданных в
 
 | Параметр | Тип | Описание |
 |----------|-----|----------|
-| `project_id` | string | Графовый проект, к которому относится вызов (см. `list_graph_projects`). Обязателен, если зарегистрировано больше одного проекта и не открыто окно миграции. Добавляется только к project-scoped инструментам |
+| `project_id` | string | Графовый проект, к которому относится вызов (см. `list_graph_projects`). Строго обязателен при `GRAPH_SCOPE_ENFORCED=true`. Пока `GRAPH_SCOPE_ENFORCED=false`, в графе нет свойств scope и ни один путь чтения ими не ограничен, поэтому вызов без `project_id` не отклоняется, а обслуживается — единственным доступным проектом, а при пустом реестре legacy-scope из `PROJECT_NAME` (или `<unscoped>`, если и он пуст); ответ помечается `deprecated` и несёт предупреждение, что результаты не ограничены проектом. Отклоняется только вызов без `project_id` в namespace с несколькими доступными проектами: там выбор реальный. Добавляется только к project-scoped инструментам |
 | `generation` | string | Поколение графа, из которого должен прийти ответ. По умолчанию — активное; неактуальное поколение возвращает ошибку `stale_generation`. Добавляется только к project-scoped инструментам |
 | `cursor` | string | Токен продолжения из поля `cursor` усечённого ответа. Действителен только для того же проекта, поколения, инструмента и запроса |
 | `max_items` | int | Размер страницы, ограничен жёстким лимитом сервера (`GRAPH_MAX_ITEMS`) |
 
 Ответы возвращаются в едином конверте: `context` (установка, проект, поколение, correlation id), `items`, `total`, `returned`, `truncated`, `cursor`, `warnings`, `degraded`, `evidence`. Ошибки типизированы: неизвестный проект, устаревшее поколение, таймаут, некорректный аргумент, некорректный курсор.
 
-Инструменты, не привязанные к проекту (`get_metadata_prompt`, `get_indexing_status`, `health_graph`, `get_graph_capabilities`, `list_graph_capabilities`, `get_graph_tool_schema`, `metadata_report`, а также инструменты управления проектами), получают только `cursor` и `max_items`; `project_id` у административных инструментов — обычный доменный аргумент.
+Инструменты, не привязанные к проекту (`get_metadata_prompt`, `get_indexing_status`, `health_graph`, `get_graph_capabilities`, `list_graph_capabilities`, `get_graph_tool_schema`, `metadata_report`, `unpack_ordinary_form`, `build_ordinary_form`, а также инструменты управления проектами), получают только `cursor` и `max_items`; `project_id` у административных инструментов — обычный доменный аргумент.
 
 ### search_metadata
 

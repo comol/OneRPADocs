@@ -80,6 +80,7 @@ Dry-run запускает объявленные в файле хуки на ф
 | SyntaxCheckServer | `python mcp_server.py --dry-run /tmp/my_plugin.py` |
 | TemplatesSearchServer | `python main.py --dry-run /tmp/my_plugin.py` |
 | Graph Metadata Search | `python run.py plugin-dry-run /tmp/my_plugin.py` |
+| CodeMetadataSearchServer | `python src/plugin_dry_run.py /tmp/my_plugin.py` |
 
 Полностью, одной строкой и без запущенного сервера:
 
@@ -103,6 +104,10 @@ docker run --rm -v "E:/plugins/mcp_templates/10-aliasy.py:/tmp/my_plugin.py" `
 # Graph Metadata Search
 docker run --rm -v "E:/plugins/mcp_graph/10-svojstva.py:/tmp/my_plugin.py" `
   comol/1c_graph_metadata:latest python run.py plugin-dry-run /tmp/my_plugin.py
+
+# CodeMetadataSearchServer
+docker run --rm -v "E:/plugins/mcp_code/10-terminy.py:/tmp/my_plugin.py" `
+  comol/1c_code_metadata_mcp:latest python src/plugin_dry_run.py /tmp/my_plugin.py
 ```
 
 {% hint style="info" %}
@@ -137,9 +142,10 @@ docker run -d -p 8006:8006 `
 
 | Переменная | Серверы | Назначение | По умолчанию |
 |------------|---------|------------|--------------|
-| `PLUGIN_DIR` | Help, SSL, Templates | Каталог плагинов внутри контейнера | `/app/plugins` |
+| `PLUGIN_DIR` | Help, SSL, Templates, Code | Каталог плагинов внутри контейнера | `/app/plugins` |
 | `PLUGINS_DIR` | Syntax | То же; пустое значение означает `/app/plugins` | *(пусто)* |
-| `PLUGIN_STRICT_DERIVED_STATE` | Help, SSL, Templates | `true` — упавший derived-state хук роняет сборку вместо пропуска единицы | `false` |
+| `PLUGIN_STRICT_DERIVED_STATE` | Help, SSL, Templates, Code | `true` — упавший derived-state хук роняет сборку вместо пропуска единицы | `false` |
+| `PLUGIN_HOOK_TIMEOUT_SECONDS` | Code | Бюджет времени одного хука; превысивший его хук считается упавшим | `5.0` |
 | `GRAPH_PLUGINS_ENABLED` | Graph | Читать каталог плагинов вообще | `false` |
 | `GRAPH_PLUGINS_DIRECTORY` | Graph | Каталог плагинов; относительный путь считается от `/app` | `plugins` |
 | `GRAPH_PLUGIN_STRICT_BUILD` | Graph | Ронять построение поколения при ошибке derived-state хука | `false` |
@@ -156,6 +162,7 @@ docker run -d -p 8006:8006 `
 | SyntaxCheckServer | MCP-инструмент `plugin_state` | MCP-инструмент `plugin_reload` |
 | TemplatesSearchServer | MCP-инструмент `plugin_state` | MCP-инструмент `plugin_reload` — только если включены изменяющие инструменты |
 | Graph Metadata Search | MCP-инструмент `list_plugins` | MCP-инструмент `reload_plugins(operation_id)` — только профиль `admin` |
+| CodeMetadataSearchServer | MCP-инструмент `plugin_state` | MCP-инструмент `plugin_reload` |
 
 ```powershell
 # HelpSearchServer — control plane, отвечает и во время сборки индекса

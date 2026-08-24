@@ -25,12 +25,16 @@ MCP-серверы поставляются готовыми Docker-образа
 | [SyntaxCheckServer](../servery/syntax-check-server/) | Да | `bsl-syntax-check` | `/app/plugins` (`PLUGINS_DIR`) | Всегда включены |
 | [TemplatesSearchServer](../servery/templates-search-server/) | Да | `template-search` | `/app/plugins` (`PLUGIN_DIR`) | Всегда включены |
 | [Graph Metadata Search](../servery/graph-metadata-search/) | Да | `graph-metadata-search` | `/app/plugins` (`GRAPH_PLUGINS_DIRECTORY`) | `GRAPH_PLUGINS_ENABLED=true` |
-| [CodeMetadataSearchServer](../servery/code-metadata-search/) | Нет | — | — | См. [Серверы без плагинов](dorabotka-bez-pluginov.md) |
+| [CodeMetadataSearchServer](../servery/code-metadata-search/) | Да | `code-metadata-search` | `/app/plugins` (`PLUGIN_DIR`) | Всегда включены |
 | [CloudEmbeddingsServer](../servery/cloud-embeddings-server/) | Нет | — | — | См. [Серверы без плагинов](dorabotka-bez-pluginov.md) |
 | [1CCodeChecker](../servery/code-checker/) | Нет | — | — | См. [Серверы без плагинов](dorabotka-bez-pluginov.md) |
 
 {% hint style="warning" %}
 У Graph Metadata Search подсистема плагинов **выключена по умолчанию**. Без `GRAPH_PLUGINS_ENABLED=true` каталог не читается вообще, а `reload_plugins` отвечает, что подсистема отключена.
+{% endhint %}
+
+{% hint style="info" %}
+У CodeMetadataSearchServer справочник лежит в `/app/src/plugin_api.py`, а не в корне образа, как у остальных серверов. Проверка наличия плагинов командой `ls /app/plugin_api.py` даст для него ложное «нет плагинов» — проверяйте `ls /app/src/plugin_api.py /app/plugins`.
 {% endhint %}
 
 ## Два слоя: контракт хоста и набор хуков
@@ -64,6 +68,7 @@ REQUIRES = {"host": 1, "product": "ssl-search", "hooks": 1}
 | Сервер | derived-state хуки | Что пересобирается |
 |--------|--------------------|--------------------|
 | HelpSearchServer | `on_document` | Индекс справки: сборка в staging-поколение, текущее продолжает отвечать |
+| CodeMetadataSearchServer | `on_source_file`, `on_chunk`, `on_metadata_object` | Векторные коллекции, SQLite-под-индексы и хранилище объектов метаданных: сборка нового поколения, опубликованное продолжает отвечать |
 | SSLSearchServer | `on_entry` | Полное переэмбеддирование выбранной базы БСП `bases/<версия>.db` |
 | TemplatesSearchServer | `on_template`, `on_memory` | Векторные коллекции шаблонов и заметок (`index_meta.json` хранит отпечаток) |
 | Graph Metadata Search | `on_source_unit`, `on_metadata_object`, `on_routine`, `on_embedding_document` | Проект пересобирается: граф, полнотекстовый и векторный маршруты |
@@ -80,14 +85,14 @@ REQUIRES = {"host": 1, "product": "ssl-search", "hooks": 1}
 | Таблица | Серверы | Что делает |
 |---------|---------|------------|
 | `ALIASES` | HelpSearchServer, Graph Metadata Search | Дополнительные имена, которые разрешаются в существующие сущности |
-| `QUERY_ALIASES` | SSLSearchServer, TemplatesSearchServer | Замены терминов в нормализованном запросе до поиска |
-| `TOOL_PRESETS` | HelpSearchServer, Graph Metadata Search | Новые MCP-инструменты как пресеты существующих с зафиксированными аргументами |
+| `QUERY_ALIASES` | SSLSearchServer, TemplatesSearchServer, CodeMetadataSearchServer | Замены терминов в нормализованном запросе до поиска |
+| `TOOL_PRESETS` | HelpSearchServer, Graph Metadata Search, CodeMetadataSearchServer | Новые MCP-инструменты как пресеты существующих с зафиксированными аргументами |
 | `CYPHER_TEMPLATES` | Graph Metadata Search | Дополнительные read-only Cypher-шаблоны для `run_graph_cypher_template` |
 | `SUPPRESSED_DIAGNOSTICS` | SyntaxCheckServer | Код диагностики → причина, по которой она не попадает в отчёт |
 
 ## Жизненный цикл доработки
 
-1. **Прочитать контракт.** `/app/plugin_api.py` в образе нужного сервера — полный справочник: payload каждого хука, какие поля применяются, рабочий пример.
+1. **Прочитать контракт.** `/app/plugin_api.py` в образе нужного сервера (у CodeMetadataSearchServer — `/app/src/plugin_api.py`) — полный справочник: payload каждого хука, какие поля применяются, рабочий пример.
 2. **Скопировать `example.py`.** В `/app/plugins/example.py` объявлены все хуки и таблицы продукта, закомментированные и безвредные.
 3. **Написать один файл.** Имя файла задаёт порядок: файлы выполняются в отсортированном порядке имён, каждый хук — конвейер.
 4. **Прогнать dry-run.** Одна команда в пустом контейнере: без смонтированных данных, без построенного индекса, без запущенного сервера.

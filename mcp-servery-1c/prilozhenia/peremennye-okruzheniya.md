@@ -133,6 +133,9 @@
 | `VECTOR_OPTIMIZE_DEADLINE_SEC` | Таймаут фоновой оптимизации | `1800` |
 | `VECTOR_OPTIMIZE_CANCEL_DEADLINE_SEC` | Таймаут оптимизации из запроса | `5` |
 | `VECTOR_WRITE_FAILURE_THRESHOLD` | Ошибки записи до терминального состояния | `5` |
+| `PLUGIN_DIR` | Каталог Python-плагинов; читается при каждом старте, флага включения нет | `/app/plugins` |
+| `PLUGIN_STRICT_DERIVED_STATE` | Ронять сборку целиком при ошибке derived-state hook (`on_source_file`, `on_chunk`, `on_metadata_object`) вместо пропуска единицы | `false` |
+| `PLUGIN_HOOK_TIMEOUT_SECONDS` | Бюджет времени одного вызова hook; превысивший его hook считается упавшим | `5.0` |
 
 ### CloudEmbeddingsServer (порт 8000 по умолчанию)
 
@@ -323,7 +326,7 @@
 | `MCP_OPERATOR_TOKEN` | Операторский токен для изменяющих инструментов; передаётся в заголовке `Authorization`. Обязателен вместе с `MCP_ENABLE_WRITE_TOOLS`, иначе сервер не стартует | *(не задано)* |
 
 {% hint style="info" %}
-Переменные `PLUGIN_DIR`, `PLUGINS_DIR`, `PLUGIN_STRICT_DERIVED_STATE` и `GRAPH_PLUGIN*` относятся к системе плагинов — общему механизму доработки серверов. Что они включают и чем это оплачивается: [Доработка MCP: система плагинов](../sistema-pluginov/).
+Переменные `PLUGIN_DIR`, `PLUGINS_DIR`, `PLUGIN_STRICT_DERIVED_STATE`, `PLUGIN_HOOK_TIMEOUT_SECONDS` и `GRAPH_PLUGIN*` относятся к системе плагинов — общему механизму доработки серверов. Что они включают и чем это оплачивается: [Доработка MCP: система плагинов](../sistema-pluginov/).
 {% endhint %}
 
 ## Примеры

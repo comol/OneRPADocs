@@ -155,6 +155,16 @@
 
 Старые имена `OPENAI_API_BASE`, `OPENAI_API_KEY` и `OPENAI_MODEL` пока принимаются как совместимые алиасы, но новые конфигурации следует создавать с `EMBEDDING_*`.
 
+### Плагины
+
+| Переменная | Описание | По умолчанию |
+|------------|----------|--------------|
+| `PLUGIN_DIR` | Каталог, из которого читаются файлы плагинов | `/app/plugins` |
+| `PLUGIN_STRICT_DERIVED_STATE` | `true` — упавший derived-state хук (`on_source_file`, `on_chunk`, `on_metadata_object`) роняет сборку целиком; при `false` единица индексируется без изменений, а ошибка считается и попадает в сводку сборки | `false` |
+| `PLUGIN_HOOK_TIMEOUT_SECONDS` | Бюджет времени одного вызова хука в секундах; превысивший его хук считается упавшим и call-scoped отключается до следующей перезагрузки каталога | `5.0` |
+
+Каталог читается при каждом старте, флага включения нет: пустой или отсутствующий каталог ничего не загружает и ничего не меняет. Подробности: [Доработка MCP: система плагинов](../../sistema-pluginov/).
+
 ## Монтируемые тома
 
 | Хост | Контейнер | Назначение |
@@ -162,6 +172,7 @@
 | `E:/1C_Export/Report` | `/app/metadata` | Отчет из конфигурации |
 | `E:/1C_Export/Files` | `/app/code` | Выгрузка в файлы |
 | `E:/bases/mcp_codemetadata` | `/app/chroma_db` | Векторная база данных |
+| `./my-plugins` | `/app/plugins` | Свой каталог плагинов; монтирование поверх сохраняет плагины при `docker pull` |
 
 ## Примеры конфигураций
 
@@ -288,6 +299,10 @@ docker run -d -p 8000:8000 `
 
 ## Доработка
 
-Система плагинов в этом сервере не поставляется: в образе нет `/app/plugin_api.py`, и файлы из каталога плагинов не читаются. Проверить это можно командой `docker run --rm comol/1c_code_metadata_mcp:latest ls /app/plugin_api.py`.
+Сервер поддерживает [систему плагинов](../../sistema-pluginov/). В отличие от остальных серверов справочник лежит не в корне образа, а в `/app/src/plugin_api.py` — команда `docker run --rm comol/1c_code_metadata_mcp:latest ls /app/plugin_api.py` даст ложное «нет плагинов». Проверять нужно так:
 
-Поведение сервера настраивается составом индексируемых данных (`METADATA_PATH`, `CODE_PATH`, вложенные конфигурации) и параметрами поиска: `BM25_ALPHA`, `MIN_SCORE_THRESHOLD`, `ENABLE_RERANKER`, `VECTOR_PROFILE` и множителями выборки. Разбор рычагов и того, что делать, когда их не хватает: [Серверы без плагинов](../../sistema-pluginov/dorabotka-bez-pluginov.md).
+```powershell
+docker run --rm comol/1c_code_metadata_mcp:latest ls /app/src/plugin_api.py /app/plugins
+```
+
+Без плагинов поведение сервера настраивается составом индексируемых данных (`METADATA_PATH`, `CODE_PATH`, вложенные конфигурации) и параметрами поиска: `BM25_ALPHA`, `MIN_SCORE_THRESHOLD`, `ENABLE_RERANKER`, `VECTOR_PROFILE` и множителями выборки.

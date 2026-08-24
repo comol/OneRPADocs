@@ -1,6 +1,8 @@
 # Серверы без плагинов
 
-Три сервера из списка не поставляют систему плагинов: **CodeMetadataSearchServer**, **CloudEmbeddingsServer** и **1CCodeChecker**. Это не значит, что их нельзя адаптировать — но рычаги у них другие: переменные окружения, состав индексируемых данных, конфигурация вышестоящего сервиса и правила на стороне клиента.
+Два сервера из списка не поставляют систему плагинов: **CloudEmbeddingsServer** и **1CCodeChecker**. Это не значит, что их нельзя адаптировать — но рычаги у них другие: переменные окружения, состав индексируемых данных, конфигурация вышестоящего сервиса и правила на стороне клиента.
+
+CodeMetadataSearchServer систему плагинов **поддерживает** — см. [Справочник хуков](spravochnik-hukov.md#codemetadatasearchserver). Рычаги окружения ниже остаются актуальными для него как более дешёвая альтернатива derived-state хуку.
 
 ## Как проверить, поддерживает ли образ плагины
 
@@ -10,15 +12,22 @@
 # Есть плагины: команда напечатает путь
 docker run --rm comol/1c_help_mcp:latest ls /app/plugin_api.py
 
+# CodeMetadataSearchServer держит справочник глубже — проверяйте оба пути
+docker run --rm comol/1c_code_metadata_mcp:latest ls /app/src/plugin_api.py
+
 # Нет плагинов: команда завершится ошибкой "No such file or directory"
-docker run --rm comol/1c_code_metadata_mcp:latest ls /app/plugin_api.py
+docker run --rm comol/1c-code-checker:latest ls /app/plugin_api.py /app/src/plugin_api.py
 ```
 
 Если файл есть — читайте его: это полный контракт, и дальше действует [общая система плагинов](README.md). Если файла нет — смотрите разделы ниже.
 
-## CodeMetadataSearchServer
+{% hint style="warning" %}
+Проверять только `/app/plugin_api.py` недостаточно: у CodeMetadataSearchServer справочник лежит в `/app/src/plugin_api.py`, и такая проверка даст для него ложное «нет плагинов».
+{% endhint %}
 
-Поиск по метаданным и коду конфигурации. Плагинов в образе нет; настраивается тем, **что индексируется** и **как ранжируется**.
+## CodeMetadataSearchServer — рычаги окружения
+
+Поиск по метаданным и коду конфигурации. Плагины сервер поддерживает, но и без них его поведение задаётся тем, **что индексируется** и **как ранжируется** — и это дешевле, чем derived-state хук.
 
 | Рычаг | Переменные | Что даёт |
 |-------|------------|----------|
@@ -66,9 +75,9 @@ docker run --rm comol/1c_code_metadata_mcp:latest ls /app/plugin_api.py
 |--------|---------|
 | Нужен свой инструмент с бизнес-логикой 1С | [Конструктор MCP серверов для 1С](../../konstruktor-mcp-serverov-1c/) — инструменты пишутся на встроенном языке и публикуются HTTP-сервисом 1С |
 | Нужно поменять поведение ИИ, а не сервера | [Cursor Rules для 1С](../integraciya/cursor-rules.md) — правила задают, когда и как агент вызывает инструменты |
-| Нужны свои пресеты инструментов и словари терминов | Разместите их на сервере, который поддерживает плагины: `TOOL_PRESETS` есть у [HelpSearchServer](spravochnik-hukov.md#helpsearchserver) и [Graph Metadata Search](spravochnik-hukov.md#graph-metadata-search) |
+| Нужны свои пресеты инструментов и словари терминов | Разместите их на сервере, который поддерживает плагины: `TOOL_PRESETS` есть у [HelpSearchServer](spravochnik-hukov.md#helpsearchserver), [Graph Metadata Search](spravochnik-hukov.md#graph-metadata-search) и [CodeMetadataSearchServer](spravochnik-hukov.md#codemetadatasearchserver) |
 | Нужен разбор связей объектов вместо поиска по коду | [Graph Metadata Search](../servery/graph-metadata-search/) работает по той же выгрузке и плагины поддерживает |
 
 {% hint style="info" %}
-Состав образов меняется. Прежде чем закладываться на отсутствие плагинов, проверьте текущий образ командой из первого раздела: появление `/app/plugin_api.py` означает, что сервер перешёл на общий контракт, и вся [система плагинов](README.md) применима к нему без оговорок.
+Состав образов меняется — CodeMetadataSearchServer перешёл на общий контракт именно так. Прежде чем закладываться на отсутствие плагинов, проверьте текущий образ командой из первого раздела: появление `plugin_api.py` означает, что сервер перешёл на общий контракт, и вся [система плагинов](README.md) применима к нему без оговорок.
 {% endhint %}
