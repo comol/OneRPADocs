@@ -496,7 +496,7 @@ comol/1c_code_metadata_mcp:latest
 | `arm64` | arm64 | ~500 MB | Для Apple Silicon / ARM серверов |
 
 {% hint style="info" %}
-Используйте `light`, если embedding модель работает через внешний API (LM Studio, OpenRouter). Образ в 10 раз легче.
+Используйте `light`, если embedding модель работает через внешний API (LM Studio, OpenRouter). Образ в 10 раз легче. Каждый вариант опубликован в stable (`latest`, `light`, `arm64`) и beta (`latest-beta`, `light-beta`, `arm64-beta`); последние контракты и исправления сначала появляются в beta. См. [Каналы образов](../../kanaly-obrazov.md).
 {% endhint %}
 
 ## Подготовка данных

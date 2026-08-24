@@ -13,11 +13,25 @@
 | `RESET_CACHE` | Очистить кэш моделей при старте | Нет | `false` (в HelpSearchServer, SSL, Templates) |
 | `USESSE` | Включить SSE-транспорт для legacy-клиентов. При `false` используется `streamable-http` | Нет | `false` |
 
+## Переменные дистрибутива
+
+Эти значения читаются установочным дистрибутивом из `config.env` и не передаются контейнеру под тем же именем:
+
+| Переменная | Описание | По умолчанию |
+|------------|----------|--------------|
+| `RELEASE_CHANNEL` | Канал `stable` или `beta` | `stable` |
+| `IMAGE_VARIANT` | Базовый вариант: `latest`, `light` или `arm64` | `latest` |
+| `IMAGE_TAG` | Явный тег; если задан, перекрывает канал и вариант | *(пусто)* |
+| `LICENSE_KEY_<СЕРВЕР>` | Ключ stable-канала | — |
+| `LICENSE_KEY_<СЕРВЕР>_BETA` | Ключ beta-канала | — |
+
+Доступные комбинации различаются по серверам. См. [Каналы образов: stable и beta](../kanaly-obrazov.md).
+
 ## Embedding модели (LM Studio / Ollama / OpenRouter)
 
 | Переменная | Описание | Пример |
 |------------|----------|--------|
-| `EMBEDDING_API_BASE` | URL API. Суффикс `/v1` добавляется автоматически | `http://host.docker.internal:1234/v1` |
+| `EMBEDDING_API_BASE` | Полный OpenAI-совместимый base URL, **включая `/v1`**; суффикс автоматически не добавляется | `http://host.docker.internal:1234/v1` |
 | `EMBEDDING_API_KEY` | Ключ API | `lm-studio` |
 | `EMBEDDING_MODEL` | Модель embedding для API или локального режима | `Qwen3-Embedding-4B` |
 | `EMBEDDING_DIMENSIONS` | Явное указание размерности эмбеддингов (для моделей с переменной размерностью) | *(авто)* |
@@ -77,7 +91,7 @@
 | `LEXICAL_PROFILE` | Токенизация лексической дорожки; смена вызывает переиндексацию | `stemmed` |
 
 {% hint style="warning" %}
-Индекс HelpSearchServer лежит в `/app/index` (поколения zvec), а не в `/app/chroma_db`. Полный список параметров, включая чанкование и журналирование: [Конфигурация HelpSearchServer](../servery/help-search-server/konfiguraciya.md).
+В новых beta-сборках индекс HelpSearchServer лежит в `/app/index` (поколения zvec); stable продолжает использовать `/app/chroma_db`. Не подключайте один каталог к обоим каналам. Полный список параметров: [Конфигурация HelpSearchServer](../servery/help-search-server/konfiguraciya.md).
 {% endhint %}
 
 ### CodeMetadataSearchServer (порт 8000)
@@ -133,6 +147,12 @@
 | `VECTOR_OPTIMIZE_DEADLINE_SEC` | Таймаут фоновой оптимизации | `1800` |
 | `VECTOR_OPTIMIZE_CANCEL_DEADLINE_SEC` | Таймаут оптимизации из запроса | `5` |
 | `VECTOR_WRITE_FAILURE_THRESHOLD` | Ошибки записи до терминального состояния | `5` |
+| `GREP_MAX_RESULTS` | Максимум результатов fallback-сканирования | `50` |
+| `GREP_FILE_CACHE_SIZE` | Размер LRU-кэша прочитанных файлов | `500` |
+| `GREP_BROAD_DIR_THRESHOLD` | Максимальная ширина дерева fallback-сканирования | `10000` |
+| `GREP_DEADLINE_SEC` | Общий бюджет одного fallback-сканирования, секунды; `0` отключает | `10` |
+| `GREP_MAX_CACHED_FILE_MB` | Файлы крупнее читаются, но не кэшируются | `8` |
+| `MCP_TOOL_WORKERS` | Потоки для тел MCP-инструментов, чтобы долгий поиск не блокировал event loop | `4` |
 | `PLUGIN_DIR` | Каталог Python-плагинов; читается при каждом старте, флага включения нет | `/app/plugins` |
 | `PLUGIN_STRICT_DERIVED_STATE` | Ронять сборку целиком при ошибке derived-state hook (`on_source_file`, `on_chunk`, `on_metadata_object`) вместо пропуска единицы | `false` |
 | `PLUGIN_HOOK_TIMEOUT_SECONDS` | Бюджет времени одного вызова hook; превысивший его hook считается упавшим | `5.0` |
@@ -222,7 +242,7 @@
 | `MCP_PATH` | URL-путь MCP эндпоинта | `/mcp` |
 | `MCP_TOOL_PROFILE` | Профиль публикуемых инструментов: `admin` или `read-only` | `admin` |
 | `MCP_NAMESPACE` | Namespace регистрации графовых проектов | `default` |
-| `GRAPH_SCOPE_ENFORCED` | Требовать явный `project_id` в project-scoped вызовах | `false` |
+| `GRAPH_SCOPE_ENFORCED` | Записан ли scope в графе: при `true` `project_id` обязателен; при `false` отсутствующий id подставляется из единственного/legacy-проекта и ответ помечается `deprecated` | `false` |
 | `GRAPH_SCOPE_MIGRATION_WINDOW` | Разрешить вызовы без `project_id` при единственном проекте | `false` |
 | `GRAPH_MAX_ITEMS` | Жёсткий предел элементов в ответе | `200` |
 | `GRAPH_TOOL_TIMEOUT_SECONDS` | Таймаут выполнения инструмента | `300` |
@@ -266,6 +286,8 @@
 | `ONEC_AI_OPERATION_TIMEOUT` | Бюджет времени на всю операцию, включая чтение SSE (секунды) | `120` |
 | `ONEC_AI_SKILL_NAME` | Режим сессии: `custom` (с инструментами) или `raw` | `custom` |
 | `ONEC_AI_INPUT_MAX_LENGTH` | Максимальная длина каждого входного поля | `100000` |
+| `ONEC_AI_WORKSPACE_ROOTS` | Абсолютные корни, внутри которых beta-сервер может читать пути из `files`; пустое значение запрещает чтение | `/workspace` в Docker |
+| `ONEC_AI_WORKSPACE_MAX_FILE_BYTES` | Максимальный размер одного файла для `files` | `2000000` |
 | `ONEC_AI_DOC_VERSION` | Версия документации платформы по умолчанию (конкретная версия, не `latest`) | `v8.5.1` |
 | `ONEC_AI_UI_LANGUAGE` | Язык интерфейса | `russian` |
 | `ONEC_AI_PROGRAMMING_LANGUAGE` | Язык программирования | *(пусто)* |
@@ -280,6 +302,7 @@
 | `MCP_TRANSPORT_SESSION_SWEEP_INTERVAL` | Период уборки истёкших сессий (секунды) | `30` |
 | `MCP_TRANSPORT_SESSION_SWEEP_BATCH` | Максимум сессий, закрываемых за один проход уборки | `100` |
 | `HTTP_PORT` | Порт HTTP-сервера | `8007` |
+| `PLUGIN_DIR` | Каталог Python-плагинов (beta) | `/app/plugins` |
 
 ### SyntaxCheckServer (порт 8002)
 

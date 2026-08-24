@@ -1,6 +1,6 @@
 # Серверы без плагинов
 
-Два сервера из списка не поставляют систему плагинов: **CloudEmbeddingsServer** и **1CCodeChecker**. Это не значит, что их нельзя адаптировать — но рычаги у них другие: переменные окружения, состав индексируемых данных, конфигурация вышестоящего сервиса и правила на стороне клиента.
+Из перечисленных в документации компонентов без системы плагинов остаётся **CloudEmbeddingsServer**. Прикладные MCP-серверы, включая 1CCodeChecker, получили общий контракт в новых beta-сборках. Для CloudEmbeddingsServer рычаги прежние: переменные окружения, состав данных и правила на стороне клиента.
 
 CodeMetadataSearchServer систему плагинов **поддерживает** — см. [Справочник хуков](spravochnik-hukov.md#codemetadatasearchserver). Рычаги окружения ниже остаются актуальными для него как более дешёвая альтернатива derived-state хуку.
 
@@ -15,14 +15,15 @@ docker run --rm comol/1c_help_mcp:latest ls /app/plugin_api.py
 # CodeMetadataSearchServer держит справочник глубже — проверяйте оба пути
 docker run --rm comol/1c_code_metadata_mcp:latest ls /app/src/plugin_api.py
 
-# Нет плагинов: команда завершится ошибкой "No such file or directory"
-docker run --rm comol/1c-code-checker:latest ls /app/plugin_api.py /app/src/plugin_api.py
+# 1CCodeChecker тоже хранит справочник не в корне образа
+docker run --rm comol/1c-code-checker:latest-beta `
+  ls /app/MCP_1copilot/plugin_api.py /app/plugins
 ```
 
 Если файл есть — читайте его: это полный контракт, и дальше действует [общая система плагинов](README.md). Если файла нет — смотрите разделы ниже.
 
 {% hint style="warning" %}
-Проверять только `/app/plugin_api.py` недостаточно: у CodeMetadataSearchServer справочник лежит в `/app/src/plugin_api.py`, и такая проверка даст для него ложное «нет плагинов».
+Проверять только `/app/plugin_api.py` недостаточно: у CodeMetadataSearchServer справочник лежит в `/app/src/plugin_api.py`, у 1CCodeChecker — в `/app/MCP_1copilot/plugin_api.py`.
 {% endhint %}
 
 ## CodeMetadataSearchServer — рычаги окружения
@@ -57,27 +58,15 @@ docker run --rm comol/1c-code-checker:latest ls /app/plugin_api.py /app/src/plug
 | Пропускная способность | `EMBEDDING_CONCURRENCY`, `EMBEDDING_BATCH_SIZE`, `MAX_BATCH_SIZE` | Скорость индексации против нагрузки на API |
 | Выдача | `DEFAULT_SEARCH_LIMIT` | Сколько результатов возвращается по умолчанию |
 
-## 1CCodeChecker
-
-Прокси к сервису 1С:Напарник: анализ выполняется на стороне 1С.ai, поэтому «доработка» здесь — это настройка того, **как формируется сессия** с вышестоящим сервисом.
-
-| Рычаг | Переменные | Что даёт |
-|-------|------------|----------|
-| Режим вызова | `MCP_TOOL_CALL_MODE` (`direct` / `standard`), `ONEC_AI_SKILL_NAME` (`custom` / `raw`) | Прямые вызовы инструментов против промптов; наличие инструментов в сессии |
-| Контекст платформы | `ONEC_AI_DOC_VERSION`, `ONEC_CONFIG_NAME`, `ONEC_AI_UI_LANGUAGE`, `ONEC_AI_SCRIPT_LANGUAGE` | Версия документации и конфигурация, в терминах которых отвечает сервис |
-| Границы работы | `ONEC_AI_TIMEOUT`, `ONEC_AI_OPERATION_TIMEOUT`, `ONEC_AI_INPUT_MAX_LENGTH`, `MAX_ACTIVE_SESSIONS`, `SESSION_TTL` | Таймауты, размеры входа и количество одновременных дискуссий |
-
-Подробности: [Конфигурация 1CCodeChecker](../servery/code-checker/konfiguraciya.md) и [Инструменты](../servery/code-checker/instrumenty.md).
-
 ## Если рычагов окружения не хватает
 
 | Задача | Решение |
 |--------|---------|
 | Нужен свой инструмент с бизнес-логикой 1С | [Конструктор MCP серверов для 1С](../../konstruktor-mcp-serverov-1c/) — инструменты пишутся на встроенном языке и публикуются HTTP-сервисом 1С |
 | Нужно поменять поведение ИИ, а не сервера | [Cursor Rules для 1С](../integraciya/cursor-rules.md) — правила задают, когда и как агент вызывает инструменты |
-| Нужны свои пресеты инструментов и словари терминов | Разместите их на сервере, который поддерживает плагины: `TOOL_PRESETS` есть у [HelpSearchServer](spravochnik-hukov.md#helpsearchserver), [Graph Metadata Search](spravochnik-hukov.md#graph-metadata-search) и [CodeMetadataSearchServer](spravochnik-hukov.md#codemetadatasearchserver) |
+| Нужны свои пресеты инструментов и словари терминов | Используйте `TOOL_PRESETS`: они есть у [HelpSearchServer](spravochnik-hukov.md#helpsearchserver), [Graph Metadata Search](spravochnik-hukov.md#graph-metadata-search), [CodeMetadataSearchServer](spravochnik-hukov.md#codemetadatasearchserver) и [1CCodeChecker](spravochnik-hukov.md#1ccodechecker) |
 | Нужен разбор связей объектов вместо поиска по коду | [Graph Metadata Search](../servery/graph-metadata-search/) работает по той же выгрузке и плагины поддерживает |
 
 {% hint style="info" %}
-Состав образов меняется — CodeMetadataSearchServer перешёл на общий контракт именно так. Прежде чем закладываться на отсутствие плагинов, проверьте текущий образ командой из первого раздела: появление `plugin_api.py` означает, что сервер перешёл на общий контракт, и вся [система плагинов](README.md) применима к нему без оговорок.
+Состав образов меняется — CodeMetadataSearchServer и 1CCodeChecker перешли на общий контракт именно так. Прежде чем закладываться на отсутствие плагинов, проверяйте текущий beta-образ командами из первого раздела: появление `plugin_api.py` означает, что [система плагинов](README.md) применима.
 {% endhint %}

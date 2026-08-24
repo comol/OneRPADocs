@@ -228,6 +228,8 @@ http://localhost:8004/extend/
 comol/template-search-mcp:latest
 ```
 
+Stable: `latest`, `light`, `arm64`; beta: `latest-beta`, `light-beta`, `arm64-beta`. Новые функции сначала появляются в beta. Подробнее: [Каналы образов](../../kanaly-obrazov.md).
+
 ## Быстрый старт
 
 ```powershell

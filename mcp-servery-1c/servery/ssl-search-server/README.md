@@ -92,6 +92,8 @@ SSLSearchServer предоставляет ИИ доступ к справке �
 comol/mcp_ssl_server:latest
 ```
 
+Stable: `latest`, `light`, `arm64`; beta: `latest-beta`, `light-beta`, `arm64-beta`. Новые функции сначала появляются в beta. Подробнее: [Каналы образов](../../kanaly-obrazov.md).
+
 ## Быстрый старт
 
 ```powershell

@@ -1,11 +1,11 @@
 # Система плагинов: доработка MCP-серверов
 
-MCP-серверы поставляются готовыми Docker-образами, внутри которых почти всё скомпилировано. Чтобы их можно было адаптировать под конкретную конфигурацию, компанию и терминологию **без пересборки образа**, в них встроена единая система плагинов.
+MCP-серверы поставляются готовыми Docker-образами, внутри которых почти всё скомпилировано. Чтобы их можно было адаптировать под конкретную конфигурацию, компанию и терминологию **без пересборки образа**, в новых beta-сборках прикладных серверов встроена единая система плагинов.
 
 **Плагин — это один Python-файл в каталоге плагинов сервера.** Ни базового класса, ни декоратора, ни регистрации, ни манифеста, ни шага сборки. Пустой файл — валидный плагин, который ничего не меняет.
 
 {% hint style="info" %}
-**Эта статья и её подстатьи написаны в первую очередь для ИИ-агента** (Cursor, Claude Code, e-agent), которому поручили доработать MCP-сервер. Всё, что нужно для написания плагина, лежит внутри образа в читаемом виде: `/app/plugin_api.py` (полный справочник), `/app/plugins/AGENTS.md` (короткая версия) и `/app/plugins/example.py` (пример со всеми хуками). Документация ниже — карта этих файлов и различий между серверами.
+**Эта статья и её подстатьи написаны в первую очередь для ИИ-агента** (Cursor, Claude Code, e-agent), которому поручили доработать MCP-сервер. Всё, что нужно для написания плагина, лежит внутри образа в читаемом виде: `/app/plugin_api.py` (полный справочник; у CodeMetadataSearchServer — `/app/src/plugin_api.py`, у 1CCodeChecker — `/app/MCP_1copilot/plugin_api.py`), `/app/plugins/AGENTS.md` (короткая версия) и `/app/plugins/example.py` (пример со всеми хуками). Документация ниже — карта этих файлов и различий между серверами.
 {% endhint %}
 
 ## Модель в пяти строках
@@ -26,15 +26,15 @@ MCP-серверы поставляются готовыми Docker-образа
 | [TemplatesSearchServer](../servery/templates-search-server/) | Да | `template-search` | `/app/plugins` (`PLUGIN_DIR`) | Всегда включены |
 | [Graph Metadata Search](../servery/graph-metadata-search/) | Да | `graph-metadata-search` | `/app/plugins` (`GRAPH_PLUGINS_DIRECTORY`) | `GRAPH_PLUGINS_ENABLED=true` |
 | [CodeMetadataSearchServer](../servery/code-metadata-search/) | Да | `code-metadata-search` | `/app/plugins` (`PLUGIN_DIR`) | Всегда включены |
+| [1CCodeChecker](../servery/code-checker/) | Да (beta) | `onec-code-checker` | `/app/plugins` (`PLUGIN_DIR`) | Всегда включены |
 | [CloudEmbeddingsServer](../servery/cloud-embeddings-server/) | Нет | — | — | См. [Серверы без плагинов](dorabotka-bez-pluginov.md) |
-| [1CCodeChecker](../servery/code-checker/) | Нет | — | — | См. [Серверы без плагинов](dorabotka-bez-pluginov.md) |
 
 {% hint style="warning" %}
 У Graph Metadata Search подсистема плагинов **выключена по умолчанию**. Без `GRAPH_PLUGINS_ENABLED=true` каталог не читается вообще, а `reload_plugins` отвечает, что подсистема отключена.
 {% endhint %}
 
 {% hint style="info" %}
-У CodeMetadataSearchServer справочник лежит в `/app/src/plugin_api.py`, а не в корне образа, как у остальных серверов. Проверка наличия плагинов командой `ls /app/plugin_api.py` даст для него ложное «нет плагинов» — проверяйте `ls /app/src/plugin_api.py /app/plugins`.
+У CodeMetadataSearchServer справочник лежит в `/app/src/plugin_api.py`, у 1CCodeChecker — в `/app/MCP_1copilot/plugin_api.py`. Проверка только `/app/plugin_api.py` даст для них ложное «нет плагинов».
 {% endhint %}
 
 ## Два слоя: контракт хоста и набор хуков
@@ -73,6 +73,7 @@ REQUIRES = {"host": 1, "product": "ssl-search", "hooks": 1}
 | TemplatesSearchServer | `on_template`, `on_memory` | Векторные коллекции шаблонов и заметок (`index_meta.json` хранит отпечаток) |
 | Graph Metadata Search | `on_source_unit`, `on_metadata_object`, `on_routine`, `on_embedding_document` | Проект пересобирается: граф, полнотекстовый и векторный маршруты |
 | SyntaxCheckServer | нет | Ничего: сервер не хранит состояния между вызовами, все хуки call-scoped |
+| 1CCodeChecker | нет | Ничего: все хуки call-scoped, анализ выполняется в 1С:Напарнике |
 
 {% hint style="danger" %}
 Пересборка индекса на полном корпусе — это десятки минут, а на конфигурации — часы. Прежде чем править derived-state хук, убедитесь, что нужного эффекта нельзя добиться call-scoped хуком или декларативной таблицей.
@@ -86,13 +87,13 @@ REQUIRES = {"host": 1, "product": "ssl-search", "hooks": 1}
 |---------|---------|------------|
 | `ALIASES` | HelpSearchServer, Graph Metadata Search | Дополнительные имена, которые разрешаются в существующие сущности |
 | `QUERY_ALIASES` | SSLSearchServer, TemplatesSearchServer, CodeMetadataSearchServer | Замены терминов в нормализованном запросе до поиска |
-| `TOOL_PRESETS` | HelpSearchServer, Graph Metadata Search, CodeMetadataSearchServer | Новые MCP-инструменты как пресеты существующих с зафиксированными аргументами |
+| `TOOL_PRESETS` | HelpSearchServer, Graph Metadata Search, CodeMetadataSearchServer, 1CCodeChecker | Новые MCP-инструменты как пресеты существующих с зафиксированными аргументами |
 | `CYPHER_TEMPLATES` | Graph Metadata Search | Дополнительные read-only Cypher-шаблоны для `run_graph_cypher_template` |
 | `SUPPRESSED_DIAGNOSTICS` | SyntaxCheckServer | Код диагностики → причина, по которой она не попадает в отчёт |
 
 ## Жизненный цикл доработки
 
-1. **Прочитать контракт.** `/app/plugin_api.py` в образе нужного сервера (у CodeMetadataSearchServer — `/app/src/plugin_api.py`) — полный справочник: payload каждого хука, какие поля применяются, рабочий пример.
+1. **Прочитать контракт.** `/app/plugin_api.py` в образе нужного сервера (у CodeMetadataSearchServer — `/app/src/plugin_api.py`, у 1CCodeChecker — `/app/MCP_1copilot/plugin_api.py`) — полный справочник: payload каждого хука, какие поля применяются, рабочий пример.
 2. **Скопировать `example.py`.** В `/app/plugins/example.py` объявлены все хуки и таблицы продукта, закомментированные и безвредные.
 3. **Написать один файл.** Имя файла задаёт порядок: файлы выполняются в отсортированном порядке имён, каждый хук — конвейер.
 4. **Прогнать dry-run.** Одна команда в пустом контейнере: без смонтированных данных, без построенного индекса, без запущенного сервера.

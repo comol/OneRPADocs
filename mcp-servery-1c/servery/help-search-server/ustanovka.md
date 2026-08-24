@@ -1,5 +1,9 @@
 # Установка
 
+{% hint style="warning" %}
+Эта страница описывает новые beta-сборки HelpSearchServer: теги `latest-beta`, `light-beta`, `arm64-beta` и индекс поколений в `/app/index`. Stable-теги используют прежнюю ChromaDB в `/app/chroma_db`; команды для каналов нельзя смешивать. См. [Каналы образов](../../kanaly-obrazov.md).
+{% endhint %}
+
 ## Предварительные требования
 
 1. Docker Desktop запущен
@@ -9,11 +13,11 @@
 ## Создание папки для индекса
 
 ```powershell
-New-Item -ItemType Directory -Force -Path "E:\bases\mcp_docs"
+New-Item -ItemType Directory -Force -Path "E:\bases\mcp_docs_beta"
 ```
 
 {% hint style="info" %}
-Путь `E:\bases\mcp_docs` — это **пример**. Используйте любой удобный путь на вашем компьютере.
+Путь `E:\bases\mcp_docs_beta` — это **пример**. Используйте любой удобный путь на вашем компьютере.
 {% endhint %}
 
 {% hint style="danger" %}
@@ -27,13 +31,13 @@ New-Item -ItemType Directory -Force -Path "E:\bases\mcp_docs"
 ```powershell
 docker run -d -p 8003:8003 `
   --name 1c_help_mcp `
-  -e LICENSE_KEY=YOUR_LICENSE_KEY `
+  -e LICENSE_KEY=YOUR_BETA_LICENSE_KEY `
   -e EMBEDDING_API_BASE=http://host.docker.internal:1234/v1 `
   -e EMBEDDING_API_KEY=lm-studio `
   -e EMBEDDING_MODEL=Qwen3-Embedding-4B `
-  -v "E:/bases/mcp_docs:/app/index" `
+  -v "E:/bases/mcp_docs_beta:/app/index" `
   -v "E:/bases/mcp_model_cache:/app/model_cache" `
-  comol/1c_help_mcp:latest
+  comol/1c_help_mcp:latest-beta
 ```
 
 {% hint style="success" %}
@@ -45,10 +49,10 @@ docker run -d -p 8003:8003 `
 ```powershell
 docker run -d -p 8003:8003 `
   --name 1c_help_mcp `
-  -e LICENSE_KEY=YOUR_LICENSE_KEY `
-  -v "E:/bases/mcp_docs:/app/index" `
+  -e LICENSE_KEY=YOUR_BETA_LICENSE_KEY `
+  -v "E:/bases/mcp_docs_beta:/app/index" `
   -v "E:/bases/mcp_model_cache:/app/model_cache" `
-  comol/1c_help_mcp:latest
+  comol/1c_help_mcp:latest-beta
 ```
 
 ## Справка своей версии платформы
@@ -71,15 +75,15 @@ Test-Path "C:\Program Files\1cv8\8.3.23.1997\bin"
 ```powershell
 docker run -d -p 8003:8003 `
   --name 1c_help_mcp `
-  -e LICENSE_KEY=YOUR_LICENSE_KEY `
+  -e LICENSE_KEY=YOUR_BETA_LICENSE_KEY `
   -e 1C_BIN_PATH=/1c_docs `
   -e EMBEDDING_API_BASE=http://host.docker.internal:1234/v1 `
   -e EMBEDDING_API_KEY=lm-studio `
   -e EMBEDDING_MODEL=Qwen3-Embedding-4B `
   -v "C:/Program Files/1cv8/8.3.23.1997/bin:/1c_docs" `
-  -v "E:/bases/mcp_docs:/app/index" `
+  -v "E:/bases/mcp_docs_beta:/app/index" `
   -v "E:/bases/mcp_model_cache:/app/model_cache" `
-  comol/1c_help_mcp:latest
+  comol/1c_help_mcp:latest-beta
 ```
 
 {% hint style="warning" %}
@@ -90,7 +94,7 @@ docker run -d -p 8003:8003 `
 
 ### Что происходит
 
-1. **Скачивание образа** (\~3,5 ГБ для `latest`, \~120 МБ для `light`)
+1. **Скачивание образа** (\~3,5 ГБ для `latest-beta`, \~120 МБ для `light-beta`)
 2. **HTTP-сервер поднимается сразу** — `/health`, `/ready` и `tools/list` отвечают с первой секунды, холодный старт никогда не выглядит как закрытый порт
 3. **Загрузка embedding-модели** (в полном образе она уже внутри)
 4. **Индексация корпусов** — справка платформы, руководства, спецификации форматов, стандарты (см. таблицу ниже)
@@ -124,13 +128,13 @@ Invoke-RestMethod -Uri "http://localhost:8003/ready"
 
 ## Миграция со старого индекса (chroma_db)
 
-Сервер больше не использует ChromaDB: индекс лежит в `/app/index` поколениями. Если у вас том со старым индексом в `chroma_db`, перенесите его разовой командой — переиндексация не нужна, векторы переносятся как есть:
+Beta-сервер больше не использует ChromaDB: индекс лежит в `/app/index` поколениями. Stable продолжает использовать `/app/chroma_db`. Если у вас том со старым индексом в `chroma_db`, перенесите его разовой командой — переиндексация не нужна, векторы переносятся как есть:
 
 ```powershell
 docker run --rm `
   -v "E:/bases/mcp_docs_old:/app/chroma_db" `
-  -v "E:/bases/mcp_docs:/app/index" `
-  comol/1c_help_mcp:latest `
+  -v "E:/bases/mcp_docs_beta:/app/index" `
+  comol/1c_help_mcp:latest-beta `
   sh -c "pip install chromadb && python3 legacy_migration.py --legacy chroma_db --index index"
 ```
 
@@ -162,12 +166,12 @@ docker rm 1c_help_mcp
 
 docker run -d -p 8003:8003 `
   --name 1c_help_mcp `
-  -e LICENSE_KEY=YOUR_LICENSE_KEY `
+  -e LICENSE_KEY=YOUR_BETA_LICENSE_KEY `
   -e 1C_BIN_PATH=/1c_docs `
   -v "C:/Program Files/1cv8/8.3.24.1234/bin:/1c_docs" `
-  -v "E:/bases/mcp_docs:/app/index" `
+  -v "E:/bases/mcp_docs_beta:/app/index" `
   -v "E:/bases/mcp_model_cache:/app/model_cache" `
-  comol/1c_help_mcp:latest
+  comol/1c_help_mcp:latest-beta
 ```
 
 ## Установка в закрытом контуре

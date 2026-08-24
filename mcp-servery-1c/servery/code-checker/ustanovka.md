@@ -14,7 +14,7 @@
 docker run -d -p 8007:8007 `
   --name 1c_code_checker `
   -e LICENSE_KEY=YOUR_LICENSE_KEY `
-  -e ONEC_AI_TOKEN=YOUR_NAPARNIR_TOKEN `
+  -e ONEC_AI_TOKEN=YOUR_NAPARNIK_TOKEN `
   comol/1c-code-checker:latest
 ```
 
@@ -24,10 +24,25 @@ docker run -d -p 8007:8007 `
 docker run -d -p 8007:8007 `
   --name 1c_code_checker `
   -e LICENSE_KEY=YOUR_LICENSE_KEY `
-  -e ONEC_AI_TOKEN=YOUR_NAPARNIR_TOKEN `
+  -e ONEC_AI_TOKEN=YOUR_NAPARNIK_TOKEN `
   -e ONEC_CONFIG_NAME="Бухгалтерия предприятия" `
   comol/1c-code-checker:latest
 ```
+
+### Beta с чтением исходников из workspace
+
+Чтобы не передавать большие модули через JSON, смонтируйте репозиторий только для чтения и передавайте инструментам аргумент `files`:
+
+```powershell
+docker run -d -p 8007:8007 `
+  --name 1c_code_checker_beta `
+  -e LICENSE_KEY=YOUR_BETA_LICENSE_KEY `
+  -e ONEC_AI_TOKEN=YOUR_NAPARNIK_TOKEN `
+  -v "C:/Work/My1CProject:/workspace:ro" `
+  comol/1c-code-checker:latest-beta
+```
+
+В образе `ONEC_AI_WORKSPACE_ROOTS=/workspace`. Сервер разрешает только обычные файлы внутри объявленных корней, после полного разрешения ссылок, и никогда их не записывает. Stable- и beta-ключи не смешиваются; см. [Каналы образов](../../kanaly-obrazov.md).
 
 Полный список переменных окружения — в разделе [Конфигурация](konfiguraciya.md).
 

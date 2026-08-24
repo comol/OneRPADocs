@@ -80,6 +80,8 @@
 
 Подробное описание каждого инструмента — в разделе [Инструменты](instrumenty.md).
 
+В новых beta-сборках пять инструментов с кодом принимают `files`: сервер читает до 20 файлов из смонтированных read-only корней `ONEC_AI_WORKSPACE_ROOTS`, возвращает их SHA-256 в `sources` и не записывает workspace. Это надёжнее передачи большого модуля inline. См. [Инструменты](instrumenty.md#чтение-исходников-из-workspace-beta) и [Установку](ustanovka.md#beta-с-чтением-исходников-из-workspace).
+
 ## Порт
 
 **8007**
@@ -90,13 +92,15 @@
 comol/1c-code-checker:latest
 ```
 
+Stable: `latest`, `arm64`; beta: `latest-beta`, `light-beta`, `arm64-beta`. В stable варианта `light` нет. Система плагинов ниже относится к новым beta-сборкам. Подробнее: [Каналы образов](../../kanaly-obrazov.md).
+
 ## Быстрый старт
 
 ```powershell
 docker run -d -p 8007:8007 `
   --name 1c_code_checker `
   -e LICENSE_KEY=YOUR_LICENSE_KEY `
-  -e ONEC_AI_TOKEN=YOUR_NAPARNIR_TOKEN `
+  -e ONEC_AI_TOKEN=YOUR_NAPARNIK_TOKEN `
   comol/1c-code-checker:latest
 ```
 
@@ -133,7 +137,10 @@ docker run -d -p 8007:8007 `
 | Эндпоинт | Назначение |
 |----------|------------|
 | `/mcp` | MCP (streamable-http; при `USESSE=true` — SSE) |
-| `/health` | Состояние: `config_ok`, `direct_mode_ok`, доступность upstream-возможностей. `503`, пока конфигурация не прошла проверку |
+| `/health` | Живость и состояние конфигурации/upstream; не выполняет сетевой вызов к 1С.ai |
+| `/ready` | Готовность принимать трафик: конфигурация прошла проверку и обязательные возможности доступны |
+| `/plugins` | Загруженные плагины, хуки, ошибки и текущая эпоха |
+| `/plugins/reload` | Атомарно перечитать каталог плагинов; `409`, если новый набор не загружается целиком |
 | `/metrics/sessions` | Счётчики транспортных сессий MCP |
 | `/release` | Идентичность выпуска: версия, digest образа, версия upstream-контракта, время сборки |
 
@@ -148,6 +155,29 @@ docker run -d -p 8007:8007 `
 - [Инструменты](instrumenty.md) — подробное описание всех 11 инструментов
 - [Конфигурация](konfiguraciya.md) — переменные окружения и режимы работы
 
-## Доработка
+## Доработка плагинами (beta)
 
-Плагины этим сервером не поддерживаются: анализ выполняет сервис 1С:Напарник, настраивается формирование сессии с ним. См. [Серверы без плагинов](../../sistema-pluginov/dorabotka-bez-pluginov.md).
+Новые beta-сборки поддерживают плагины без пересборки образа. Каталог — `/app/plugins`, полный контракт — `/app/MCP_1copilot/plugin_api.py`, пример — `/app/plugins/example.py`. Все хуки call-scoped: сервер ничего не индексирует, поэтому правка требует только перезагрузки и никогда не вызывает пересборку.
+
+| Хук | Когда срабатывает | Что можно изменить |
+|-----|-------------------|--------------------|
+| `on_startup(config)` | После проверки лицензии и конфигурации, до открытия порта | Ничего; секреты заменены маркерами |
+| `on_request(request)` | После проверок аргументов инструмента | Аргументы того же инструмента и тех же типов |
+| `on_upstream_call(call, request)` | Последняя точка перед отправкой в `code.1c.ai`, включая fallback-промпт | Текст промпта или аргументы вызова; нельзя сменить mode/capability/upstream tool |
+| `on_result(result, request)` | После ответа upstream, до типизированного конверта | Только `answer`; diff и `safe_to_apply` пересчитываются заново |
+
+Таблица `TOOL_PRESETS` добавляет read-only MCP-инструменты как пресеты одного из 11 штатных с фиксированными аргументами. Токен `ONEC_AI_TOKEN` и `LICENSE_KEY` не попадают в payload, журнал и `/plugins`.
+
+```powershell
+# Проверить файл без токена, лицензии и сети
+docker run --rm -v "E:/plugins/checker/10-policy.py:/tmp/plugin.py" `
+  comol/1c-code-checker:latest-beta `
+  python -m MCP_1copilot --dry-run /tmp/plugin.py
+
+# Подключить каталог и перечитать его без перезапуска
+# ... -v "E:/plugins/checker:/app/plugins" ...
+Invoke-RestMethod -Uri "http://localhost:8007/plugins"
+Invoke-RestMethod -Method Post -Uri "http://localhost:8007/plugins/reload"
+```
+
+Подробнее: [Система плагинов](../../sistema-pluginov/) и [справочник хуков 1CCodeChecker](../../sistema-pluginov/spravochnik-hukov.md#1ccodechecker).

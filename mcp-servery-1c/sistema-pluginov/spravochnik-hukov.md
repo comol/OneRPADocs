@@ -1,28 +1,29 @@
 # Справочник хуков по серверам
 
-Набор хуков объявляет каждый сервер сам. Ниже — что предлагает каждый из шести серверов с плагинами: имена, классификация, момент срабатывания, форма payload и какие поля применяются из возвращённого значения.
+Набор хуков объявляет каждый сервер сам. Ниже — что предлагает каждый из семи прикладных серверов с плагинами: имена, классификация, момент срабатывания, форма payload и какие поля применяются из возвращённого значения.
 
 {% hint style="info" %}
-Эта страница — карта. Единственный полный и всегда актуальный справочник — `/app/plugin_api.py` внутри образа (у CodeMetadataSearchServer — `/app/src/plugin_api.py`): в нём для каждого хука и таблицы есть форма payload и рабочий пример. Достать: `docker run --rm <образ> cat /app/plugin_api.py`.
+Эта страница — карта. Полный справочник лежит внутри образа: обычно `/app/plugin_api.py`, у CodeMetadataSearchServer — `/app/src/plugin_api.py`, у 1CCodeChecker — `/app/MCP_1copilot/plugin_api.py`. В нём для каждого хука и таблицы есть форма payload и рабочий пример.
 {% endhint %}
 
 ## Сводная таблица хуков
 
-| Хук | Help | SSL | Syntax | Templates | Graph | Code |
-|-----|------|-----|--------|-----------|-------|------|
-| `on_startup` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| `on_request` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| `on_result` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| `on_query` | ✅ | — | — | — | — | — |
-| `on_diagnostics` | — | — | ✅ | — | — | — |
-| `on_rank` | — | — | — | ✅ | — | — |
-| `on_search_candidates` | — | — | — | — | ✅ | ✅ |
-| `on_document` *(derived)* | ✅ | — | — | — | — | — |
-| `on_entry` *(derived)* | — | ✅ | — | — | — | — |
-| `on_template`, `on_memory` *(derived)* | — | — | — | ✅ | — | — |
-| `on_source_unit`, `on_metadata_object`, `on_routine`, `on_embedding_document` *(derived)* | — | — | — | — | ✅ | — |
-| `on_source_file`, `on_chunk`, `on_metadata_object` *(derived)* | — | — | — | — | — | ✅ |
-| Таблицы | `ALIASES`, `TOOL_PRESETS` | `QUERY_ALIASES` | `SUPPRESSED_DIAGNOSTICS` | `QUERY_ALIASES` | `ALIASES`, `TOOL_PRESETS`, `CYPHER_TEMPLATES` | `QUERY_ALIASES`, `TOOL_PRESETS` |
+| Хук | Help | SSL | Syntax | Templates | Graph | Code | Checker |
+|-----|------|-----|--------|-----------|-------|------|---------|
+| `on_startup` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| `on_request` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| `on_result` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| `on_query` | ✅ | — | — | — | — | — | — |
+| `on_upstream_call` | — | — | — | — | — | — | ✅ |
+| `on_diagnostics` | — | — | ✅ | — | — | — | — |
+| `on_rank` | — | — | — | ✅ | — | — | — |
+| `on_search_candidates` | — | — | — | — | ✅ | ✅ | — |
+| `on_document` *(derived)* | ✅ | — | — | — | — | — | — |
+| `on_entry` *(derived)* | — | ✅ | — | — | — | — | — |
+| `on_template`, `on_memory` *(derived)* | — | — | — | ✅ | — | — | — |
+| `on_source_unit`, `on_metadata_object`, `on_routine`, `on_embedding_document` *(derived)* | — | — | — | — | ✅ | — | — |
+| `on_source_file`, `on_chunk`, `on_metadata_object` *(derived)* | — | — | — | — | — | ✅ | — |
+| Таблицы | `ALIASES`, `TOOL_PRESETS` | `QUERY_ALIASES` | `SUPPRESSED_DIAGNOSTICS` | `QUERY_ALIASES` | `ALIASES`, `TOOL_PRESETS`, `CYPHER_TEMPLATES` | `QUERY_ALIASES`, `TOOL_PRESETS` | `TOOL_PRESETS` |
 
 ---
 
@@ -50,7 +51,7 @@
 # config: словарь всех настроек; секреты приходят как "<redacted>"
 # request: {"tool": "docsearch" | "docinfo" | "formatspec" | "standards",
 #           "arguments": {"query"/"name", "top_k", "doc_type", "scope",
-#                         "max_chars", "max_items", "detail_level", "cursor"}}
+#                         "max_chars", "max_items", "detail_level", "cursor", "diagnostics"}}
 # query:   {"tool": ..., "text": ..., "normalized": ...}
 # result:  {"tool", "outcome", "query", "generation", "total",
 #           "items": [{"doc_id", "citation", "snippets", "snippet_count",
@@ -241,7 +242,34 @@
 {% endhint %}
 
 
+
 ---
+
+## 1CCodeChecker
+
+| Параметр | Значение |
+|----------|----------|
+| Образ / порт | `comol/1c-code-checker:latest-beta` / 8007 |
+| `PRODUCT` | `onec-code-checker` |
+| Версии | `HOST_CONTRACT_VERSION = 1`, `HOOKS_VERSION = 1` |
+| Каталог | `/app/plugins` (`PLUGIN_DIR`) |
+| Справочник в образе | `/app/MCP_1copilot/plugin_api.py` |
+| Интроспекция | `GET /plugins`, перезагрузка `POST /plugins/reload` |
+| Dry-run | `python -m MCP_1copilot --dry-run <файл>` — без токена, лицензии и сети |
+| Цена правки | Только перезагрузка: derived-state и индекса у сервера нет |
+
+| Хук | Класс | Когда срабатывает | Что применяется |
+|-----|-------|-------------------|-----------------|
+| `on_startup(config)` | call-scoped | После проверки лицензии и конфигурации, до открытия порта | Ничего; секреты заменены маркерами |
+| `on_request(request)` | call-scoped | Каждый вызов после собственных проверок сервера, до ограничения длины полей | `arguments` целиком, с теми же именами и типами |
+| `on_upstream_call(call, request)` | call-scoped | Непосредственно перед уходом запроса в `code.1c.ai`; повторно перед fallback-промптом | Для prompt-пути — `prompt`; для direct-пути — `arguments`. Нельзя сменить `mode`, `capability` или `upstream_tool` |
+| `on_result(result, request)` | call-scoped | После ответа upstream и очистки, до типизированного конверта | Только `answer`; доказательства усечения, diff и `safe_to_apply` вычисляются заново |
+
+`on_upstream_call` — последняя точка перед внешней границей. Через неё проходят исходный код и параметры сессии, поэтому плагин может удалить корпоративные данные или добавить стандарт компании, но не должен записывать payload в собственный журнал. Перезапись, которая расширяет поле сверх `ONEC_AI_INPUT_MAX_LENGTH` или пытается перенаправить capability, отбрасывается целиком.
+
+`ONEC_AI_TOKEN` и `LICENSE_KEY` не попадают ни в payload, ни в журнал, ни в `/plugins`. Если плагин изменил вызов, ответ сообщает имя файла и какие аргументы изменились; длинные значения показываются длиной и SHA-256-префиксом, а не исходным текстом.
+
+**Таблица `TOOL_PRESETS`** — список `{"name", "description", "tool", "bind"}`. Каждый элемент публикует дополнительный read-only MCP-инструмент как пресет одного из 11 штатных с фиксированными аргументами. Связанный аргумент исчезает из схемы пресета и не может быть переопределён вызывающей стороной.
 
 ## CodeMetadataSearchServer
 

@@ -175,7 +175,7 @@ Graph Metadata Search строит граф связей метаданных в
 | `cursor` | string | Токен продолжения из поля `cursor` усечённого ответа. Действителен только для того же проекта, поколения, инструмента и запроса |
 | `max_items` | int | Размер страницы, ограничен жёстким лимитом сервера (`GRAPH_MAX_ITEMS`) |
 
-Ответы возвращаются в едином конверте: `context` (установка, проект, поколение, correlation id), `items`, `total`, `returned`, `truncated`, `cursor`, `warnings`, `degraded`, `evidence`. Ошибки типизированы: неизвестный проект, устаревшее поколение, таймаут, некорректный аргумент, некорректный курсор.
+Ответы возвращаются в общем конверте версии `contract_version: "2.0"`. Всегда присутствуют только `contract_version`, `context`, `total` и `returned`; остальные ключи появляются, когда действительно сообщают что-то: `items`, `text`, `nodes`/`edges` или `data`, `truncated`, `cursor`, `warnings`, `degraded`, `evidence`. Отсутствие необязательного ключа означает пустое, `false` или `null`; JSON на проводе минифицирован. Инструменты не публикуют `outputSchema`, поэтому FastMCP не дублирует тот же ответ в `structuredContent`. Ошибки типизированы: неизвестный проект, устаревшее поколение, таймаут, некорректный аргумент, некорректный курсор.
 
 Инструменты, не привязанные к проекту (`get_metadata_prompt`, `get_indexing_status`, `health_graph`, `get_graph_capabilities`, `list_graph_capabilities`, `get_graph_tool_schema`, `metadata_report`, `unpack_ordinary_form`, `build_ordinary_form`, а также инструменты управления проектами), получают только `cursor` и `max_items`; `project_id` у административных инструментов — обычный доменный аргумент.
 
@@ -648,6 +648,8 @@ Healthcheck в docker-compose использует именно `/healthz`: пр
 ```
 comol/1c_graph_metadata:latest
 ```
+
+Stable: `latest`, `light`, `arm64`; beta: `latest-beta`, `light-beta`, `arm64-beta`. Новые контракт 2.0, project scope и система плагинов сначала публикуются в beta. Подробнее: [Каналы образов](../../kanaly-obrazov.md).
 
 ## Архитектура
 

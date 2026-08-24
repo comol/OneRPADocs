@@ -193,6 +193,7 @@
   * [Оркестраторы](rpa-platforma-onerpa/orkestratory.md)
   * [Логирование](rpa-platforma-onerpa/logirovanie.md)
 * [MCP серверы для 1С](mcp-servery-1c/README.md)
+  * [Каналы образов: stable и beta](mcp-servery-1c/kanaly-obrazov.md)
   * [Требования](mcp-servery-1c/trebovaniya/README.md)
     * [Docker Desktop и WSL2](mcp-servery-1c/trebovaniya/docker-windows.md)
     * [Настройка Cursor](mcp-servery-1c/trebovaniya/cursor-nastrojka.md)

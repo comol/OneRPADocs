@@ -203,6 +203,37 @@ def on_search_candidates(candidates, query, tool):
 `on_metadata_object` — derived-state: значения `properties` должны быть примитивами или списками примитивов (Neo4j другого не хранит), а правка файла вызывает пересборку проекта. `ALIASES`, `CYPHER_TEMPLATES` и `on_search_candidates` — call-scoped, им достаточно `reload_plugins`.
 {% endhint %}
 
+## 1CCodeChecker: пресет ERP и очистка перед отправкой
+
+Все хуки здесь call-scoped: перезагрузка действует со следующего вызова, ничего не переиндексируется. `on_upstream_call` — последняя точка перед передачей данных в `code.1c.ai`.
+
+```python
+REQUIRES = {"host": 1, "product": "onec-code-checker", "hooks": 1}
+
+TOOL_PRESETS = [
+    {
+        "name": "erp_help",
+        "description": "Поиск только в документации 1С:ERP.",
+        "tool": "config_help",
+        "bind": {"config_name": "ERP"},
+    },
+]
+
+
+def on_upstream_call(call, request):
+    """Не отправляем внутреннее название организации во внешний сервис."""
+    if call["mode"] != "direct" or not call["arguments"]:
+        return
+    for key, value in list(call["arguments"].items()):
+        if isinstance(value, str):
+            call["arguments"][key] = value.replace("ООО Ромашка", "<организация>")
+    return call
+```
+
+Не записывайте `call` и `request` в собственный журнал: через них могут проходить исходный код и параметры сессии.
+
+---
+
 ## Композиция нескольких файлов
 
 Файлы выполняются в отсортированном порядке имён, и каждый хук — конвейер: что вернул `10-terms.py`, то получит `20-filter.py`. Отсюда практика именования:

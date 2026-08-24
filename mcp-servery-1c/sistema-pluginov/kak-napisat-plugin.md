@@ -12,6 +12,8 @@
 | `/app/plugins/AGENTS.md` | Короткая версия для агента: модель, правила, чем платят за правку |
 | `/app/plugins/example.py` | Пример, объявляющий все хуки и таблицы продукта; безвреден, копируется целиком |
 
+Исключения по пути справочника: CodeMetadataSearchServer — `/app/src/plugin_api.py`, 1CCodeChecker — `/app/MCP_1copilot/plugin_api.py`.
+
 Достать их можно, не запуская сервер:
 
 ```powershell
@@ -107,7 +109,12 @@ docker run --rm -v "E:/plugins/mcp_graph/10-svojstva.py:/tmp/my_plugin.py" `
 
 # CodeMetadataSearchServer
 docker run --rm -v "E:/plugins/mcp_code/10-terminy.py:/tmp/my_plugin.py" `
-  comol/1c_code_metadata_mcp:latest python src/plugin_dry_run.py /tmp/my_plugin.py
+  comol/1c_code_metadata_mcp:latest-beta python src/plugin_dry_run.py /tmp/my_plugin.py
+
+# 1CCodeChecker
+docker run --rm -v "E:/plugins/checker/10-policy.py:/tmp/my_plugin.py" `
+  comol/1c-code-checker:latest-beta `
+  python -m MCP_1copilot --dry-run /tmp/my_plugin.py
 ```
 
 {% hint style="info" %}
@@ -142,7 +149,7 @@ docker run -d -p 8006:8006 `
 
 | Переменная | Серверы | Назначение | По умолчанию |
 |------------|---------|------------|--------------|
-| `PLUGIN_DIR` | Help, SSL, Templates, Code | Каталог плагинов внутри контейнера | `/app/plugins` |
+| `PLUGIN_DIR` | Help, SSL, Templates, Code, 1CCodeChecker | Каталог плагинов внутри контейнера | `/app/plugins` |
 | `PLUGINS_DIR` | Syntax | То же; пустое значение означает `/app/plugins` | *(пусто)* |
 | `PLUGIN_STRICT_DERIVED_STATE` | Help, SSL, Templates, Code | `true` — упавший derived-state хук роняет сборку вместо пропуска единицы | `false` |
 | `PLUGIN_HOOK_TIMEOUT_SECONDS` | Code | Бюджет времени одного хука; превысивший его хук считается упавшим | `5.0` |
@@ -163,6 +170,7 @@ docker run -d -p 8006:8006 `
 | TemplatesSearchServer | MCP-инструмент `plugin_state` | MCP-инструмент `plugin_reload` — только если включены изменяющие инструменты |
 | Graph Metadata Search | MCP-инструмент `list_plugins` | MCP-инструмент `reload_plugins(operation_id)` — только профиль `admin` |
 | CodeMetadataSearchServer | MCP-инструмент `plugin_state` | MCP-инструмент `plugin_reload` |
+| 1CCodeChecker | `GET /plugins` | `POST /plugins/reload` (HTTP 409, если новый набор не загружается) |
 
 ```powershell
 # HelpSearchServer — control plane, отвечает и во время сборки индекса
