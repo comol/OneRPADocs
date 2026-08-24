@@ -86,8 +86,8 @@
 | `MCP_SESSION_CLEANUP_INTERVAL_SECONDS` | Интервал уборки сессий | `60` |
 | `PLUGIN_DIR` | Каталог Python-плагинов | `/app/plugins` |
 | `PLUGIN_STRICT_DERIVED_STATE` | Ронять сборку индекса при ошибке hook `on_document` | `false` |
-| `RELEVANCE_MAX_VECTOR_DISTANCE` | Порог cosine-distance векторной дорожки | `0.13` |
-| `RELEVANCE_MIN_LEXICAL_SCORE` | Порог лексической дорожки | `0.0` |
+| `RELEVANCE_MAX_VECTOR_DISTANCE` | Максимальная cosine-distance векторной дорожки | `0.35` |
+| `RELEVANCE_MAX_LEXICAL_RANK` | Максимальный допустимый ранг лексического кандидата; отдельный score-порог не используется | `2` |
 | `LEXICAL_PROFILE` | Токенизация лексической дорожки; смена вызывает переиндексацию | `stemmed` |
 
 {% hint style="warning" %}

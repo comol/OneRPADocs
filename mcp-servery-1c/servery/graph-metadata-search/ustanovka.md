@@ -13,7 +13,6 @@ Graph Metadata Search требует два сервиса: Neo4j и MCP сер�
 ```powershell
 New-Item -ItemType Directory -Force -Path @(
     "E:\bases\mcp_graph",
-    "E:\1C_Export\Report",
     "E:\1C_Export\Files"
 )
 ```
@@ -27,7 +26,7 @@ version: '3.8'
 
 services:
   neo4j:
-    image: neo4j:latest
+    image: neo4j@sha256:7d8d70f78c0c55830a162e6ae212799649b0cfd349dbfe413aab8124f7cabf1b
     container_name: neo4j
     restart: unless-stopped
     ports:
@@ -57,16 +56,24 @@ services:
       - NEO4J_USERNAME=neo4j
       - NEO4J_PASSWORD=password123
       - METADATA_DIRECTORY=/app/metadata
+      - METADATA_SOURCE=xml
+      - CODE_EXPORT_PATH=/app/code
+      - GENERATED_REPORT_DIRECTORY=/app/data/generated-report
       - RESET_DATABASE=false
       - OPENAI_API_BASE=http://host.docker.internal:1234/v1
       - OPENAI_API_KEY=lm-studio
       - EMBEDDING_MODEL=Qwen3-Embedding-4B
       - TEMPLATE_MODE_ENABLED=true
-      - CODE_EXPORT_PATH=/app/metadata_files
       - LOAD_BSL_SIGNATURES=true
     volumes:
-      - E:/1C_Export/Report:/app/metadata
-      - E:/1C_Export/Files:/app/metadata_files
+      - E:/1C_Export/Files:/app/code:ro
+      - E:/bases/mcp_graph/app:/app/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8006/health', timeout=10).status == 200 else 1)"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 180s
     depends_on:
       neo4j:
         condition: service_healthy
@@ -100,35 +107,19 @@ docker-compose ps
 Логин: `neo4j`
 Пароль: `password123`
 
-### MCP сервер — health
+### MCP сервер — health и readiness
 
 ```powershell
-curl http://localhost:8006/healthz
+curl http://localhost:8006/health
 ```
 
 Дешёвая liveness-проба: отвечает сразу, как только процесс жив и создан драйвер Neo4j, без запросов к графу. Именно её использует healthcheck в `docker-compose.yml`. Готовность проверяется отдельно:
 
 ```powershell
-curl http://localhost:8006/readyz
+curl http://localhost:8006/ready
 ```
 
-### Статус фоновых задач
-
-```powershell
-curl http://localhost:8006/status
-```
-
-Возвращает состояние фоновых процессов: business info generation, vector indexing, routine embeddings. Каждая задача может быть в состоянии `pending`, `running`, `completed` или `failed`.
-
-### Прогресс индексации
-
-```powershell
-curl http://localhost:8006/search/index-status
-```
-
-### OpenAPI документация
-
-Откройте в браузере: `http://localhost:8006/docs`
+Алиасы `/healthz` и `/readyz` дают те же ответы. Статус фоновых задач и поколений читайте MCP-инструментами `get_indexing_status` и `get_graph_project_status`: серверный режим не публикует старые веб-маршруты `/status`, `/search/*` и `/docs`.
 
 ## Конвейер запуска (Startup Pipeline)
 

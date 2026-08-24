@@ -13,7 +13,7 @@
 | SyntaxCheckServer | 8002 | `/mcp` (`streamable-http`) или `/sse` (SSE) | `/messages/` (SSE) |
 | HelpSearchServer | 8003 | `/mcp` | `/health`, `/ready`, `/plugins`, `/plugins/reload` |
 | TemplatesSearchServer | 8004 | `/mcp` | `/health`, `/ready`, `/extend/`, `/extend/memory` (веб-интерфейс) |
-| Graph Metadata Search | 8006 | `/mcp` | `/search`, `/healthz`, `/readyz`, `/status`, `/search/index-status`, `/docs` |
+| Graph Metadata Search | 8006 | `/mcp` | `/health` (`/healthz`), `/ready` (`/readyz`) |
 | 1CCodeChecker | 8007 | `/mcp` | `/health`, `/metrics/sessions`, `/release` |
 | SSLSearchServer | 8008 | `/mcp` | `/ready` |
 

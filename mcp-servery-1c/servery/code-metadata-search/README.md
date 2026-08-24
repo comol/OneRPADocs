@@ -501,10 +501,10 @@ comol/1c_code_metadata_mcp:latest
 
 ## Подготовка данных
 
-Требуется выгрузить из Конфигуратора:
+Требуется один основной источник:
 
-1. **Отчет из конфигурации** (текстовый отчет по метаданным)
-2. **Выгрузка в файлы** (файлы модулей)
+1. **Designer XML-выгрузка в файлы** из Конфигуратора (рекомендуется), либо проект **1C:EDT**.
+2. Текстовый отчёт по метаданным нужен только для совместимого режима `METADATA_SOURCE=report`.
 
 Подробнее: [Подготовка данных](podgotovka-dannyh.md)
 
@@ -514,9 +514,9 @@ comol/1c_code_metadata_mcp:latest
 docker run -d -p 8000:8000 `
   --name 1c_code_metadata_mcp `
   -e LICENSE_KEY=YOUR_LICENSE_KEY `
-  -e METADATA_PATH="/app/metadata" `
   -e CODE_PATH="/app/code" `
-  -v "E:/1C_Export/Report:/app/metadata" `
+  -e METADATA_SOURCE=xml `
+  -e SOURCE_FORMAT=auto `
   -v "E:/1C_Export/Files:/app/code" `
   -v "E:/bases/mcp_codemetadata:/app/chroma_db" `
   comol/1c_code_metadata_mcp:latest

@@ -11,7 +11,6 @@
 ```powershell
 New-Item -ItemType Directory -Force -Path @(
     "E:\bases\mcp_codemetadata",
-    "E:\1C_Export\Report",
     "E:\1C_Export\Files"
 )
 ```
@@ -36,13 +35,13 @@ New-Item -ItemType Directory -Force -Path @(
 docker run -d -p 8000:8000 `
   --name 1c_code_metadata_mcp `
   -e LICENSE_KEY=YOUR_LICENSE_KEY `
-  -e METADATA_PATH="/app/metadata" `
   -e CODE_PATH="/app/code" `
+  -e METADATA_SOURCE=xml `
+  -e SOURCE_FORMAT=auto `
   -e RESET_DATABASE=false `
   -e EMBEDDING_API_BASE=http://host.docker.internal:1234/v1 `
   -e EMBEDDING_API_KEY=lm-studio `
   -e EMBEDDING_MODEL=Qwen3-Embedding-4B `
-  -v "E:/1C_Export/Report:/app/metadata" `
   -v "E:/1C_Export/Files:/app/code" `
   -v "E:/bases/mcp_codemetadata:/app/chroma_db" `
   comol/1c_code_metadata_mcp:latest
@@ -54,13 +53,13 @@ docker run -d -p 8000:8000 `
 docker run -d -p 8000:8000 `
   --name 1c_code_metadata_mcp `
   -e LICENSE_KEY=YOUR_LICENSE_KEY `
-  -e METADATA_PATH="/app/metadata" `
   -e CODE_PATH="/app/code" `
+  -e METADATA_SOURCE=xml `
+  -e SOURCE_FORMAT=auto `
   -e RESET_DATABASE=false `
   -e EMBEDDING_API_BASE=http://host.docker.internal:1234/v1 `
   -e EMBEDDING_API_KEY=lm-studio `
   -e EMBEDDING_MODEL=Qwen3-Embedding-4B `
-  -v "E:/1C_Export/Report:/app/metadata" `
   -v "E:/1C_Export/Files:/app/code" `
   -v "E:/bases/mcp_codemetadata:/app/chroma_db" `
   comol/1c_code_metadata_mcp:light
@@ -72,11 +71,11 @@ docker run -d -p 8000:8000 `
 docker run -d -p 8000:8000 `
   --name 1c_code_metadata_mcp `
   -e LICENSE_KEY=YOUR_LICENSE_KEY `
-  -e METADATA_PATH="/app/metadata" `
   -e CODE_PATH="/app/code" `
+  -e METADATA_SOURCE=xml `
+  -e SOURCE_FORMAT=auto `
   -e RESET_DATABASE=false `
   -e EMBEDDING_MODEL=intfloat/multilingual-e5-base `
-  -v "E:/1C_Export/Report:/app/metadata" `
   -v "E:/1C_Export/Files:/app/code" `
   -v "E:/bases/mcp_codemetadata:/app/chroma_db" `
   comol/1c_code_metadata_mcp:latest
@@ -86,8 +85,8 @@ docker run -d -p 8000:8000 `
 
 При первом запуске происходит индексация:
 
-1. Парсинг отчета по метаданным
-2. Анализ файлов кода
+1. Определение формата Designer XML / 1C:EDT и чтение метаданных
+2. Анализ файлов кода, форм, справки и зависимостей
 3. Создание векторного индекса
 
 {% hint style="warning" %}
@@ -137,15 +136,17 @@ docker ps --filter name=1c_code_metadata_mcp
 # Удалить старый контейнер
 docker rm -f 1c_code_metadata_mcp
 
-# Запустить с переиндексацией
+# Запустить с инкрементальным обновлением
 docker run -d -p 8000:8000 `
   --name 1c_code_metadata_mcp `
   -e LICENSE_KEY=YOUR_LICENSE_KEY `
-  -e METADATA_PATH="/app/metadata" `
   -e CODE_PATH="/app/code" `
-  -e RESET_DATABASE=true `
-  -v "E:/1C_Export/Report:/app/metadata" `
+  -e METADATA_SOURCE=xml `
+  -e SOURCE_FORMAT=auto `
+  -e RESET_DATABASE=false `
   -v "E:/1C_Export/Files:/app/code" `
   -v "E:/bases/mcp_codemetadata:/app/chroma_db" `
   comol/1c_code_metadata_mcp:latest
 ```
+
+При `INCREMENTAL_INDEXING=true` сервер сравнивает SHA-256 исходников и атомарно публикует новое поколение после проверки. `RESET_DATABASE=true` используйте только для осознанной полной перестройки.

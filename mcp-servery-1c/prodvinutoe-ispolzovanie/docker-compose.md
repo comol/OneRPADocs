@@ -150,14 +150,14 @@ services:
       - "8000:8000"
     environment:
       - LICENSE_KEY=${LICENSE_KEY}
-      - METADATA_PATH=/app/metadata
       - CODE_PATH=/app/code
+      - METADATA_SOURCE=xml
+      - SOURCE_FORMAT=auto
       - RESET_DATABASE=false
       - EMBEDDING_API_BASE=http://host.docker.internal:1234/v1
       - EMBEDDING_API_KEY=lm-studio
       - EMBEDDING_MODEL=Qwen3-Embedding-4B
     volumes:
-      - E:/1C_Export/Report:/app/metadata:ro
       - E:/1C_Export/Files:/app/code:ro
       - E:/bases/mcp_codemetadata:/app/chroma_db
 
@@ -166,7 +166,7 @@ services:
   # ============================================
 
   neo4j:
-    image: neo4j:latest
+    image: neo4j@sha256:7d8d70f78c0c55830a162e6ae212799649b0cfd349dbfe413aab8124f7cabf1b
     container_name: neo4j
     restart: unless-stopped
     ports:
@@ -195,12 +195,16 @@ services:
       - NEO4J_USERNAME=neo4j
       - NEO4J_PASSWORD=password123
       - METADATA_DIRECTORY=/app/metadata
+      - METADATA_SOURCE=xml
+      - CODE_EXPORT_PATH=/app/code
+      - GENERATED_REPORT_DIRECTORY=/app/data/generated-report
       - RESET_DATABASE=false
       - EMBEDDING_API_BASE=http://host.docker.internal:1234/v1
       - EMBEDDING_API_KEY=lm-studio
       - EMBEDDING_MODEL=Qwen3-Embedding-4B
     volumes:
-      - E:/1C_Export/Report:/app/metadata:ro
+      - E:/1C_Export/Files:/app/code:ro
+      - E:/bases/mcp_graph/app:/app/data
     depends_on:
       neo4j:
         condition: service_healthy

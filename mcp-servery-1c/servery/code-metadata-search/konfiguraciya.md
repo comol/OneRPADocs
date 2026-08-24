@@ -9,8 +9,9 @@
 | `LICENSE_KEY` | Лицензионный ключ | `YOUR_LICENSE_KEY` |
 | `LICENSE_KEY_FILE` | Предпочтительный способ передачи ключа: путь к смонтированному файлу, который содержит только лицензионный ключ. Значение ключа не попадает в окружение процесса. Файл должен быть обычным, непустым, небольшим и на POSIX недоступным для чтения группе и остальным | `/run/secrets/license_key` |
 | `LICENSE_KEY_FILE_CONSUME` | Удалить файл ключа сразу после чтения | `false` |
-| `METADATA_PATH` | Путь к отчету в контейнере | `/app/metadata` |
-| `CODE_PATH` | Путь к коду в контейнере | `/app/code` |
+| `CODE_PATH` | Корень Designer XML-выгрузки или проекта 1C:EDT | `/app/code` |
+
+`METADATA_PATH` больше не обязателен. Он нужен только для совместимого режима `METADATA_SOURCE=report` с готовым текстовым отчётом.
 
 ### Настройки сервера
 
@@ -27,6 +28,8 @@
 | `MCP_SESSION_CLEANUP_INTERVAL_SEC` | Интервал очистки завершённых и просроченных сессий | `60` |
 | `MCP_SESSION_BOUNDS_MODE` | `enforce` применяет лимиты, `report` только считает нарушения | `enforce` |
 | `MCP_IMAGE_REF` | Неизменяемая ссылка на образ с digest для проверки release identity в `stats` | *(не задано)* |
+| `METADATA_SOURCE` | Источник метаданных: `xml` — читать их из `CODE_PATH`; `report` — требовать готовый отчёт в `METADATA_PATH` | `xml` |
+| `SOURCE_FORMAT` | Формат `CODE_PATH`: `auto`, `designer_xml` или `edt` | `auto` |
 | `PROJECT_ID` | Явно закрепить идентификатор проекта индекса. Если не задан — выводится из каталогов `CODE_PATH` и `METADATA_PATH`; закрепление переживает перенос точки монтирования | *(выводится)* |
 | `GENERATION_RETENTION_COUNT` | Сколько поколений индекса хранить на диске; значение меньше 1 повышается до 1 | `2` |
 | `GENERATION_LEASE_RENEW_SEC` | Интервал продления аренды поколения | `30` |
@@ -178,7 +181,7 @@
 
 | Хост | Контейнер | Назначение |
 |------|-----------|------------|
-| `E:/1C_Export/Report` | `/app/metadata` | Отчет из конфигурации |
+| `E:/1C_Export/Report` | `/app/metadata` | Необязательный legacy-отчёт только для `METADATA_SOURCE=report` |
 | `E:/1C_Export/Files` | `/app/code` | Выгрузка в файлы |
 | `E:/bases/mcp_codemetadata` | `/app/chroma_db` | Векторная база данных |
 | `./my-plugins` | `/app/plugins` | Свой каталог плагинов; монтирование поверх сохраняет плагины при `docker pull` |
@@ -191,9 +194,9 @@
 docker run -d -p 8000:8000 `
   --name 1c_code_metadata_mcp `
   -e LICENSE_KEY=YOUR_LICENSE_KEY `
-  -e METADATA_PATH="/app/metadata" `
   -e CODE_PATH="/app/code" `
-  -v "E:/1C_Export/Report:/app/metadata" `
+  -e METADATA_SOURCE=xml `
+  -e SOURCE_FORMAT=auto `
   -v "E:/1C_Export/Files:/app/code" `
   comol/1c_code_metadata_mcp:latest
 ```
@@ -204,13 +207,13 @@ docker run -d -p 8000:8000 `
 docker run -d -p 8000:8000 `
   --name 1c_code_metadata_mcp `
   -e LICENSE_KEY=YOUR_LICENSE_KEY `
-  -e METADATA_PATH="/app/metadata" `
   -e CODE_PATH="/app/code" `
+  -e METADATA_SOURCE=xml `
+  -e SOURCE_FORMAT=auto `
   -e RESET_DATABASE=false `
   -e EMBEDDING_API_BASE=http://host.docker.internal:1234/v1 `
   -e EMBEDDING_API_KEY=lm-studio `
   -e EMBEDDING_MODEL=Qwen3-Embedding-4B `
-  -v "E:/1C_Export/Report:/app/metadata" `
   -v "E:/1C_Export/Files:/app/code" `
   -v "E:/bases/mcp_codemetadata:/app/chroma_db" `
   comol/1c_code_metadata_mcp:latest
@@ -222,13 +225,13 @@ docker run -d -p 8000:8000 `
 docker run -d -p 8000:8000 `
   --name 1c_code_metadata_mcp `
   -e LICENSE_KEY=YOUR_LICENSE_KEY `
-  -e METADATA_PATH="/app/metadata" `
   -e CODE_PATH="/app/code" `
+  -e METADATA_SOURCE=xml `
+  -e SOURCE_FORMAT=auto `
   -e RESET_DATABASE=false `
   -e EMBEDDING_API_BASE=https://openrouter.ai/api `
   -e EMBEDDING_API_KEY=YOUR_OPENROUTER_KEY `
   -e EMBEDDING_MODEL=qwen/qwen3-embedding-8b `
-  -v "E:/1C_Export/Report:/app/metadata" `
   -v "E:/1C_Export/Files:/app/code" `
   -v "E:/bases/mcp_codemetadata:/app/chroma_db" `
   comol/1c_code_metadata_mcp:latest
@@ -240,13 +243,13 @@ docker run -d -p 8000:8000 `
 docker run -d -p 8000:8000 `
   --name 1c_code_metadata_mcp `
   -e LICENSE_KEY=YOUR_LICENSE_KEY `
-  -e METADATA_PATH="/app/metadata" `
   -e CODE_PATH="/app/code" `
+  -e METADATA_SOURCE=xml `
+  -e SOURCE_FORMAT=auto `
   -e RESET_DATABASE=false `
   -e EMBEDDING_API_BASE=http://host.docker.internal:1234/v1 `
   -e EMBEDDING_API_KEY=lm-studio `
   -e EMBEDDING_MODEL=Qwen3-Embedding-4B `
-  -v "E:/1C_Export/Report:/app/metadata" `
   -v "E:/1C_Export/Files:/app/code" `
   -v "E:/bases/mcp_codemetadata:/app/chroma_db" `
   comol/1c_code_metadata_mcp:light
@@ -258,15 +261,15 @@ docker run -d -p 8000:8000 `
 docker run -d -p 8000:8000 `
   --name 1c_code_metadata_mcp `
   -e LICENSE_KEY=YOUR_LICENSE_KEY `
-  -e METADATA_PATH="/app/metadata" `
   -e CODE_PATH="/app/code" `
+  -e METADATA_SOURCE=xml `
+  -e SOURCE_FORMAT=auto `
   -e RESET_DATABASE=false `
   -e ENABLE_RERANKER=true `
   -e BM25_ALPHA=0.5 `
   -e EMBEDDING_API_BASE=http://host.docker.internal:1234/v1 `
   -e EMBEDDING_API_KEY=lm-studio `
   -e EMBEDDING_MODEL=Qwen3-Embedding-4B `
-  -v "E:/1C_Export/Report:/app/metadata" `
   -v "E:/1C_Export/Files:/app/code" `
   -v "E:/bases/mcp_codemetadata:/app/chroma_db" `
   comol/1c_code_metadata_mcp:latest
@@ -278,8 +281,9 @@ docker run -d -p 8000:8000 `
 docker run -d -p 8000:8000 `
   --name 1c_code_metadata_mcp `
   -e LICENSE_KEY=YOUR_LICENSE_KEY `
-  -e METADATA_PATH="/app/metadata" `
   -e CODE_PATH="/app/code" `
+  -e METADATA_SOURCE=xml `
+  -e SOURCE_FORMAT=auto `
   -e RESET_DATABASE=false `
   -e INDEX_CODE=true `
   -e INDEX_METADATA=true `
@@ -287,7 +291,6 @@ docker run -d -p 8000:8000 `
   -e EMBEDDING_API_BASE=http://host.docker.internal:1234/v1 `
   -e EMBEDDING_API_KEY=lm-studio `
   -e EMBEDDING_MODEL=Qwen3-Embedding-4B `
-  -v "E:/1C_Export/Report:/app/metadata" `
   -v "E:/1C_Export/Files:/app/code" `
   -v "E:/bases/mcp_codemetadata:/app/chroma_db" `
   comol/1c_code_metadata_mcp:latest
@@ -314,4 +317,4 @@ docker run -d -p 8000:8000 `
 docker run --rm comol/1c_code_metadata_mcp:latest ls /app/src/plugin_api.py /app/plugins
 ```
 
-Без плагинов поведение сервера настраивается составом индексируемых данных (`METADATA_PATH`, `CODE_PATH`, вложенные конфигурации) и параметрами поиска: `BM25_ALPHA`, `MIN_SCORE_THRESHOLD`, `ENABLE_RERANKER`, `VECTOR_PROFILE` и множителями выборки.
+Без плагинов поведение сервера настраивается форматом источника (`METADATA_SOURCE`, `SOURCE_FORMAT`, `CODE_PATH`, вложенные конфигурации) и параметрами поиска: `BM25_ALPHA`, `MIN_SCORE_THRESHOLD`, `ENABLE_RERANKER`, `VECTOR_PROFILE` и множителями выборки.

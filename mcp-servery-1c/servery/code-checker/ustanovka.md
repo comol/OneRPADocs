@@ -38,11 +38,12 @@ docker run -d -p 8007:8007 `
   --name 1c_code_checker_beta `
   -e LICENSE_KEY=YOUR_BETA_LICENSE_KEY `
   -e ONEC_AI_TOKEN=YOUR_NAPARNIK_TOKEN `
+  -e ONEC_AI_WORKSPACE_PATH_MAP="C:\Work\My1CProject=/workspace" `
   -v "C:/Work/My1CProject:/workspace:ro" `
   comol/1c-code-checker:latest-beta
 ```
 
-В образе `ONEC_AI_WORKSPACE_ROOTS=/workspace`. Сервер разрешает только обычные файлы внутри объявленных корней, после полного разрешения ссылок, и никогда их не записывает. Stable- и beta-ключи не смешиваются; см. [Каналы образов](../../kanaly-obrazov.md).
+В образе `ONEC_AI_WORKSPACE_ROOTS=/workspace`. Для относительных путей достаточно read-only монтирования; `ONEC_AI_WORKSPACE_PATH_MAP` нужен для абсолютных Windows/UNC-путей, которые передаёт клиент, и не расширяет разрешённые корни. Сервер разрешает только обычные файлы внутри объявленных корней, после полного разрешения ссылок, и никогда их не записывает. Stable- и beta-ключи не смешиваются; см. [Каналы образов](../../kanaly-obrazov.md).
 
 Полный список переменных окружения — в разделе [Конфигурация](konfiguraciya.md).
 

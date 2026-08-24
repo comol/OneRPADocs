@@ -10,11 +10,22 @@
 | `NEO4J_URI` | URI подключения к Neo4j | `bolt://neo4j:7687` |
 | `NEO4J_USERNAME` | Пользователь Neo4j | `neo4j` |
 | `NEO4J_PASSWORD` | Пароль Neo4j | `password123` |
-| `METADATA_DIRECTORY` | Путь к метаданным (отчёт из конфигуратора) | `/app/metadata` |
 
 {% hint style="info" %}
-Если `METADATA_DIRECTORY` не задан, по порядку проверяются `METADATA_FALLBACK_DIR_1`, `METADATA_FALLBACK_DIR_2` и `METADATA_FALLBACK_DIR_3`.
+Отдельный текстовый отчёт больше не обязателен. При `METADATA_SOURCE=auto` сервер использует его, если он есть, а иначе синтезирует совместимый отчёт из Designer XML-выгрузки в `CODE_EXPORT_PATH`.
 {% endhint %}
+
+### Источники метаданных и кода
+
+| Переменная | Описание | По умолчанию |
+|------------|----------|--------------|
+| `METADATA_DIRECTORY` | Каталог с текстовым отчётом Конфигуратора. Может быть пустым при работе по Designer XML | `/app/metadata` |
+| `METADATA_SOURCE` | `auto` — готовый `*.txt`, иначе синтез из Designer XML; `report` — требовать отчёт; `xml` — игнорировать отчёт и синтезировать из XML | `auto` |
+| `GENERATED_REPORT_DIRECTORY` | Кэш синтезированного отчёта; не должен находиться внутри `CODE_EXPORT_PATH` | `INGESTION_STATE_DIRECTORY/generated-report` |
+| `CODE_EXPORT_PATH` | Корень Designer XML-выгрузки или проекта 1C:EDT. Для Designer XML служит источником и BSL/форм, и синтеза отчёта | — |
+| `METADATA_FILES` | Каталог дополнительных детальных файлов метаданных | — |
+
+Синтез отчёта поддерживает Designer XML (каталог с `Configuration.xml`) и выполняется в фоновой стадии `metadata_ingest`. Для проекта 1C:EDT нужен готовый текстовый отчёт; сам формат EDT для остальных контуров включается через `SOURCE_FORMAT_ADAPTERS_ENABLED=true` и `SOURCE_FORMAT=edt`.
 
 ### Управление индексацией
 
@@ -78,7 +89,7 @@
 
 | Переменная | Описание | По умолчанию |
 |------------|----------|--------------|
-| `CODE_EXPORT_PATH` | Путь к XML-выгрузке конфигурации в файлы (Конфигуратор → Выгрузить конфигурацию в файлы) | — |
+| `CODE_EXPORT_PATH` | Путь к Designer XML-выгрузке или проекту 1C:EDT (тот же источник, что описан выше) | — |
 | `LOAD_BSL_SIGNATURES` | Загружать сигнатуры BSL-кода в граф — создавать ноды Module и Routine с графом вызовов CALLS | `true` |
 | `ENABLE_ROUTINE_EMBEDDINGS` | Генерировать эмбеддинги для процедур/функций. Требует `LOAD_BSL_SIGNATURES=true`. Индексация в фоновом потоке | `true` |
 | `BSL_READ_PREFIX_BYTES` | Сколько байт файла читается для быстрой классификации BSL | `4096` |
@@ -221,7 +232,7 @@
 
 | Переменная | Описание | По умолчанию |
 |------------|----------|--------------|
-| `GRAPH_PLUGINS_ENABLED` | Загружать Python-плагины из каталога плагинов | `false` |
+| `GRAPH_PLUGINS_ENABLED` | Загружать Python-плагины из каталога плагинов | `true` |
 | `GRAPH_PLUGINS_DIRECTORY` | Каталог плагинов; относительный путь считается от рабочего каталога `/app` | `plugins` |
 | `GRAPH_PLUGIN_STRICT_BUILD` | Останавливать построение нового поколения при ошибке derived-state hook вместо пропуска проблемной единицы | `false` |
 | `GRAPH_PLUGIN_HOOK_TIMEOUT_SECONDS` | Бюджет времени одного hook; `0` отключает контроль | `5.0` |
@@ -317,7 +328,7 @@ version: '3.8'
 
 services:
   neo4j:
-    image: neo4j:latest
+    image: neo4j@sha256:7d8d70f78c0c55830a162e6ae212799649b0cfd349dbfe413aab8124f7cabf1b
     container_name: neo4j
     restart: unless-stopped
     ports:
@@ -377,9 +388,12 @@ services:
       # === Проект ===
       - MCP_PORT=8006
       - PROJECT_NAME=МояКонфигурация
+      - METADATA_SOURCE=xml
+      - CODE_EXPORT_PATH=/app/code
+      - GENERATED_REPORT_DIRECTORY=/app/data/generated-report
     volumes:
-      - E:/1C_Export/Report:/app/metadata
-      - E:/1C_Export/Files:/app/metadata_files
+      - E:/1C_Export/Files:/app/code:ro
+      - E:/bases/mcp_graph/app:/app/data
     deploy:
       resources:
         limits:
@@ -409,11 +423,11 @@ services:
       - OPENAI_API_BASE=http://host.docker.internal:1234/v1
       - OPENAI_API_KEY=lm-studio
       - EMBEDDING_MODEL=Qwen3-Embedding-4B
-      - CODE_EXPORT_PATH=/app/metadata_files
+      - METADATA_SOURCE=xml
+      - CODE_EXPORT_PATH=/app/code
       - LOAD_BSL_SIGNATURES=true
     volumes:
-      - E:/1C_Export_Extension/Report:/app/metadata
-      - E:/1C_Export_Extension/Files:/app/metadata_files
+      - E:/1C_Export_Extension/Files:/app/code:ro
     depends_on:
       neo4j:
         condition: service_healthy
@@ -435,14 +449,14 @@ services:
       - NEO4J_USERNAME=neo4j
       - NEO4J_PASSWORD=password123
       - METADATA_DIRECTORY=/app/metadata
-      - CODE_EXPORT_PATH=/app/metadata_files
+      - METADATA_SOURCE=xml
+      - CODE_EXPORT_PATH=/app/code
       - EXTENSION_BASE_PROJECT=МояКонфигурация
       - EXTENSION_CATALOG_ENABLED=true
       - EXTENSION_CATALOG_SYNC=true
       - LOAD_BSL_SIGNATURES=true
     volumes:
-      - E:/1C_Export/Report:/app/metadata
-      - E:/1C_Export/Files:/app/metadata_files
+      - E:/1C_Export/Files:/app/code:ro
     depends_on:
       neo4j:
         condition: service_healthy
