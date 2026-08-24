@@ -234,6 +234,7 @@
     * [Формат mcp.json](mcp-servery-1c/integraciya/cursor-mcp-json.md)
     * [Несколько серверов](mcp-servery-1c/integraciya/neskolko-serverov.md)
     * [Cursor Rules для 1С](mcp-servery-1c/integraciya/cursor-rules.md)
+    * [OneMCP: MCP-сервер внутри 1С](mcp-servery-1c/integraciya/onemcp.md)
   * [Доработка MCP: система плагинов](mcp-servery-1c/sistema-pluginov/README.md)
     * [Как написать плагин](mcp-servery-1c/sistema-pluginov/kak-napisat-plugin.md)
     * [Правила хоста](mcp-servery-1c/sistema-pluginov/pravila-hosta.md)

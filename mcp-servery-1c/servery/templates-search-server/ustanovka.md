@@ -16,7 +16,7 @@ New-Item -ItemType Directory -Force -Path "E:\bases\mcp_templates"
 ### С LM Studio (рекомендуется)
 
 ```powershell
-docker run -d -p 8004:8004 `
+docker run -d -p 127.0.0.1:8004:8004 `
   --name template_search_mcp `
   -e LICENSE_KEY=YOUR_LICENSE_KEY `
   -e RESET_CACHE=false `
@@ -31,7 +31,7 @@ docker run -d -p 8004:8004 `
 ### С CPU (без GPU)
 
 ```powershell
-docker run -d -p 8004:8004 `
+docker run -d -p 127.0.0.1:8004:8004 `
   --name template_search_mcp `
   -e LICENSE_KEY=YOUR_LICENSE_KEY `
   -e RESET_CACHE=false `
@@ -65,10 +65,45 @@ docker run -d -p 8004:8004 `
 | `INDEX_GENERATION_RETENTION` | Сколько поколений каждой коллекции хранится на диске; значение меньше 2 повышается до 2, потому что откатиться на удалённый индекс нельзя | `2` |
 | `EMBEDDING_QUERY_PREFIX` | Префикс, добавляемый к тексту запроса перед эмбеддингом | *(пусто)* |
 | `EMBEDDING_PASSAGE_PREFIX` | Префикс, добавляемый к индексируемому тексту перед эмбеддингом | *(пусто)* |
+| `EMBEDDING_TRUST_REMOTE_CODE` | Разрешить выполнение пользовательского кода модели; требует allowlist и неизменяемую ревизию | `false` |
+| `EMBEDDING_TRUST_REMOTE_CODE_MODELS` | Разрешённые model ID для remote code, через запятую | *(пусто)* |
+| `EMBEDDING_MODEL_REVISION` | Полный commit SHA или `sha256:` digest модели | *(пусто)* |
+| `ADMIN_USERNAME` / `ADMIN_PASSWORD` | Учётная запись управления web UI | *(не заданы; изменения запрещены)* |
+| `ADMIN_USERS` | Несколько операторов: `имя:пароль:разрешения;...` | *(пусто)* |
+| `ADMIN_PERMISSIONS` | Разрешения единственного оператора: `create,edit,delete` | все три |
+| `ADMIN_SESSION_SECRET` | Подпись web-сессий; без него сессии сбрасываются при рестарте | генерируется при старте |
+| `ADMIN_ALLOW_UNAUTHENTICATED` | Небезопасный opt-in для изменяющих web-запросов без входа | `false` |
+| `MAX_DESCRIPTION_BYTES` | Максимальный размер описания шаблона | `20000` |
+| `MAX_CODE_BYTES` | Максимальный размер кода шаблона | `200000` |
+| `MAX_MEMORY_BYTES` | Максимальный размер заметки | `20000` |
+| `MAX_REQUEST_BODY_BYTES` | Максимальный размер тела web-запроса | `1000000` |
+| `MCP_ENABLE_WRITE_TOOLS` | Регистрировать `add_template`, `remember`, `plugin_reload` | `false` |
+| `MCP_OPERATOR_TOKEN` | Bearer-токен MCP-записей; нужен вместе с `MCP_ENABLE_WRITE_TOOLS=true` | *(пусто)* |
+| `MCP_MAX_CONCURRENT_MUTATIONS` | Одновременные MCP-мутации | `2` |
+| `MCP_MUTATION_RATE_PER_MINUTE` | Скорость пополнения лимита мутаций | `30` |
+| `MCP_MUTATION_BURST` | Максимальный всплеск мутаций | `10` |
+| `MCP_MUTATION_DAILY_QUOTA` | Суточная квота MCP-мутаций (UTC) | `500` |
+| `MCP_MAX_MUTATIONS_PER_REQUEST` | Максимум изменяющих вызовов в одном JSON-RPC запросе | `8` |
+| `MCP_SESSION_IDLE_TIMEOUT` | Простой Streamable HTTP-сессии до освобождения, секунды | `1800` |
+| `MCP_SESSION_MAX_LIFETIME` | Максимальное время жизни сессии, секунды | `28800` |
+| `MCP_MAX_SESSIONS` | Максимум одновременных сессий | `200` |
+| `MCP_SESSION_CLEANUP_INTERVAL` | Интервал уборки сессий, секунды | `60` |
+| `MCP_SESSION_CLEANUP_BATCH` | Сессий за один проход уборки | `50` |
+| `INDEX_RECOVERY_INTERVAL` | Период фоновой проверки outbox, секунды | `60` |
+| `INDEX_RECOVERY_BACKOFF` | Начальная пауза повторной индексации, секунды | `5` |
+| `INDEX_RECOVERY_BACKOFF_CAP` | Максимальная пауза повторной индексации, секунды | `300` |
+| `INDEX_RECOVERY_MAX_ATTEMPTS` | Число попыток до состояния stuck | `6` |
+| `INDEX_RECOVERY_BATCH` | Маркеров outbox за проход | `100` |
 | `PLUGIN_DIR` | Каталог Python-плагинов внутри контейнера | `/app/plugins` |
 | `PLUGIN_STRICT_DERIVED_STATE` | Останавливать индексацию при ошибке derived-state hook | `false` |
 
 Старые имена `OPENAI_API_BASE`, `OPENAI_API_KEY` и `OPENAI_MODEL` остаются совместимыми алиасами.
+
+{% hint style="warning" %}
+Web UI закрыт для изменений по умолчанию. Не включайте `ADMIN_ALLOW_UNAUTHENTICATED` на опубликованном порту. Для MCP-записей нужны одновременно `MCP_ENABLE_WRITE_TOOLS=true` и стойкий `MCP_OPERATOR_TOKEN`; токен передаётся только в `Authorization: Bearer ...`.
+{% endhint %}
+
+Для моделей с пользовательским кодом все три параметра supply chain обязательны: opt-in, allowlist model ID и неизменяемая ревизия. Неполная комбинация отклоняется до загрузки модели.
 
 ## Плагины
 
@@ -116,7 +151,7 @@ docker ps --filter name=template_search_mcp
 | Endpoint | Назначение |
 |----------|------------|
 | `http://localhost:8004/health` | Процесс жив |
-| `http://localhost:8004/ready` | Индексы построены и сервер готов отвечать |
+| `http://localhost:8004/ready` | Индексы построены и recovery завершён; до готовности возвращает 503 |
 
 ```powershell
 Invoke-RestMethod http://localhost:8004/ready
@@ -124,7 +159,7 @@ Invoke-RestMethod http://localhost:8004/ready
 
 ### Веб-интерфейс
 
-Откройте в браузере: `http://localhost:8004/extend/`
+Откройте в браузере: `http://localhost:8004/extend/`. Для записи войдите через `/extend/login` с настроенной учётной записью.
 
 ## Конфигурация Cursor
 
@@ -133,8 +168,13 @@ Invoke-RestMethod http://localhost:8004/ready
   "mcpServers": {
     "1c-templates-mcp": {
       "url": "http://localhost:8004/mcp",
-      "connection_id": "1c_templates_service_001"
+      "connection_id": "1c_templates_service_001",
+      "headers": {
+        "Authorization": "Bearer <MCP_OPERATOR_TOKEN>"
+      }
     }
   }
 }
 ```
+
+Для read-only клиента удалите блок `headers`. Он нужен только после включения MCP-инструментов записи.

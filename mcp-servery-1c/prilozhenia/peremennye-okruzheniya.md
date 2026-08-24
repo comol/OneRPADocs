@@ -157,6 +157,10 @@
 | `PLUGIN_STRICT_DERIVED_STATE` | Ронять сборку целиком при ошибке derived-state hook (`on_source_file`, `on_chunk`, `on_metadata_object`) вместо пропуска единицы | `false` |
 | `PLUGIN_HOOK_TIMEOUT_SECONDS` | Бюджет времени одного вызова hook; превысивший его hook считается упавшим | `5.0` |
 
+{% hint style="warning" %}
+`GREP_DEADLINE_SEC`, `GREP_MAX_CACHED_FILE_MB` и `MCP_TOOL_WORKERS` относятся к текущему beta-кандидату CodeMetadataSearchServer. В stable и ранее опубликованных beta-тегах их может ещё не быть.
+{% endhint %}
+
 ### CloudEmbeddingsServer (порт 8000 по умолчанию)
 
 | Переменная | Описание | По умолчанию |
@@ -202,6 +206,8 @@
 | `EXACT_LOOKUP` | Точный поиск по имени символа перед семантическим (`lane=exact`) | `true` |
 | `HYBRID_SEARCH` | Гибридное извлечение: векторная + полнотекстовая (BM25) дорожки с RRF | `true` |
 | `MAX_RESPONSE_CHARS` | Бюджет длины ответа `ssl_search` в символах (минимум 1024) | `4000` |
+| `MAX_QUERY_CHARS` | Максимальная длина запроса до и после plugin/alias rewrite; минимум 256 | `2048` |
+| `MAX_GUARDED_SEARCHES` | Максимум поисков внутри deadline guard | `64` |
 | `SHUTDOWN_GRACE_SECONDS` | Бюджет корректного завершения контейнера, секунды | `10` |
 | `SHUTDOWN_FLUSH_SECONDS` | Часть бюджета на сброс векторного хранилища, секунды | `5` |
 | `LOG_QUERIES` | Записывать полный текст поисковых запросов вместо длины и хеша | `false` |
@@ -242,8 +248,8 @@
 | `MCP_PATH` | URL-путь MCP эндпоинта | `/mcp` |
 | `MCP_TOOL_PROFILE` | Профиль публикуемых инструментов: `admin` или `read-only` | `admin` |
 | `MCP_NAMESPACE` | Namespace регистрации графовых проектов | `default` |
-| `GRAPH_SCOPE_ENFORCED` | Записан ли scope в графе: при `true` `project_id` обязателен; при `false` отсутствующий id подставляется из единственного/legacy-проекта и ответ помечается `deprecated` | `false` |
-| `GRAPH_SCOPE_MIGRATION_WINDOW` | Разрешить вызовы без `project_id` при единственном проекте | `false` |
+| `GRAPH_SCOPE_ENFORCED` | Записан ли scope в графе: при `true` и закрытом миграционном окне `project_id` обязателен; при `false` отсутствующий id подставляется из единственного/legacy-проекта и ответ помечается `deprecated` | `false` |
+| `GRAPH_SCOPE_MIGRATION_WINDOW` | При scoped-графе разрешить временную подстановку единственного проекта. При `GRAPH_SCOPE_ENFORCED=false` legacy-вызовы обслуживаются независимо от окна и помечаются `deprecated` | `false` |
 | `GRAPH_MAX_ITEMS` | Жёсткий предел элементов в ответе | `200` |
 | `GRAPH_TOOL_TIMEOUT_SECONDS` | Таймаут выполнения инструмента | `300` |
 | `EMBEDDING_ALLOW_OFFLINE_FALLBACK` | Автопереход на локальную модель | `true` |
@@ -321,6 +327,10 @@
 | `BSL_ANALYZER_STDERR_LIMIT_BYTES` | Лимит диагностического вывода анализатора | `4194304` |
 | `BSL_ANALYZER_KILL_GRACE_SECONDS` | Ожидание перед принудительной остановкой | `2` |
 | `BSL_SOURCE_ENCODING` | Явная кодировка файлов; если не задана, пробуются UTF-8 с BOM и CP1251 | *(пусто)* |
+| `MCP_SESSION_IDLE_TTL_SECONDS` | Простой Streamable HTTP-сессии до уборки, секунды | `1800` |
+| `MCP_SESSION_MAX_LIFETIME_SECONDS` | Абсолютное время жизни сессии, секунды | `28800` |
+| `MCP_SESSION_MAX_CONCURRENT` | Максимум одновременных Streamable HTTP-сессий | `64` |
+| `MCP_SESSION_REAP_INTERVAL_SECONDS` | Интервал уборки просроченных сессий, секунды | `30` |
 
 ### TemplatesSearchServer (порт 8004)
 
@@ -347,6 +357,35 @@
 | `PLUGIN_STRICT_DERIVED_STATE` | Останавливать индексацию при ошибке derived-state hook | `false` |
 | `MCP_ENABLE_WRITE_TOOLS` | Регистрировать изменяющие инструменты `add_template`, `remember`, `plugin_reload` | *(не задано — инструменты не публикуются)* |
 | `MCP_OPERATOR_TOKEN` | Операторский токен для изменяющих инструментов; передаётся в заголовке `Authorization`. Обязателен вместе с `MCP_ENABLE_WRITE_TOOLS`, иначе сервер не стартует | *(не задано)* |
+| `ADMIN_USERNAME` / `ADMIN_PASSWORD` | Учётная запись для изменяющих web-операций | *(не заданы)* |
+| `ADMIN_USERS` | Несколько web-операторов: `имя:пароль:разрешения;...` | *(пусто)* |
+| `ADMIN_PERMISSIONS` | Разрешения единственного оператора: `create,edit,delete` | все три |
+| `ADMIN_SESSION_SECRET` | Подпись web-сессий; без значения сессии не переживают рестарт | генерируется при старте |
+| `ADMIN_ALLOW_UNAUTHENTICATED` | Небезопасно разрешить web-изменения без входа | `false` |
+| `MAX_DESCRIPTION_BYTES` | Максимум байт в описании шаблона | `20000` |
+| `MAX_CODE_BYTES` | Максимум байт в коде шаблона | `200000` |
+| `MAX_MEMORY_BYTES` | Максимум байт в заметке | `20000` |
+| `MAX_REQUEST_BODY_BYTES` | Максимум байт в теле web-запроса | `1000000` |
+| `MCP_MAX_CONCURRENT_MUTATIONS` | Одновременные MCP-мутации | `2` |
+| `MCP_MUTATION_RATE_PER_MINUTE` | Скорость мутаций в минуту | `30` |
+| `MCP_MUTATION_BURST` | Разрешённый всплеск мутаций | `10` |
+| `MCP_MUTATION_DAILY_QUOTA` | Суточная квота мутаций (UTC) | `500` |
+| `MCP_MAX_MUTATIONS_PER_REQUEST` | Изменяющих calls в одном JSON-RPC запросе | `8` |
+| `MCP_SESSION_IDLE_TIMEOUT` | Простой Streamable HTTP-сессии, секунды | `1800` |
+| `MCP_SESSION_MAX_LIFETIME` | Абсолютное время жизни сессии, секунды | `28800` |
+| `MCP_MAX_SESSIONS` | Максимум одновременных сессий | `200` |
+| `MCP_SESSION_CLEANUP_INTERVAL` | Интервал уборки сессий, секунды | `60` |
+| `MCP_SESSION_CLEANUP_BATCH` | Сессий за проход уборки | `50` |
+| `INDEX_RECOVERY_INTERVAL` | Период проверки outbox, секунды | `60` |
+| `INDEX_RECOVERY_BACKOFF` | Начальная пауза retry индексации, секунды | `5` |
+| `INDEX_RECOVERY_BACKOFF_CAP` | Максимальная пауза retry, секунды | `300` |
+| `INDEX_RECOVERY_MAX_ATTEMPTS` | Попыток до stuck state | `6` |
+| `INDEX_RECOVERY_BATCH` | Маркеров outbox за проход | `100` |
+| `EMBEDDING_QUERY_PREFIX` | Префикс запросов перед эмбеддингом | *(пусто)* |
+| `EMBEDDING_PASSAGE_PREFIX` | Префикс документов перед эмбеддингом | *(пусто)* |
+| `EMBEDDING_TRUST_REMOTE_CODE` | Opt-in для custom model code; требует allowlist и immutable revision | `false` |
+| `EMBEDDING_TRUST_REMOTE_CODE_MODELS` | Allowlist model ID для custom code | *(пусто)* |
+| `EMBEDDING_MODEL_REVISION` | Полный commit SHA или content digest модели | *(пусто)* |
 
 {% hint style="info" %}
 Переменные `PLUGIN_DIR`, `PLUGINS_DIR`, `PLUGIN_STRICT_DERIVED_STATE`, `PLUGIN_HOOK_TIMEOUT_SECONDS` и `GRAPH_PLUGIN*` относятся к системе плагинов — общему механизму доработки серверов. Что они включают и чем это оплачивается: [Доработка MCP: система плагинов](../sistema-pluginov/).

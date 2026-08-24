@@ -54,7 +54,7 @@ HelpSearchServer — это **самый важный** MCP-сервер для 
 | `cursor` | string | *(не задано)* | `next_cursor` предыдущего ответа — продолжить после уже выданных документов |
 | `diagnostics` | bool | `false` | Добавить сведения о дорожках поиска, fusion, порогах релевантности и позиции чанков |
 
-**Возврат**: JSON-объект версии `schema_version: "3.0"` с полями `outcome`, `total`, `returned`, `truncated`, `next_cursor` и `results`. Каждый результат несёт `doc_id`, компактную `citation`, `snippets`, собственный флаг `truncated` и итоговый `score`. Поля диагностики, включая вклад дорожек `lanes`, добавляются только при `diagnostics: true`.
+**Возврат**: JSON-объект версии `schema_version: "3.0"` с полями `outcome`, `total`, `returned`, `truncated`, `next_cursor` и `results`. Каждый результат несёт `doc_id`, компактную `citation`, `snippets`, собственный флаг `truncated` и итоговый `score`. Поля диагностики, включая вклад дорожек `lanes`, добавляются только при `diagnostics: true`. Инструмент возвращает JSON один раз как обычный `text content`: `outputSchema` и повторный `structuredContent` в FastMCP не публикуются.
 
 {% hint style="info" %}
 `top_k` и `max_items` — разные ограничения. `top_k` ограничивает **набор результатов** (то, что считает `total` и через что листает курсор), `max_items` — **одну страницу** этого набора. Выход `top_k` за диапазон и неизвестный `doc_type` не подгоняются молча, а отклоняются с ошибкой.
@@ -134,6 +134,10 @@ standards(query="именование")         → поиск внутри ст
 {% endhint %}
 
 ## Контракт ответа
+
+{% hint style="warning" %}
+Контракт 3.0 описывает текущее состояние исходников beta-кандидата. Перед использованием опубликованного Docker-тега проверьте `schema_version` в ответе и отсутствие `outputSchema` в `tools/list`: stable и ранее скачанные beta-образы могут отвечать по предыдущему контракту.
+{% endhint %}
 
 Все четыре инструмента возвращают один JSON-объект версии `schema_version: "3.0"` с полем `outcome`:
 
