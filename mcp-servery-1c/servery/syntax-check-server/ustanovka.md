@@ -44,6 +44,8 @@ docker run -d -p 8002:8002 `
 | `LICENSE_KEY` | Лицензионный ключ | Да |
 | `USESSE` | SSE транспорт для legacy клиентов | Нет |
 | `FILES_DIR` | Каталог BSL-файлов; включает инструмент `syntaxcheck_file`, если каталог существует | Нет |
+| `FULLINDEX` | `true` (или `1`, `yes`, `on`) включает режим полного индекса: содержимое `FILES_DIR` индексируется при старте, и `UnresolvedMethodCall`, `UnresolvedField`, `QueryToMissingMetadata` отвечают из индекса. Без смонтированного `FILES_DIR` индексировать нечего | Нет *(пусто)* |
+| `INDEX_DIR` | Где хранится индекс. Этот путь образ объявляет томом, поэтому индекс переживает перезапуск и без явного `-v` | Нет (`/index`) |
 | `PLUGINS_DIR` | Каталог Python-плагинов; пустое значение использует `/app/plugins` | Нет |
 | `LOG_LEVEL` | Уровень журналирования сервера и ошибок плагинов | Нет (`INFO`) |
 | `MCP_HTTP_PATH` | Endpoint `streamable-http` | Нет (`/mcp`) |
@@ -54,6 +56,23 @@ docker run -d -p 8002:8002 `
 | `BSL_ANALYZER_STDERR_LIMIT_BYTES` | Максимальный размер диагностического вывода анализатора | Нет (`4194304`) |
 | `BSL_ANALYZER_KILL_GRACE_SECONDS` | Ожидание между terminate и принудительным kill | Нет (`2`) |
 | `BSL_SOURCE_ENCODING` | Кодировка файлов из `FILES_DIR`; пустое значение пробует UTF-8 с BOM, затем CP1251 | Нет |
+
+## Режим полного индекса (beta)
+
+По умолчанию сервер анализирует один модуль и не видит остальной конфигурации, поэтому три межмодульные проверки в нём выключены. `FULLINDEX=true` со смонтированным `FILES_DIR` индексирует каталог исходников при старте и отвечает на них из индекса:
+
+```powershell
+docker run -d -p 8002:8002 `
+  --name 1c_syntaxcheck_mcp `
+  -e LICENSE_KEY=YOUR_LICENSE_KEY `
+  -e FILES_DIR=/files `
+  -e FULLINDEX=true `
+  -v "E:/1C_Export/Files:/files:ro" `
+  -v 1c_syntaxcheck_index:/index `
+  comol/1c_syntaxcheck_mcp:latest-beta
+```
+
+Индексация 10156 модулей занимает около 8 минут; контейнер отвечает всё это время, а `provenance.index` в каждом ответе сообщает состояние — `absent`, `building`, `ready` или `failed`. Проверка файла стоит около 200 мс без индекса, около 190 с на первом вызове после `ready` и около 11 с на всех следующих. Подробности и оговорки — в [описании сервера](README.md#режим-полного-индекса-beta).
 
 ## Плагины
 
