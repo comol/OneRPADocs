@@ -366,8 +366,8 @@
 | `INDEX_GENERATION_RETENTION` | Сколько поколений каждой коллекции хранится на диске | `2` |
 | `PLUGIN_DIR` | Каталог Python-плагинов | `/app/plugins` |
 | `PLUGIN_STRICT_DERIVED_STATE` | Останавливать индексацию при ошибке derived-state hook | `false` |
-| `MCP_ENABLE_WRITE_TOOLS` | Регистрировать изменяющие инструменты `add_template`, `remember`, `plugin_reload` | *(не задано — инструменты не публикуются)* |
-| `MCP_OPERATOR_TOKEN` | Операторский токен для изменяющих инструментов; передаётся в заголовке `Authorization`. Обязателен вместе с `MCP_ENABLE_WRITE_TOOLS`, иначе сервер не стартует | *(не задано)* |
+| `MCP_ENABLE_WRITE_TOOLS` | Регистрировать изменяющие инструменты `add_template` и `plugin_reload`. `remember` регистрируется всегда и от этой переменной не зависит | *(не задано — инструменты не публикуются)* |
+| `MCP_OPERATOR_TOKEN` | Операторский токен для `add_template` / `plugin_reload`; передаётся в заголовке `Authorization`. Обязателен вместе с `MCP_ENABLE_WRITE_TOOLS`, иначе сервер не стартует. Для `remember` не нужен | *(не задано)* |
 | `ADMIN_USERNAME` / `ADMIN_PASSWORD` | Учётная запись для изменяющих web-операций | *(не заданы)* |
 | `ADMIN_USERS` | Несколько web-операторов: `имя:пароль:разрешения;...` | *(пусто)* |
 | `ADMIN_PERMISSIONS` | Разрешения единственного оператора: `create,edit,delete` | все три |

@@ -77,8 +77,8 @@ docker run -d -p 127.0.0.1:8004:8004 `
 | `MAX_CODE_BYTES` | Максимальный размер кода шаблона | `200000` |
 | `MAX_MEMORY_BYTES` | Максимальный размер заметки | `20000` |
 | `MAX_REQUEST_BODY_BYTES` | Максимальный размер тела web-запроса | `1000000` |
-| `MCP_ENABLE_WRITE_TOOLS` | Регистрировать `add_template`, `remember`, `plugin_reload` | `false` |
-| `MCP_OPERATOR_TOKEN` | Bearer-токен MCP-записей; нужен вместе с `MCP_ENABLE_WRITE_TOOLS=true` | *(пусто)* |
+| `MCP_ENABLE_WRITE_TOOLS` | Регистрировать `add_template` и `plugin_reload`. На `remember` не влияет | `false` |
+| `MCP_OPERATOR_TOKEN` | Bearer-токен для `add_template` / `plugin_reload`; нужен вместе с `MCP_ENABLE_WRITE_TOOLS=true` | *(пусто)* |
 | `MCP_MAX_CONCURRENT_MUTATIONS` | Одновременные MCP-мутации | `2` |
 | `MCP_MUTATION_RATE_PER_MINUTE` | Скорость пополнения лимита мутаций | `30` |
 | `MCP_MUTATION_BURST` | Максимальный всплеск мутаций | `10` |
@@ -100,7 +100,7 @@ docker run -d -p 127.0.0.1:8004:8004 `
 Старые имена `OPENAI_API_BASE`, `OPENAI_API_KEY` и `OPENAI_MODEL` остаются совместимыми алиасами.
 
 {% hint style="warning" %}
-Web UI закрыт для изменений по умолчанию. Не включайте `ADMIN_ALLOW_UNAUTHENTICATED` на опубликованном порту. Для MCP-записей нужны одновременно `MCP_ENABLE_WRITE_TOOLS=true` и стойкий `MCP_OPERATOR_TOKEN`; клиент формирует из него bearer-заголовок `Authorization`, а значение не записывается в документацию или журнал.
+Web UI закрыт для изменений по умолчанию. Не включайте `ADMIN_ALLOW_UNAUTHENTICATED` на опубликованном порту. Для `add_template` и `plugin_reload` нужны одновременно `MCP_ENABLE_WRITE_TOOLS=true` и стойкий `MCP_OPERATOR_TOKEN`; клиент формирует из него bearer-заголовок `Authorization`, а значение не записывается в документацию или журнал. Проектная память (`remember`) под этот гейт не попадает и токена не требует — поэтому порт публикуйте на `127.0.0.1`: заметку запишет любой, кто до него дотянется.
 {% endhint %}
 
 Для моделей с пользовательским кодом все три параметра supply chain обязательны: opt-in, allowlist model ID и неизменяемая ревизия. Неполная комбинация отклоняется до загрузки модели.
@@ -118,7 +118,7 @@ docker run --rm -v "E:/plugins/mcp_templates/10-aliasy.py:/tmp/my_plugin.py" `
 ```
 
 {% hint style="warning" %}
-`plugin_reload` — изменяющий инструмент, как `add_template` и `remember`. По умолчанию изменяющие инструменты не регистрируются: их включает `MCP_ENABLE_WRITE_TOOLS`, и вместе с ним обязателен стойкий `MCP_OPERATOR_TOKEN` (иначе сервер не стартует). Токен передаётся в заголовке `Authorization`. Без них каталог перечитывается перезапуском контейнера, а `plugin_state` доступен всегда.
+`plugin_reload` — изменяющий инструмент, как и `add_template`. По умолчанию оба не регистрируются: их включает `MCP_ENABLE_WRITE_TOOLS`, и вместе с ним обязателен стойкий `MCP_OPERATOR_TOKEN` (иначе сервер не стартует). Токен передаётся в заголовке `Authorization`. Без них каталог перечитывается перезапуском контейнера, а `plugin_state` доступен всегда. `remember` к ним не относится: проектная память пишется без токена при любой конфигурации.
 {% endhint %}
 
 Правка `on_template` или `on_memory` делает сохранённые коллекции устаревшими, и следующий старт пересобирает их — отпечаток хранится в `index_meta.json`. Записи веб-интерфейса `/extend` проходят через `on_template` и `on_memory`, но не через `on_request` и `on_result`: те срабатывают только на вызовах MCP-инструментов.
@@ -177,4 +177,4 @@ Invoke-RestMethod http://localhost:8004/ready
 }
 ```
 
-Для read-only клиента удалите блок `headers`. Он нужен только после включения MCP-инструментов записи.
+Блок `headers` нужен только после включения `add_template` / `plugin_reload`; в остальных случаях удалите его — поиск и проектная память (`remember` / `recall`) работают без него.
