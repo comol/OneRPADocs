@@ -209,7 +209,7 @@ docker run -d -p 8003:8003 `
 
 ## GPU ускорение
 
-### Windows 11 с NVIDIA
+### NVIDIA GPU через Docker
 
 ```powershell
 docker run -d -p 8003:8003 `
@@ -222,5 +222,5 @@ docker run -d -p 8003:8003 `
 ```
 
 {% hint style="info" %}
-GPU ускорение работает только с Windows 11 и актуальными драйверами NVIDIA. Альтернатива, которая обычно проще: считать эмбеддинги в LM Studio и указать серверу `EMBEDDING_API_BASE`.
+Прямое GPU-ускорение контейнера доступно на Linux с NVIDIA Container Toolkit и на Windows 11 через Docker Desktop с WSL2. На macOS и в других средах без проброса NVIDIA GPU используйте LM Studio на хосте, CPU-режим или облачный embedding API и укажите серверу `EMBEDDING_API_BASE`.
 {% endhint %}

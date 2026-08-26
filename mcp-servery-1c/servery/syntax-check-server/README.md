@@ -195,7 +195,7 @@ docker exec 1c_syntaxcheck_mcp cat /app/bsl_analyzer_nix/installed-release.json
 
 ## Требования
 
-- Docker Desktop с WSL2
+- Docker Engine или Docker Desktop с поддержкой Linux-контейнеров
 - Лицензионный ключ
 
 {% hint style="success" %}

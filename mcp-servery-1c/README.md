@@ -59,11 +59,13 @@ MCP-серверы решают эту проблему, предоставля�
 
 ## Требования
 
-- **Windows 10** (версия 2004+) или **Windows 11**
-- **Docker Desktop** с WSL2
+- **Windows, Linux, macOS** или другая платформа, на которой можно запускать Docker-контейнеры
+- **Docker Engine, Docker Desktop** или совместимая среда запуска Linux-контейнеров
 - **Cursor IDE** или другой клиент с поддержкой MCP
 - **8+ ГБ RAM** (рекомендуется 16 ГБ)
 - **SSD** для векторных баз данных
+
+На Apple Silicon и других ARM64-хостах используйте тег `arm64`, если он опубликован для выбранного сервера. Если ARM64-тега нет, Docker может запустить образ `linux/amd64` в режиме эмуляции; особенности конкретных серверов указаны на их страницах.
 
 Подробнее: [Требования](trebovaniya/)
 
@@ -84,24 +86,22 @@ MCP-серверы решают эту проблему, предоставля�
 
 ## Быстрый старт
 
-### 1. Установите Docker Desktop
+### 1. Установите Docker
 
-```powershell
-# Установите WSL2
-wsl --install
+Установите Docker Engine, Docker Desktop или другую совместимую среду для вашей ОС. На Windows рекомендуется Docker Desktop с WSL2; на Linux можно использовать Docker Engine; на macOS — Docker Desktop или другой Docker-совместимый runtime.
 
-# Скачайте и установите Docker Desktop
-# https://www.docker.com/products/docker-desktop/
+Проверьте установку:
+
+```shell
+docker version
+docker run --rm hello-world
 ```
 
 ### 2. Запустите простой сервер
 
-```powershell
+```shell
 # SyntaxCheckServer — не требует настройки
-docker run -d -p 8002:8002 `
-  --name 1c_syntaxcheck_mcp `
-  -e LICENSE_KEY=YOUR_LICENSE_KEY `
-  comol/1c_syntaxcheck_mcp:latest
+docker run -d -p 8002:8002 --name 1c_syntaxcheck_mcp -e LICENSE_KEY=YOUR_LICENSE_KEY comol/1c_syntaxcheck_mcp:latest
 ```
 
 ### 3. Настройте Cursor

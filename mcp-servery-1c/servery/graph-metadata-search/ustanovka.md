@@ -4,7 +4,7 @@ Graph Metadata Search требует два сервиса: Neo4j и MCP сер�
 
 ## Предварительные требования
 
-1. Docker Desktop запущен
+1. Docker Engine или Docker Desktop запущен
 2. LM Studio запущен (рекомендуется) или OpenAI API доступен
 3. [Подготовлены данные](podgotovka-dannyh.md) из Конфигуратора
 

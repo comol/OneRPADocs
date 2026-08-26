@@ -10,7 +10,7 @@
 
 Вместо сложной настройки GPU в Docker-контейнерах, используйте LM Studio на хосте:
 
-1. **LM Studio** запускается на Windows и автоматически использует GPU
+1. **LM Studio** запускается на Windows, Linux и macOS и использует доступное GPU-ускорение
 2. **MCP-серверы** в Docker обращаются к LM Studio через HTTP API
 3. Нет необходимости в `--gpus all` или NVIDIA Container Toolkit
 
@@ -29,9 +29,9 @@
 
 ### Требования
 
-- **Windows 11** (Windows 10 имеет ограниченную поддержку)
+- **Linux** с NVIDIA Container Toolkit или **Windows 11** с Docker Desktop и WSL2
 - **NVIDIA GPU** с драйвером версии 470+
-- **Docker Desktop** с поддержкой WSL2 GPU
+- Docker-среда с поддержкой проброса GPU в Linux-контейнер
 - **NVIDIA Container Toolkit**
 
 ## Проверка поддержки GPU
@@ -52,12 +52,14 @@ docker run --rm --gpus all nvidia/cuda:11.0-base nvidia-smi
 
 Если команда успешна — GPU доступен в Docker.
 
-## Настройка Docker Desktop
+## Настройка Docker Desktop на Windows
 
 1. Откройте Docker Desktop
 2. Settings → Resources → WSL Integration
 3. Включите интеграцию с вашим WSL дистрибутивом
 4. Apply & Restart
+
+На Linux настройте NVIDIA Container Toolkit для Docker Engine. На macOS прямой проброс NVIDIA GPU в Linux-контейнеры обычно недоступен — используйте LM Studio на хосте, CPU-режим или облачный embedding API.
 
 ## Использование GPU в контейнерах
 

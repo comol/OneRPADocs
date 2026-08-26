@@ -2,7 +2,7 @@
 
 ## Предварительные требования
 
-- Docker Desktop запущен
+- Docker Engine или Docker Desktop запущен
 
 ## Команда запуска
 

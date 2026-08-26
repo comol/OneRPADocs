@@ -611,7 +611,7 @@ Healthcheck в docker-compose использует дешёвый `/healthz`. В
 
 ## Требования
 
-- Docker Desktop с WSL2
+- Docker Engine или Docker Desktop с поддержкой Linux-контейнеров
 - Лицензионный ключ
 - Embedding модель (LM Studio или CPU)
 - **Designer XML-выгрузка конфигурации** из Конфигуратора; готовый текстовый отчёт необязателен

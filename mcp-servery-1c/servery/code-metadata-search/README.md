@@ -470,7 +470,7 @@ CodeMetadataSearchServer — комплексный MCP-сервер для гл
 
 ## Требования
 
-- Docker Desktop с WSL2
+- Docker Engine или Docker Desktop с поддержкой Linux-контейнеров
 - Лицензионный ключ
 - Embedding модель (LM Studio или CPU)
 - **Выгрузка конфигурации** из Конфигуратора

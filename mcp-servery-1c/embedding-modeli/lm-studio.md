@@ -12,9 +12,9 @@ LM Studio — это приложение для локального запус
 
 ## Требования
 
-- **Windows 10/11** (64-bit)
-- **NVIDIA GPU** с 4+ ГБ VRAM (для Qwen3-Embedding-4B)
-- **8+ ГБ VRAM** (для Qwen3-Embedding-8B)
+- **Windows, Linux или macOS** (64-bit; учитывайте актуальные требования выбранной версии LM Studio)
+- **Совместимый GPU с 4+ ГБ памяти** (NVIDIA на Windows/Linux или Apple Silicon с объединённой памятью на macOS) для Qwen3-Embedding-4B
+- **8+ ГБ видеопамяти или объединённой памяти** для Qwen3-Embedding-8B
 - **16+ ГБ RAM**
 
 ## Установка LM Studio
@@ -22,7 +22,7 @@ LM Studio — это приложение для локального запус
 ### Шаг 1: Скачивание
 
 1. Перейдите на [lmstudio.ai](https://lmstudio.ai/)
-2. Скачайте версию для Windows
+2. Скачайте версию для вашей операционной системы
 3. Установите приложение
 
 ### Шаг 2: Первый запуск
@@ -94,7 +94,7 @@ EMBEDDING_MODEL=Qwen3-Embedding-4B
 {% endhint %}
 
 {% hint style="info" %}
-`host.docker.internal` — специальный адрес для доступа из Docker-контейнера к хост-машине Windows.
+`host.docker.internal` — адрес хоста из контейнера в Docker Desktop на Windows и macOS. В Docker Engine на Linux при необходимости добавьте `--add-host=host.docker.internal:host-gateway`.
 {% endhint %}
 
 ### Пример команды Docker (упрощённый)

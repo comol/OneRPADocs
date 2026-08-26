@@ -235,7 +235,7 @@ http://localhost:8004/extend/
 
 ## Требования
 
-- Docker Desktop с WSL2
+- Docker Engine или Docker Desktop с поддержкой Linux-контейнеров
 - Лицензионный ключ
 - Embedding модель (LM Studio или CPU)
 

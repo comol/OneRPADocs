@@ -2,7 +2,7 @@
 
 ## Предварительные требования
 
-1. Docker Desktop запущен
+1. Docker Engine или Docker Desktop запущен
 2. Токен 1С:Напарник (см. [Получение токена](poluchenie-tokena.md))
 3. Доступ в интернет к code.1c.ai
 

@@ -44,7 +44,7 @@
 
 ## Требования
 
-- Docker Desktop с WSL2
+- Docker Engine или Docker Desktop с поддержкой Linux-контейнеров
 - Лицензионный ключ MCP (`LICENSE_KEY`)
 - **Токен 1С:Напарник** (`ONEC_AI_TOKEN`, только для подписчиков ИТС)
 - Доступ в интернет к code.1c.ai

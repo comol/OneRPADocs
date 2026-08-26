@@ -2,7 +2,7 @@
 
 ## Предварительные требования
 
-1. Docker Desktop запущен
+1. Docker Engine или Docker Desktop запущен
 2. LM Studio запущен (рекомендуется)
 3. [Подготовлены данные](podgotovka-dannyh.md) из Конфигуратора
 
