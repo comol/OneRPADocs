@@ -9,6 +9,7 @@
 | `LICENSE_KEY` | Лицензионный ключ | `YOUR_LICENSE_KEY` |
 | `NEO4J_URI` | URI подключения к Neo4j | `bolt://neo4j:7687` |
 | `NEO4J_USERNAME` | Пользователь Neo4j | `neo4j` |
+| `NEO4J_USER` | Устаревший алиас `NEO4J_USERNAME`. Если заданы обе переменные, приоритет у `NEO4J_USERNAME`, а выбор пишется в лог | — |
 | `NEO4J_PASSWORD` | Пароль Neo4j | `password123` |
 
 {% hint style="info" %}
@@ -84,6 +85,13 @@
 | `BUSINESS_INFO_RETRY_COUNT` | Количество повторных попыток при ошибках API | `3` |
 | `BUSINESS_INFO_THREADS` | Количество параллельных воркеров генерации бизнес-описаний | `10` |
 | `ENABLE_METADATA_DESCRIPTION_EMBEDDING` | Генерировать эмбеддинги для описательных полей метаданных (Синоним, Комментарий, Описание, справка) | `true` |
+
+{% hint style="warning" %}
+**Каталог исходников монтируется на запись — без `:ro`.** При `CALCULATE_BUSINESS_INFO=true` описание пишется в `business_info.html` рядом с объектом метаданных, и в Neo4j оно попадает только после успешной записи файла. Если `/app/code` смонтирован read-only, каждый объект даёт `[Errno 30] Read-only file system: /app/code/.../business_info.html`: описание не сохраняется ни на диск, ни в граф, а токены LLM тратятся впустую. Контейнер при этом остаётся `healthy`, структурный граф и векторный индекс описаний строятся как обычно — ошибку легко не заметить.
+
+Проверить правом на запись, а не глазами: `docker exec 1c_graph_metadata sh -c "touch /app/code/.rwcheck && rm /app/code/.rwcheck && echo OK"` — на корректном монтировании команда печатает `OK`, на read-only падает с `Read-only file system`. Остальные серверы (CodeMetadataSearch, SyntaxCheck, 1CCodeChecker) читают тот же каталог и монтируют его `:ro` — это нормально, требование к записи есть только у GraphMetadataSearch.
+{% endhint %}
+
 
 ### BSL-граф (Module / Routine / CALLS)
 
@@ -290,7 +298,7 @@ docker run --rm -v "E:/plugins/mcp_graph/10-facts.py:/tmp/my_plugin.py" `
 | `MCP_PATH` | URL-путь для MCP эндпоинта | `/mcp` |
 | `MCP_USE_SSE` | SSE транспорт (для legacy клиентов) | `false` |
 | `NEO4J_DATABASE` | Имя базы Neo4j | `neo4j` |
-| `NEO4J_PARALLEL_WRITE_WORKERS` | Количество параллельных воркеров записи в Neo4j | `4` |
+| `NEO4J_PARALLEL_WRITE_WORKERS` | Количество параллельных воркеров записи в Neo4j. Допустимый диапазон `1..16`, значение вне диапазона отклоняется при старте. Значения выше `1` приводили к взаимным блокировкам BSL-писателей на `NODE_RELATIONSHIP_GROUP_DELETE` при первой индексации — повышайте только по результатам замеров на своих данных | `1` |
 | `NEO4J_WRITE_BATCH_SIZE` | Размер пакета записи в Neo4j | `1000` |
 | `NEO4J_WRITE_RETRIES` | Количество повторов при ошибке записи | `5` |
 | `NEO4J_WRITE_RETRY_DELAY_S` | Пауза перед первым повтором; далее удваивается | `1.0` |
@@ -392,7 +400,7 @@ services:
       - CODE_EXPORT_PATH=/app/code
       - GENERATED_REPORT_DIRECTORY=/app/data/generated-report
     volumes:
-      - E:/1C_Export/Files:/app/code:ro
+      - E:/1C_Export/Files:/app/code
       - E:/bases/mcp_graph/app:/app/data
     deploy:
       resources:
@@ -427,7 +435,7 @@ services:
       - CODE_EXPORT_PATH=/app/code
       - LOAD_BSL_SIGNATURES=true
     volumes:
-      - E:/1C_Export_Extension/Files:/app/code:ro
+      - E:/1C_Export_Extension/Files:/app/code
     depends_on:
       neo4j:
         condition: service_healthy
@@ -456,7 +464,7 @@ services:
       - EXTENSION_CATALOG_SYNC=true
       - LOAD_BSL_SIGNATURES=true
     volumes:
-      - E:/1C_Export/Files:/app/code:ro
+      - E:/1C_Export/Files:/app/code
     depends_on:
       neo4j:
         condition: service_healthy

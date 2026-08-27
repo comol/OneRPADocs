@@ -66,7 +66,7 @@ services:
       - TEMPLATE_MODE_ENABLED=true
       - LOAD_BSL_SIGNATURES=true
     volumes:
-      - E:/1C_Export/Files:/app/code:ro
+      - E:/1C_Export/Files:/app/code
       - E:/bases/mcp_graph/app:/app/data
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8006/healthz', timeout=10).status == 200 else 1)"]
@@ -124,6 +124,12 @@ curl http://localhost:8006/readyz
 ## Конвейер запуска (Startup Pipeline)
 
 При запуске система выполняет этапы в определённом порядке. MCP-сервер становится доступным сразу после загрузки базовых метаданных, не дожидаясь обогащения и векторной индексации.
+
+{% hint style="warning" %}
+**Каталог исходников монтируется на запись — без `:ro`.** При `CALCULATE_BUSINESS_INFO=true` описание пишется в `business_info.html` рядом с объектом метаданных, и в Neo4j оно попадает только после успешной записи файла. Если `/app/code` смонтирован read-only, каждый объект даёт `[Errno 30] Read-only file system: /app/code/.../business_info.html`: описание не сохраняется ни на диск, ни в граф, а токены LLM тратятся впустую. Контейнер при этом остаётся `healthy`, структурный граф и векторный индекс описаний строятся как обычно — ошибку легко не заметить.
+
+Проверить правом на запись, а не глазами: `docker exec 1c_graph_metadata sh -c "touch /app/code/.rwcheck && rm /app/code/.rwcheck && echo OK"` — на корректном монтировании команда печатает `OK`, на read-only падает с `Read-only file system`. Остальные серверы (CodeMetadataSearch, SyntaxCheck, 1CCodeChecker) читают тот же каталог и монтируют его `:ro` — это нормально, требование к записи есть только у GraphMetadataSearch.
+{% endhint %}
 
 ### Этапы запуска
 
