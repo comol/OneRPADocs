@@ -237,6 +237,7 @@
 | `NEO4J_PASSWORD` | Пароль | Обязательно |
 | `METADATA_DIRECTORY` | Путь к метаданным | `/app/metadata` |
 | `NEO4J_DATABASE` | Имя базы Neo4j | `neo4j` |
+| `NEO4J_PARALLEL_WRITE_WORKERS` | Число параллельных потоков записи в Neo4j при индексации, диапазон `1..16` | `1` |
 | `PROJECT_NAME` | Название проекта | `1C Metadata Project` |
 | `RESET_DATABASE` | Переиндексировать при запуске | `false` |
 | `INDEX_BATCH_SIZE` | Размер пакета индексации | `512` |
@@ -276,6 +277,7 @@
 | `LOAD_DCS_TEMPLATES` | Загружать схемы компоновки данных (СКД) | `false` |
 | `EXTENSION_NAME` | Имя расширения | — |
 | `EXTENSION_BASE_PROJECT` | Имя базового проекта для расширения | — |
+| `EXTENSION_BASE_PROJECT_ID` | `PROJECT_ID` базовой конфигурации, если он отличается от её отображаемого имени | — |
 | `EXTENSION_APPLY_ORDER` | Порядок применения слоя расширения | `1` |
 | `EXTENSION_CATALOG_ENABLED` | Загружать все расширения из каталога массовой выгрузки за один прогон | `false` |
 | `EXTENSIONS_PATH` | Каталог с выгрузками расширений; пусто — подкаталоги каталога выгрузки | *(пусто)* |
