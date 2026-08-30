@@ -54,7 +54,7 @@
 | `OPENAI_MODEL_IS_REASONING` | Принудительное указание, является ли модель «рассуждающей». Если не указано — определяется автоматически по имени модели (o1*, o3*, gpt-5*) | *(авто)* |
 | `EMBEDDING_API_BASE` | Отдельный URL для API эмбеддингов (если отличается от LLM API) | — |
 | `EMBEDDING_API_KEY` | Отдельный ключ для API эмбеддингов | — |
-| `EMBEDDING_MODEL` | Модель для API эмбеддингов | `text-embedding-ada-002` |
+| `EMBEDDING_MODEL` | Модель для API эмбеддингов | `qwen/qwen3-embedding-8b` |
 | `OPENAI_EMBEDDING_DIMENSIONS` | Явное указание размерности эмбеддингов | *(авто)* |
 | `LOCAL_EMBEDDING_MODEL` | Локальная CPU модель (sentence-transformers) | `intfloat/multilingual-e5-small` |
 | `EMBEDDING_ALLOW_OFFLINE_FALLBACK` | Разрешить автопереход на локальную модель при недоступности API | `true` |

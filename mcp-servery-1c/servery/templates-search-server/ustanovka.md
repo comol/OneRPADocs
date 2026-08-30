@@ -50,7 +50,8 @@ docker run -d -p 127.0.0.1:8004:8004 `
 | `RESET_CACHE` | Удалить скачанные веса embedding-модели и загрузить их заново | `false` |
 | `USESSE` | SSE транспорт (для legacy клиентов) | `false` |
 | `HTTP_PORT` | Порт HTTP-сервера | `8004` |
-| `EMBEDDING_MODEL` | Модель для внешнего API или локальная CPU-модель с Hugging Face | `intfloat/multilingual-e5-small` |
+| `EMBEDDING_MODEL` | Имя модели, с которым вызывается внешний API эмбеддингов | `qwen/qwen3-embedding-8b` |
+| `LOCAL_EMBEDDING_MODEL` | Hugging Face repo id локальной CPU-модели, которая загружается, когда API недоступен. Если задана только `EMBEDDING_MODEL`, локальный режим использует её | `intfloat/multilingual-e5-small` |
 | `EMBEDDING_API_BASE` | URL API сервера (LM Studio, Ollama, OpenRouter). Суффикс `/v1` добавляется автоматически | — |
 | `EMBEDDING_API_KEY` | Ключ API | `lm-studio` |
 | `EMBEDDING_DIMENSIONS` | Явное указание размерности эмбеддингов. Для моделей с переменной размерностью (Qwen3, text-embedding-3). Если не указано — определяется автоматически | *(авто)* |
@@ -66,7 +67,7 @@ docker run -d -p 127.0.0.1:8004:8004 `
 | `EMBEDDING_QUERY_PREFIX` | Префикс, добавляемый к тексту запроса перед эмбеддингом | *(пусто)* |
 | `EMBEDDING_PASSAGE_PREFIX` | Префикс, добавляемый к индексируемому тексту перед эмбеддингом | *(пусто)* |
 | `EMBEDDING_TRUST_REMOTE_CODE` | Разрешить выполнение пользовательского кода модели; требует allowlist и неизменяемую ревизию | `false` |
-| `EMBEDDING_TRUST_REMOTE_CODE_MODELS` | Разрешённые model ID для remote code, через запятую | *(пусто)* |
+| `EMBEDDING_TRUST_REMOTE_CODE_MODELS` | Разрешённые model ID для remote code, через запятую. Сверяется с `LOCAL_EMBEDDING_MODEL` — allowlist решает, что выполняется локально | *(пусто)* |
 | `EMBEDDING_MODEL_REVISION` | Полный commit SHA или `sha256:` digest модели | *(пусто)* |
 | `ADMIN_USERNAME` / `ADMIN_PASSWORD` | Учётная запись управления web UI | *(не заданы; изменения запрещены)* |
 | `ADMIN_USERS` | Несколько операторов: `имя:пароль:разрешения;...` | *(пусто)* |
