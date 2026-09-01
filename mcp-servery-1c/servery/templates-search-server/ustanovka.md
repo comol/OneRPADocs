@@ -36,7 +36,7 @@ docker run -d -p 127.0.0.1:8004:8004 `
   -e LICENSE_KEY=YOUR_LICENSE_KEY `
   -e RESET_CACHE=false `
   -e RESET_DATABASE=false `
-  -e EMBEDDING_MODEL=ai-forever/FRIDA `
+  -e LOCAL_EMBEDDING_MODEL=ai-forever/FRIDA `
   -v "E:/bases/mcp_templates:/app/chroma_db" `
   comol/template-search-mcp:latest-beta
 ```
@@ -51,7 +51,7 @@ docker run -d -p 127.0.0.1:8004:8004 `
 | `USESSE` | SSE транспорт (для legacy клиентов) | `false` |
 | `HTTP_PORT` | Порт HTTP-сервера | `8004` |
 | `EMBEDDING_MODEL` | Имя модели, с которым вызывается внешний API эмбеддингов | `qwen/qwen3-embedding-8b` |
-| `LOCAL_EMBEDDING_MODEL` | Hugging Face repo id локальной CPU-модели, которая загружается, когда API недоступен. Если задана только `EMBEDDING_MODEL`, локальный режим использует её | `intfloat/multilingual-e5-small` |
+| `LOCAL_EMBEDDING_MODEL` | Hugging Face repo id локальной CPU-модели. Порядок разрешения: `LOCAL_EMBEDDING_MODEL` → `OFFLINE_EMBEDDING_MODEL` → `EMBEDDING_MODEL` → `OPENAI_MODEL` → локальное значение по умолчанию | `intfloat/multilingual-e5-small` |
 | `EMBEDDING_API_BASE` | URL API сервера (LM Studio, Ollama, OpenRouter). Суффикс `/v1` добавляется автоматически | — |
 | `EMBEDDING_API_KEY` | Ключ API | `lm-studio` |
 | `EMBEDDING_DIMENSIONS` | Явное указание размерности эмбеддингов. Для моделей с переменной размерностью (Qwen3, text-embedding-3). Если не указано — определяется автоматически | *(авто)* |
@@ -99,6 +99,12 @@ docker run -d -p 127.0.0.1:8004:8004 `
 | `PLUGIN_STRICT_DERIVED_STATE` | Останавливать индексацию при ошибке derived-state hook | `false` |
 
 Старые имена `OPENAI_API_BASE`, `OPENAI_API_KEY` и `OPENAI_MODEL` остаются совместимыми алиасами.
+
+{% hint style="warning" %}
+Явно закрепляйте обе модели: `EMBEDDING_MODEL` для API и `LOCAL_EMBEDDING_MODEL` для CPU fallback. Если старый API-индекс построен другим default или при рестарте API недоступен, переход к модели другой размерности создаёт новое поколение рядом с обслуживающим; старое не смешивается с новым и остаётся до promote. Одна лишь смена имени при той же размерности автоматическую пересборку не гарантирует — сервер предупреждает и предлагает `RESET_DATABASE=true`.
+
+Раздельные defaults относятся к текущему beta-кандидату исходников; наличие в опубликованном образе проверяйте по release notes.
+{% endhint %}
 
 {% hint style="warning" %}
 Web UI закрыт для изменений по умолчанию. Не включайте `ADMIN_ALLOW_UNAUTHENTICATED` на опубликованном порту. Для `add_template` и `plugin_reload` нужны одновременно `MCP_ENABLE_WRITE_TOOLS=true` и стойкий `MCP_OPERATOR_TOKEN`; клиент формирует из него bearer-заголовок `Authorization`, а значение не записывается в документацию или журнал. Проектная память (`remember`) под этот гейт не попадает и токена не требует — поэтому порт публикуйте на `127.0.0.1`: заметку запишет любой, кто до него дотянется.

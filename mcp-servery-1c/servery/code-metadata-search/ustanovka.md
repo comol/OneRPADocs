@@ -31,6 +31,10 @@ New-Item -ItemType Directory -Force -Path @(
 Если вы используете LM Studio или OpenRouter для embedding — выбирайте `light-beta`. Образ в 10 раз легче и запускается быстрее.
 {% endhint %}
 
+{% hint style="warning" %}
+Явно закрепляйте `EMBEDDING_MODEL` и, если модель поддерживает переменную размерность, `EMBEDDING_DIMENSIONS`. Их смена полностью переэмбеддирует пять векторных дорожек (`metadata`, `metadata_xml`, `code`, `help`, `form_index`) и повторно расходует время и лимиты провайдера. Подробности и текущая рекомендация — на странице [конфигурации](konfiguraciya.md).
+{% endhint %}
+
 ## Команды запуска
 
 ### С LM Studio (рекомендуется)

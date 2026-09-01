@@ -31,7 +31,7 @@
 
 | Переменная | Описание | Пример |
 |------------|----------|--------|
-| `EMBEDDING_API_BASE` | Полный OpenAI-совместимый base URL, **включая `/v1`**; суффикс автоматически не добавляется | `http://host.docker.internal:1234/v1` |
+| `EMBEDDING_API_BASE` | OpenAI-совместимый base URL. CodeMetadataSearch, SSLSearch и TemplatesSearch автоматически добавляют `/v1`; для остальных серверов используйте формат из их профильной страницы | `http://host.docker.internal:1234/v1` |
 | `EMBEDDING_API_KEY` | Ключ API | `lm-studio` |
 | `EMBEDDING_MODEL` | Модель embedding для API или локального режима | `Qwen3-Embedding-4B` |
 | `EMBEDDING_DIMENSIONS` | Явное указание размерности эмбеддингов (для моделей с переменной размерностью) | *(авто)* |
@@ -101,7 +101,7 @@
 | `LICENSE_KEY` | Лицензионный ключ | Обязательно |
 | `LICENSE_KEY_FILE` | Путь к файлу с лицензионным ключом; предпочтительнее `LICENSE_KEY`, значение ключа не попадает в окружение процесса | *(не задано)* |
 | `LICENSE_KEY_FILE_CONSUME` | Удалить файл ключа сразу после чтения | `false` |
-| `METADATA_PATH` | Путь к метаданным | `/app/metadata` |
+| `METADATA_PATH` | Каталог готового текстового отчёта только для совместимого режима `METADATA_SOURCE=report`; в стандартном XML-режиме не требуется | *(пусто)* |
 | `CODE_PATH` | Путь к коду | `/app/code` |
 | `MCP_HOST` | Хост для привязки сервера | `0.0.0.0` |
 | `MCP_PORT` | Порт сервера | `8000` |
@@ -117,7 +117,7 @@
 | `CHROMA_DB_PATH` | Устаревший совместимый алиас `VECTOR_DB_PATH` | `/app/chroma_db` |
 | `EMBEDDING_API_BASE` | URL OpenAI-совместимого API эмбеддингов | — |
 | `EMBEDDING_API_KEY` | Ключ API эмбеддингов | — |
-| `EMBEDDING_MODEL` | Модель API или локальная модель | `sentence-transformers/paraphrase-multilingual-mpnet-base-v2` |
+| `EMBEDDING_MODEL` | Модель API или локальная модель. Полный образ без явной настройки использует `sentence-transformers/paraphrase-multilingual-mpnet-base-v2`; удалённый профиль поставки закрепляет `qwen/qwen3-embedding-8b` | зависит от профиля |
 | `RESET_DATABASE` | Переиндексировать | `false` |
 | `BACKGROUND_INDEXING` | Индексировать в фоне, не блокируя запуск MCP | `true` |
 | `INCREMENTAL_INDEXING` | Обновлять только изменившиеся файлы по SHA-256 | `true` |
@@ -128,6 +128,7 @@
 | `INDEX_STRUCTURAL` | Строить структурный индекс; `false` отключает дорожку `symbols` без блокировки `/ready` | `true` |
 | `INDEX_DEPENDENCY_GRAPH` | Строить граф зависимостей; `false` также отключает запись объектов расширений из XML-прохода графа | `true` |
 | `INDEX_FORM_INDEX` | Строить индекс форм; `false` отключает дорожку `forms` без блокировки `/ready` | `true` |
+| `INDEX_XSD_SCHEMAS` | Генерировать XSD-схемы в help-фазе; `false` отключает XSD отдельно от HTML-справки | `true` |
 | `SUB_INDEX_PROGRESS_WARN_SEC` | Порог предупреждения о долгой работе над файлом/стадией; `0` отключает диагностику | `300` |
 | `SUB_INDEX_PROGRESS_HEARTBEAT_SEC` | Интервал повторных предупреждений о продолжающейся долгой работе, минимум 5 секунд | `300` |
 | `LIVE_XML_FALLBACK` | Дочитывать XML-выгрузку, когда индекс не содержит факта | `true` |
@@ -170,7 +171,7 @@
 | `PLUGIN_HOOK_TIMEOUT_SECONDS` | Бюджет времени одного вызова hook; превысивший его hook считается упавшим | `5.0` |
 
 {% hint style="warning" %}
-`INDEX_STRUCTURAL`, `INDEX_DEPENDENCY_GRAPH`, `INDEX_FORM_INDEX`, `SUB_INDEX_PROGRESS_WARN_SEC`, `SUB_INDEX_PROGRESS_HEARTBEAT_SEC`, `GREP_DEADLINE_SEC`, `GREP_MAX_CACHED_FILE_MB` и `MCP_TOOL_WORKERS` относятся к текущему beta-кандидату CodeMetadataSearchServer. В stable и ранее опубликованных beta-тегах их может ещё не быть.
+`INDEX_STRUCTURAL`, `INDEX_DEPENDENCY_GRAPH`, `INDEX_FORM_INDEX`, `INDEX_XSD_SCHEMAS`, `SUB_INDEX_PROGRESS_WARN_SEC`, `SUB_INDEX_PROGRESS_HEARTBEAT_SEC`, `GREP_DEADLINE_SEC`, `GREP_MAX_CACHED_FILE_MB` и `MCP_TOOL_WORKERS` относятся к текущему beta-кандидату CodeMetadataSearchServer. В stable и ранее опубликованных beta-тегах их может ещё не быть.
 {% endhint %}
 
 ### CloudEmbeddingsServer (порт 8000 по умолчанию)
@@ -247,6 +248,8 @@
 | `PROJECT_NAME` | Название проекта | `1C Metadata Project` |
 | `RESET_DATABASE` | Переиндексировать при запуске | `false` |
 | `INDEX_BATCH_SIZE` | Размер пакета индексации | `512` |
+| `GRAPH_FORM_XML_BATCH_SIZE` | Сколько форм вместе проходят bulk-поиск владельцев и resume; запись может делиться на несколько транзакций по порогу строк | `50` |
+| `GRAPH_FORM_XML_BATCH_MAX_ROWS` | Порог сброса, проверяемый после целой формы; не является жёстким пределом транзакции | `20000` |
 | `MAX_TOKENS_PER_BATCH` | Макс. токенов на пакет API | `28000` |
 | `EMBEDDING_REQUEST_CONCURRENCY` | Параллельные запросы к API эмбеддингов | `6` |
 | `OPENAI_EMBEDDING_DIMENSIONS` | Размерность эмбеддингов | *(авто)* |
@@ -265,6 +268,12 @@
 | `MCP_NAMESPACE` | Namespace регистрации графовых проектов | `default` |
 | `GRAPH_SCOPE_ENFORCED` | Записан ли scope в графе: при `true` и закрытом миграционном окне `project_id` обязателен; при `false` отсутствующий id подставляется из единственного/legacy-проекта и ответ помечается `deprecated` | `false` |
 | `GRAPH_SCOPE_MIGRATION_WINDOW` | При scoped-графе разрешить временную подстановку единственного проекта. При `GRAPH_SCOPE_ENFORCED=false` legacy-вызовы обслуживаются независимо от окна и помечаются `deprecated` | `false` |
+| `INGESTION_COORDINATOR_ENABLED` | Включить координатор загрузки с фазами, лизом и чекпоинтами | `false` |
+| `INGESTION_LEASE_TTL_SECONDS` | Время жизни лиза загрузчика; heartbeat продлевает его каждые TTL/3 | `120` |
+| `INGESTION_CHECKPOINT_BATCH_SIZE` | Размер пакета между чекпоинтами | `500` |
+| `INGESTION_CHECKPOINT_INTERVAL_SECONDS` | Интервал записи чекпоинтов | `30` |
+| `INGESTION_TRACKER_BACKEND` | Хранилище состояния загрузки: `json` или `neo4j` | `json` |
+| `INGESTION_STATE_DIRECTORY` | Каталог состояния для backend `json` | — |
 | `GRAPH_MAX_ITEMS` | Жёсткий предел элементов в ответе | `200` |
 | `GRAPH_TOOL_TIMEOUT_SECONDS` | Таймаут выполнения инструмента | `300` |
 | `EMBEDDING_ALLOW_OFFLINE_FALLBACK` | Автопереход на локальную модель | `true` |
@@ -289,10 +298,14 @@
 | `EXTENSIONS_PATH` | Каталог с выгрузками расширений; пусто — подкаталоги каталога выгрузки | *(пусто)* |
 | `EXTENSION_ORDER_MANIFEST` | JSON с порядком применения расширений внутри одного назначения | *(пусто)* |
 | `EXTENSION_CATALOG_SYNC` | Синхронизировать слои с каталогом (удалять исчезнувшие расширения) | `true` |
-| `GRAPH_PLUGINS_ENABLED` | Загружать плагины Graph Metadata Search | `false` |
+| `GRAPH_PLUGINS_ENABLED` | Загружать плагины Graph Metadata Search | `true` |
 | `GRAPH_PLUGINS_DIRECTORY` | Каталог плагинов | `plugins` |
 | `GRAPH_PLUGIN_STRICT_BUILD` | Останавливать построение поколения при ошибке derived-state hook | `false` |
 | `GRAPH_PLUGIN_HOOK_TIMEOUT_SECONDS` | Бюджет времени одного plugin hook; `0` отключает контроль | `5.0` |
+
+{% hint style="warning" %}
+`GRAPH_FORM_XML_BATCH_SIZE` и `GRAPH_FORM_XML_BATCH_MAX_ROWS` описывают текущий beta-кандидат исходников. Наличие в опубликованном образе проверяйте по release notes.
+{% endhint %}
 
 Полный список переменных Graph Metadata Search, включая лимиты графовых ответов, поколения и загрузку данных: [Конфигурация Graph Metadata Search](../servery/graph-metadata-search/konfiguraciya.md).
 
@@ -326,7 +339,12 @@
 | `MCP_TRANSPORT_SESSION_SWEEP_INTERVAL` | Период уборки истёкших сессий (секунды) | `30` |
 | `MCP_TRANSPORT_SESSION_SWEEP_BATCH` | Максимум сессий, закрываемых за один проход уборки | `100` |
 | `HTTP_PORT` | Порт HTTP-сервера | `8007` |
+| `CHECKER_IMAGE_DIGEST` | Переданный оператором registry digest вида `sha256:<64 lowercase hex>` для `/release`; образ должен запускаться по тому же digest | *(не задано)* |
 | `PLUGIN_DIR` | Каталог Python-плагинов (beta) | `/app/plugins` |
+
+{% hint style="warning" %}
+`CHECKER_IMAGE_DIGEST` относится к текущему beta-кандидату исходников и ещё не подтверждён в опубликованных образах. Без переменной `/release` возвращает `image_digest_available=false`; два пустых digest не доказывают идентичность образов.
+{% endhint %}
 
 ### SyntaxCheckServer (порт 8002)
 

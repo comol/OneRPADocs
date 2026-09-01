@@ -60,6 +60,7 @@
 | `INDEX_STRUCTURAL` | Строить структурный индекс символов. `false` полностью исключает запись и финализацию этой дорожки, переводит readiness-дорожку `symbols` в `disabled`; `search_function` использует ограниченный grep-fallback | `true` |
 | `INDEX_DEPENDENCY_GRAPH` | Строить граф зависимостей. `false` полностью исключает его запись и финализацию, а также запись объектов расширений из XML-прохода графа | `true` |
 | `INDEX_FORM_INDEX` | Строить индекс форм. `false` полностью исключает запись и финализацию этой дорожки и переводит readiness-дорожку `forms` в `disabled` | `true` |
+| `INDEX_XSD_SCHEMAS` | Генерировать XSD-схемы в help-фазе. Применяется вместе с `INDEX_HELP`: `false` отключает только XSD-дорожку, оставляя индекс HTML-справки включённым | `true` |
 | `INDEX_HELP` | Индексировать HTML-справку | `true` |
 | `INDEX_PHASE_ORDER` | Порядок фаз; метаданные всегда выполняются первыми | `metadata,code,help` |
 | `INDEX_NESTED_CONFIGURATIONS` | Индексировать вложенные конфигурации поставщика отдельными источниками | `false` |
@@ -118,7 +119,7 @@
 | `INJECT_GRAPH_DEPENDENCIES` | Добавлять в индексируемый текст связи графа зависимостей объекта | `false` |
 
 {% hint style="warning" %}
-`INDEX_STRUCTURAL`, `INDEX_DEPENDENCY_GRAPH`, `INDEX_FORM_INDEX`, `SUB_INDEX_PROGRESS_WARN_SEC`, `SUB_INDEX_PROGRESS_HEARTBEAT_SEC`, `GREP_DEADLINE_SEC`, `GREP_MAX_CACHED_FILE_MB` и `MCP_TOOL_WORKERS` описывают текущую beta-кандидатную реализацию исходников. Перед применением к опубликованному образу проверьте наличие переменных в его release notes или `/release`; stable и ранее опубликованные beta-теги могут их не содержать.
+`INDEX_STRUCTURAL`, `INDEX_DEPENDENCY_GRAPH`, `INDEX_FORM_INDEX`, `INDEX_XSD_SCHEMAS`, `SUB_INDEX_PROGRESS_WARN_SEC`, `SUB_INDEX_PROGRESS_HEARTBEAT_SEC`, `GREP_DEADLINE_SEC`, `GREP_MAX_CACHED_FILE_MB` и `MCP_TOOL_WORKERS` описывают текущую beta-кандидатную реализацию исходников. Перед применением к опубликованному образу проверьте наличие переменных в его release notes или `/release`; stable и ранее опубликованные beta-теги могут их не содержать.
 {% endhint %}
 
 Если grep-fallback упирается в время или ширину дерева, он возвращает уже найденное и помечает ответ `partial`: `reason=scan_deadline_reached` или `reason=scan_scope_capped`. Бюджет общий для всех проходов одного вызова, поэтому синонимы не умножают допустимое время. Файлы крупнее `GREP_MAX_CACHED_FILE_MB` по-прежнему читаются — ограничивается только кэширование.
@@ -196,6 +197,12 @@
 | `EMBEDDING_MODEL` | Модель с Hugging Face; та же переменная выбирает модель и в API-режиме | `sentence-transformers/paraphrase-multilingual-mpnet-base-v2` |
 
 Старые имена `OPENAI_API_BASE`, `OPENAI_API_KEY` и `OPENAI_MODEL` пока принимаются как совместимые алиасы, но новые конфигурации следует создавать с `EMBEDDING_*`.
+
+{% hint style="warning" %}
+Здесь есть два разных значения по умолчанию. Если `EMBEDDING_MODEL` не задан в полном образе, исходники используют локальную `sentence-transformers/paraphrase-multilingual-mpnet-base-v2`; удалённый профиль поставки явно закрепляет `qwen/qwen3-embedding-8b`. По измерению от 31.08.2026 ни одна проверенная замена не прошла общий gate, поэтому `qwen/qwen3-embedding-8b` остаётся удалённой моделью поставки.
+
+Смена `EMBEDDING_MODEL` или `EMBEDDING_DIMENSIONS` — миграция, а не дешёвая настройка: меняется fingerprint и полностью переэмбеддируются дорожки `metadata`, `metadata_xml`, `code`, `help` и `form_index`. Для отката верните прежние модель и размерность; после этого потребуется обратная пересборка тех же дорожек.
+{% endhint %}
 
 ### Плагины
 

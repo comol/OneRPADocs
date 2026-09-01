@@ -114,6 +114,12 @@ docker run --rm -v "E:/plugins/mcp_ssl/10-terms.py:/tmp/my_plugin.py" `
 
 Старые имена `OPENAI_API_BASE`, `OPENAI_API_KEY` и `OPENAI_MODEL` остаются совместимыми алиасами.
 
+{% hint style="warning" %}
+Для предсказуемого обновления явно закрепляйте и `EMBEDDING_MODEL`, и `LOCAL_EMBEDDING_MODEL`. Если сохранённая коллекция построена другой моделью или API недоступен и сервер переходит на локальный fallback с другой размерностью, при `FORCE_REINDEX_ON_DIMENSION_MISMATCH=false` запуск останавливается, не изменяя коллекцию. Верните `EMBEDDING_MODEL` к модели из манифеста, либо осознанно перестройте индекс с `FORCE_REINDEX_ON_DIMENSION_MISMATCH=true`; безопасный side-by-side вариант — `MIGRATE_VECTOR_STORE=true`.
+
+Раздельные defaults и этот сценарий миграции относятся к текущему beta-кандидату исходников; опубликованные beta-теги могли быть собраны раньше.
+{% endhint %}
+
 ## Монтируемые тома
 
 | Хост | Контейнер | Назначение |
