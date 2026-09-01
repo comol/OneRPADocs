@@ -125,6 +125,11 @@
 | `PROJECT_ID` | Явное закрепление идентификатора проекта индекса | *(выводится из путей)* |
 | `GENERATION_RETENTION_COUNT` | Сколько поколений индекса хранить | `2` |
 | `SUB_INDEX_INTEGRITY_GATE` | Режим проверки целостности вспомогательных индексов: `auto`, `blocking`, `report_only`, `off` | `auto` |
+| `INDEX_STRUCTURAL` | Строить структурный индекс; `false` отключает дорожку `symbols` без блокировки `/ready` | `true` |
+| `INDEX_DEPENDENCY_GRAPH` | Строить граф зависимостей; `false` также отключает запись объектов расширений из XML-прохода графа | `true` |
+| `INDEX_FORM_INDEX` | Строить индекс форм; `false` отключает дорожку `forms` без блокировки `/ready` | `true` |
+| `SUB_INDEX_PROGRESS_WARN_SEC` | Порог предупреждения о долгой работе над файлом/стадией; `0` отключает диагностику | `300` |
+| `SUB_INDEX_PROGRESS_HEARTBEAT_SEC` | Интервал повторных предупреждений о продолжающейся долгой работе, минимум 5 секунд | `300` |
 | `LIVE_XML_FALLBACK` | Дочитывать XML-выгрузку, когда индекс не содержит факта | `true` |
 | `NESTED_CONFIGURATION_PATHS` | Каталоги-контейнеры вложенных конфигураций через запятую | `Ext/ParentConfigurations` |
 | `INDEX_EXTENSIONS` | Индексировать найденные расширения конфигурации; обнаружение не отключается | `true` |
@@ -165,7 +170,7 @@
 | `PLUGIN_HOOK_TIMEOUT_SECONDS` | Бюджет времени одного вызова hook; превысивший его hook считается упавшим | `5.0` |
 
 {% hint style="warning" %}
-`GREP_DEADLINE_SEC`, `GREP_MAX_CACHED_FILE_MB` и `MCP_TOOL_WORKERS` относятся к текущему beta-кандидату CodeMetadataSearchServer. В stable и ранее опубликованных beta-тегах их может ещё не быть.
+`INDEX_STRUCTURAL`, `INDEX_DEPENDENCY_GRAPH`, `INDEX_FORM_INDEX`, `SUB_INDEX_PROGRESS_WARN_SEC`, `SUB_INDEX_PROGRESS_HEARTBEAT_SEC`, `GREP_DEADLINE_SEC`, `GREP_MAX_CACHED_FILE_MB` и `MCP_TOOL_WORKERS` относятся к текущему beta-кандидату CodeMetadataSearchServer. В stable и ранее опубликованных beta-тегах их может ещё не быть.
 {% endhint %}
 
 ### CloudEmbeddingsServer (порт 8000 по умолчанию)
