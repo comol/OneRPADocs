@@ -203,7 +203,7 @@
 | `EMBEDDING_API_BASE` | URL OpenAI-совместимого API эмбеддингов | — |
 | `EMBEDDING_API_KEY` | Ключ API эмбеддингов | — |
 | `EMBEDDING_MODEL` | Имя модели для API эмбеддингов | `qwen/qwen3-embedding-8b` |
-| `LOCAL_EMBEDDING_MODEL` | Резервная локальная CPU-модель (Hugging Face repo id) | `intfloat/multilingual-e5-small` |
+| `LOCAL_EMBEDDING_MODEL` | Резервная локальная CPU-модель (Hugging Face repo id). Совместимый алиас — `OFFLINE_EMBEDDING_MODEL` | `intfloat/multilingual-e5-small` |
 | `INDEXING_THREADS` | Потоки индексации | `5` |
 | `MIGRATE_VECTOR_STORE` | Выполнить миграцию векторного хранилища на этом старте | `false` |
 | `DEMOTE_VECTOR_STORE` | Вернуть обслуживание предыдущему поколению | `false` |
@@ -248,7 +248,7 @@
 | `EMBEDDING_API_BASE` | URL API эмбеддингов | — |
 | `EMBEDDING_API_KEY` | Ключ API эмбеддингов | — |
 | `EMBEDDING_MODEL` | Модель API эмбеддингов | `qwen/qwen3-embedding-8b` |
-| `LOCAL_EMBEDDING_MODEL` | Резервная локальная CPU-модель | `intfloat/multilingual-e5-small` |
+| `LOCAL_EMBEDDING_MODEL` | Резервная локальная CPU-модель. Совместимый алиас — `OFFLINE_EMBEDDING_MODEL` | `intfloat/multilingual-e5-small` |
 | `ENABLE_CODE_SEARCH` | Поиск по BSL-коду | `true` |
 | `ENABLE_BUSINESS_SEARCH` | Семантический поиск по бизнес-описаниям | `true` |
 | `CALCULATE_BUSINESS_INFO` | Генерировать AI бизнес-описания | `false` |
@@ -359,7 +359,7 @@
 | `EMBEDDING_API_BASE` | URL OpenAI-совместимого API эмбеддингов | — |
 | `EMBEDDING_API_KEY` | Ключ API эмбеддингов | — |
 | `EMBEDDING_MODEL` | Имя модели для API эмбеддингов | `qwen/qwen3-embedding-8b` |
-| `LOCAL_EMBEDDING_MODEL` | Резервная локальная CPU-модель (Hugging Face repo id) | `intfloat/multilingual-e5-small` |
+| `LOCAL_EMBEDDING_MODEL` | Резервная локальная CPU-модель (Hugging Face repo id). Совместимый алиас — `OFFLINE_EMBEDDING_MODEL` | `intfloat/multilingual-e5-small` |
 | `EMBEDDING_DIMENSIONS` | Размерность эмбеддингов | *(авто)* |
 | `TEMPLATES_DB_PATH` | Путь к SQLite-базе шаблонов и заметок | `/app/chroma_db/templates.db` |
 | `ZVEC_DB_PATH` | Каталог векторного индекса zvec | `/app/chroma_db/zvec_db` |

@@ -108,7 +108,7 @@ docker run --rm -v "E:/plugins/mcp_ssl/10-terms.py:/tmp/my_plugin.py" `
 | `EMBEDDING_API_BASE` | URL API сервера. Суффикс `/v1` добавляется автоматически | `http://host.docker.internal:1234/v1` |
 | `EMBEDDING_API_KEY` | Ключ API | `lm-studio` |
 | `EMBEDDING_MODEL` | Имя модели, с которым вызывается API эмбеддингов | `qwen/qwen3-embedding-8b` |
-| `LOCAL_EMBEDDING_MODEL` | Hugging Face repo id модели, которую загружает локальный (CPU) режим, когда API недоступен. Если задана только `EMBEDDING_MODEL`, локальный режим использует её | `intfloat/multilingual-e5-small` |
+| `LOCAL_EMBEDDING_MODEL` | Hugging Face repo id модели, которую загружает локальный (CPU) режим, когда API недоступен. Совместимый алиас — `OFFLINE_EMBEDDING_MODEL`. Если задана только `EMBEDDING_MODEL`, локальный режим использует её | `intfloat/multilingual-e5-small` |
 | `EMBEDDING_DIMENSIONS` | Явное указание размерности эмбеддингов. Для моделей с переменной размерностью (Qwen3, text-embedding-3). Если не указано — определяется автоматически | *(авто)* |
 | `EMBEDDING_INPUT_TYPE_ENABLED` | Включить параметр `input_type` для различения query/document при генерации эмбеддингов. Полезно для моделей Qwen3, BGE, E5 | `true` |
 
