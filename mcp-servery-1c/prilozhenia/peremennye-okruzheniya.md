@@ -272,6 +272,7 @@
 | `INGESTION_LEASE_TTL_SECONDS` | Время жизни лиза загрузчика; heartbeat продлевает его каждые TTL/3 | `120` |
 | `INGESTION_CHECKPOINT_BATCH_SIZE` | Размер пакета между чекпоинтами | `500` |
 | `INGESTION_CHECKPOINT_INTERVAL_SECONDS` | Интервал записи чекпоинтов | `30` |
+| `EMBEDDING_CARRY_BATCH_MODULES` | Изменённых модулей в одной пачке переноса эмбеддингов процедур при инкрементальном обновлении; ограничивает пиковую память | `100` |
 | `INGESTION_TRACKER_BACKEND` | Хранилище состояния загрузки: `json` или `neo4j` | `json` |
 | `INGESTION_STATE_DIRECTORY` | Каталог состояния для backend `json` | — |
 | `GRAPH_MAX_ITEMS` | Жёсткий предел элементов в ответе | `200` |
