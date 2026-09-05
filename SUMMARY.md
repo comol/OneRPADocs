@@ -211,6 +211,7 @@
       * [Установка](mcp-servery-1c/servery/code-metadata-search/ustanovka.md)
       * [Подготовка данных](mcp-servery-1c/servery/code-metadata-search/podgotovka-dannyh.md)
       * [Конфигурация](mcp-servery-1c/servery/code-metadata-search/konfiguraciya.md)
+      * [Время первичной индексации](mcp-servery-1c/servery/code-metadata-search/vremya-indeksacii.md)
     * [CloudEmbeddingsServer](mcp-servery-1c/servery/cloud-embeddings-server/README.md)
     * [Graph Metadata Search](mcp-servery-1c/servery/graph-metadata-search/README.md)
       * [Установка](mcp-servery-1c/servery/graph-metadata-search/ustanovka.md)
