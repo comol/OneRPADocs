@@ -55,6 +55,7 @@ docker run -d -p 127.0.0.1:8004:8004 `
 | `EMBEDDING_API_BASE` | URL API сервера (LM Studio, Ollama, OpenRouter). Суффикс `/v1` добавляется автоматически | — |
 | `EMBEDDING_API_KEY` | Ключ API | `lm-studio` |
 | `EMBEDDING_DIMENSIONS` | Явное указание размерности эмбеддингов. Для моделей с переменной размерностью (Qwen3, text-embedding-3). Если не указано — определяется автоматически | *(авто)* |
+| `EMBEDDING_API_TIMEOUT` | Предел одного запроса к API эмбеддингов в секундах, на попытку. Задаётся сервером явно, а не наследуется из SDK: это ожидание семантической полосы, за которой стоит полнотекстовая. Значение по умолчанию рассчитано на пакет из `MAX_BATCH_SIZE` фрагментов при индексации, а не только на один запрос | `60` |
 | `TEMPLATES_DB_PATH` | Путь к SQLite-базе шаблонов и заметок | `/app/chroma_db/templates.db` |
 | `ZVEC_DB_PATH` | Каталог коллекций zvec | `/app/chroma_db/zvec_db` |
 | `RECALL_RELEVANCE_THRESHOLD` | Максимальная cosine-distance для результата `recall` | `1.0` |

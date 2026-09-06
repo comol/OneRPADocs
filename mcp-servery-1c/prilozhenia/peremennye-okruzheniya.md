@@ -131,6 +131,9 @@
 | `INDEX_XSD_SCHEMAS` | Генерировать XSD-схемы в help-фазе; `false` отключает XSD отдельно от HTML-справки | `true` |
 | `SUB_INDEX_PROGRESS_WARN_SEC` | Порог предупреждения о долгой работе над файлом/стадией; `0` отключает диагностику | `300` |
 | `SUB_INDEX_PROGRESS_HEARTBEAT_SEC` | Интервал повторных предупреждений о продолжающейся долгой работе, минимум 5 секунд | `300` |
+| `SUB_INDEX_LIVENESS_WITNESS` | Независимый свидетель живости в отдельном процессе; сообщает о зависании, даже когда наблюдаемый интерпретатор не выполняет ни строки Python | `false` |
+| `STRUCTURAL_PARSE_TIMEOUT_SEC` | Граница времени на структурный разбор одного BSL-модуля; положительное значение выносит разбор в дочерний процесс, `0` отключает границу | `0` |
+| `STRUCTURAL_EXCLUDE` | JSON-массив glob-шаблонов (не больше 64) относительно `CODE_PATH`; модули исключаются только из структурного парсера | *(не задано)* |
 | `LIVE_XML_FALLBACK` | Дочитывать XML-выгрузку, когда индекс не содержит факта | `true` |
 | `NESTED_CONFIGURATION_PATHS` | Каталоги-контейнеры вложенных конфигураций через запятую | `Ext/ParentConfigurations` |
 | `INDEX_EXTENSIONS` | Индексировать найденные расширения конфигурации; обнаружение не отключается | `true` |
@@ -171,7 +174,7 @@
 | `PLUGIN_HOOK_TIMEOUT_SECONDS` | Бюджет времени одного вызова hook; превысивший его hook считается упавшим | `5.0` |
 
 {% hint style="warning" %}
-`INDEX_STRUCTURAL`, `INDEX_DEPENDENCY_GRAPH`, `INDEX_FORM_INDEX`, `INDEX_XSD_SCHEMAS`, `SUB_INDEX_PROGRESS_WARN_SEC`, `SUB_INDEX_PROGRESS_HEARTBEAT_SEC`, `GREP_DEADLINE_SEC`, `GREP_MAX_CACHED_FILE_MB` и `MCP_TOOL_WORKERS` относятся к текущему beta-кандидату CodeMetadataSearchServer. В stable и ранее опубликованных beta-тегах их может ещё не быть.
+`INDEX_STRUCTURAL`, `INDEX_DEPENDENCY_GRAPH`, `INDEX_FORM_INDEX`, `INDEX_XSD_SCHEMAS`, `SUB_INDEX_PROGRESS_WARN_SEC`, `SUB_INDEX_PROGRESS_HEARTBEAT_SEC`, `SUB_INDEX_LIVENESS_WITNESS`, `STRUCTURAL_PARSE_TIMEOUT_SEC`, `STRUCTURAL_EXCLUDE`, `GREP_DEADLINE_SEC`, `GREP_MAX_CACHED_FILE_MB` и `MCP_TOOL_WORKERS` относятся к текущему beta-кандидату CodeMetadataSearchServer. В stable и ранее опубликованных beta-тегах их может ещё не быть.
 {% endhint %}
 
 ### CloudEmbeddingsServer (порт 8000 по умолчанию)
@@ -386,6 +389,7 @@
 | `EMBEDDING_MODEL` | Имя модели для API эмбеддингов | `qwen/qwen3-embedding-8b` |
 | `LOCAL_EMBEDDING_MODEL` | Резервная локальная CPU-модель (Hugging Face repo id). Совместимый алиас — `OFFLINE_EMBEDDING_MODEL` | `intfloat/multilingual-e5-small` |
 | `EMBEDDING_DIMENSIONS` | Размерность эмбеддингов | *(авто)* |
+| `EMBEDDING_API_TIMEOUT` | Предел одного запроса к API эмбеддингов, секунды (на попытку). Ограничивает ожидание семантической полосы, за которой стоит полнотекстовая | `60` |
 | `TEMPLATES_DB_PATH` | Путь к SQLite-базе шаблонов и заметок | `/app/chroma_db/templates.db` |
 | `ZVEC_DB_PATH` | Каталог векторного индекса zvec | `/app/chroma_db/zvec_db` |
 | `RECALL_RELEVANCE_THRESHOLD` | Максимальная cosine-distance для `recall` | `1.0` |
