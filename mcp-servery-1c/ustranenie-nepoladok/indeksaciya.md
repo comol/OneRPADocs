@@ -30,6 +30,8 @@
 docker logs -f <container_name>
 ```
 
+У CodeMetadataSearchServer векторные дорожки и структурный проход пишут **разные** строки. `code progress` / `metadata progress` / `help progress` — эмбеддинги. Структурный проход: `Sub-index pass: started` и раз в минуту INFO `N/M file(s) done`. Если в журнале часами нет `code progress`, это ещё не зависание структурной дорожки. Warning `still active past` называет конкретный файл или стадию. Подробнее: [время индексации](../servery/code-metadata-search/vremya-indeksacii.md).
+
 ## Ошибка при смене embedding модели
 
 ### Симптом
