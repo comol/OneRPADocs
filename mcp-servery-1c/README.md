@@ -18,7 +18,7 @@ MCP-серверы решают эту проблему, предоставля�
 | Сервер | Порт | Назначение | Требует данных | Плагины |
 |--------|------|------------|----------------|---------|
 | [HelpSearchServer](servery/help-search-server/) | 8003 | Справка платформы, руководства, спецификации форматов, стандарты | Нет (папка bin — только для своей версии платформы) | Да |
-| [CodeMetadataSearchServer](servery/code-metadata-search/) | 8000 | Поиск по метаданным и коду конфигурации | Да (выгрузка) | Нет |
+| [CodeMetadataSearchServer](servery/code-metadata-search/) | 8000 | Поиск по метаданным и коду конфигурации | Да (выгрузка) | Да |
 | [Graph Metadata Search](servery/graph-metadata-search/) | 8006 | Графовый поиск связей метаданных | Да (выгрузка) | Да (включаются флагом) |
 | [SSLSearchServer](servery/ssl-search-server/) | 8008 | Поиск по БСП | Нет | Да |
 | [SyntaxCheckServer](servery/syntax-check-server/) | 8002 | Проверка синтаксиса BSL | Нет | Да |

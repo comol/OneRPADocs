@@ -7,7 +7,7 @@
 | Сервер | Порт | Назначение | Сложность | Плагины |
 |--------|------|------------|-----------|---------|
 | [HelpSearchServer](help-search-server/) | 8003 | Справка платформы 1С, руководства, спецификации форматов, стандарты | Средняя | Да |
-| [CodeMetadataSearchServer](code-metadata-search/) | 8000 | Метаданные и код конфигурации | Средняя | Нет |
+| [CodeMetadataSearchServer](code-metadata-search/) | 8000 | Метаданные и код конфигурации | Средняя | Да |
 | [CloudEmbeddingsServer](cloud-embeddings-server/) | 8000* | Метаданные, код и справка через cloud embeddings | Средняя | Нет |
 | [Graph Metadata Search](graph-metadata-search/) | 8006 | Графовый поиск связей | Высокая | Да (`GRAPH_PLUGINS_ENABLED`) |
 | [SSLSearchServer](ssl-search-server/) | 8008 | Библиотека стандартных подсистем | Низкая | Да |
