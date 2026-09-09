@@ -28,7 +28,7 @@
 | `MCP_SESSION_CLEANUP_INTERVAL_SEC` | Интервал очистки завершённых и просроченных сессий | `60` |
 | `MCP_SESSION_BOUNDS_MODE` | `enforce` применяет лимиты, `report` только считает нарушения | `enforce` |
 | `MCP_IMAGE_REF` | Неизменяемая ссылка на образ с digest для проверки release identity в `stats` | *(не задано)* |
-| `METADATA_SOURCE` | Источник метаданных: `xml` — читать их из `CODE_PATH`; `report` — требовать готовый отчёт в `METADATA_PATH` | `xml` |
+| `METADATA_SOURCE` | Источник метаданных: `xml` — читать их из `CODE_PATH`; `report` — требовать готовый отчёт в `METADATA_PATH`; `auto` — выгрузка в `CODE_PATH`, иначе отчёт | `xml` |
 | `SOURCE_FORMAT` | Формат `CODE_PATH`: `auto`, `designer_xml` или `edt` | `auto` |
 | `PROJECT_ID` | Явно закрепить идентификатор проекта индекса. Если не задан — выводится из каталогов `CODE_PATH` и `METADATA_PATH`; закрепление переживает перенос точки монтирования | *(выводится)* |
 | `GENERATION_RETENTION_COUNT` | Сколько поколений индекса хранить на диске; значение меньше 1 повышается до 1 | `2` |

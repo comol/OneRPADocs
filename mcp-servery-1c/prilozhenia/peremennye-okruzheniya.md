@@ -102,6 +102,7 @@
 | `LICENSE_KEY_FILE` | Путь к файлу с лицензионным ключом; предпочтительнее `LICENSE_KEY`, значение ключа не попадает в окружение процесса | *(не задано)* |
 | `LICENSE_KEY_FILE_CONSUME` | Удалить файл ключа сразу после чтения | `false` |
 | `METADATA_PATH` | Каталог готового текстового отчёта только для совместимого режима `METADATA_SOURCE=report`; в стандартном XML-режиме не требуется | *(пусто)* |
+| `METADATA_SOURCE` | `xml` — метаданные из `CODE_PATH`; `report` — готовый отчёт; `auto` — выгрузка, иначе отчёт | `xml` |
 | `CODE_PATH` | Путь к коду | `/app/code` |
 | `MCP_HOST` | Хост для привязки сервера | `0.0.0.0` |
 | `MCP_PORT` | Порт сервера | `8000` |
@@ -245,7 +246,8 @@
 | `NEO4J_USERNAME` | Пользователь | `neo4j` |
 | `NEO4J_USER` | Устаревший алиас `NEO4J_USERNAME`; при обеих заданных приоритет у `NEO4J_USERNAME` | — |
 | `NEO4J_PASSWORD` | Пароль | Обязательно |
-| `METADATA_DIRECTORY` | Путь к метаданным | `/app/metadata` |
+| `METADATA_DIRECTORY` | Каталог готового текстового отчёта; при `auto` выгрузка его перекрывает | `/app/metadata` |
+| `METADATA_SOURCE` | `auto` — Designer XML, иначе EDT, иначе `*.txt`; `report` — только отчёт; `xml` — только Designer XML; `edt` — только проект EDT | `auto` |
 | `NEO4J_DATABASE` | Имя базы Neo4j | `neo4j` |
 | `NEO4J_PARALLEL_WRITE_WORKERS` | Число параллельных потоков записи в Neo4j при индексации, диапазон `1..16` | `1` |
 | `PROJECT_NAME` | Название проекта | `1C Metadata Project` |
