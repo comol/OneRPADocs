@@ -23,6 +23,7 @@
 | `METADATA_DIRECTORY` | Каталог с текстовым отчётом Конфигуратора. Может быть пустым при работе по Designer XML | `/app/metadata` |
 | `METADATA_SOURCE` | `auto` — синтез из Designer XML, иначе дескрипторы проекта 1C:EDT, иначе готовый `*.txt`; `report` — требовать отчёт; `xml` — только Designer-выгрузка, отчёт игнорируется, EDT-корень отклоняется; `edt` — только проект 1C:EDT, отчёт не ищется и не пишется | `auto` |
 | `GENERATED_REPORT_DIRECTORY` | Кэш синтезированного отчёта; не должен находиться внутри `CODE_EXPORT_PATH` | `INGESTION_STATE_DIRECTORY/generated-report` |
+| `METADATA_FALLBACK_DIR_1`, `METADATA_FALLBACK_DIR_2`, `METADATA_FALLBACK_DIR_3` | Дополнительные каталоги готового отчёта, проверяемые по порядку после `METADATA_DIRECTORY`; используются только если заданы явно | — |
 | `CODE_EXPORT_PATH` | Корень Designer XML-выгрузки или проекта 1C:EDT. Для Designer XML служит источником и BSL/форм, и синтеза отчёта | — |
 | `METADATA_FILES` | Каталог дополнительных детальных файлов метаданных | — |
 
@@ -69,7 +70,8 @@
 | `EMBEDDING_API_BASE` | Отдельный URL для API эмбеддингов (если отличается от LLM API) | — |
 | `EMBEDDING_API_KEY` | Отдельный ключ для API эмбеддингов | — |
 | `EMBEDDING_MODEL` | Модель для API эмбеддингов | `qwen/qwen3-embedding-8b` |
-| `OPENAI_EMBEDDING_DIMENSIONS` | Явное указание размерности эмбеддингов | *(авто)* |
+| `OPENAI_EMBEDDING_DIMENSIONS` | Явное указание размерности эмбеддингов, запрашиваемой у API | *(авто)* |
+| `VECTOR_INDEX_DIMENSION` | Ожидаемая размерность векторного индекса процедур; если не задана, сервер читает её из метаданных индекса | *(авто)* |
 | `LOCAL_EMBEDDING_MODEL` | Локальная CPU модель (sentence-transformers). Совместимый алиас — `OFFLINE_EMBEDDING_MODEL` | `intfloat/multilingual-e5-small` |
 | `EMBEDDING_ALLOW_OFFLINE_FALLBACK` | Разрешить автопереход на локальную модель при недоступности API | `true` |
 
@@ -266,7 +268,7 @@ C:/Work/edt-workspace-zup/       <- EXTENSIONS_HOST_PATH -> /app/extensions:ro
 | `SEMANTIC_FALLBACK_MIN_RESULTS` | Сколько результатов должно остаться, чтобы не включать резервный маршрут | `3` |
 | `SEMANTIC_MERGE_W_DESCRIPTION` / `SEMANTIC_MERGE_W_BUSINESS` / `SEMANTIC_MERGE_W_TRANSLITERATED` | Веса описательного, бизнес- и транслитерированного представлений при слиянии | `1.0` / `1.0` / `0.7` |
 | `MIXED_MERGE_W_SEMANTIC` / `MIXED_MERGE_W_LEXICAL` / `MIXED_MERGE_W_STRUCTURAL` | Веса семантического, лексического и структурного маршрутов | `1.0` / `0.4` / `1.0` |
-| `DESCRIPTION_FT_BOOST_NAME` / `_SYNONYM` / `_COMMENT` / `_DESCRIPTION` / `_HELP` | Веса полей в полнотекстовом маршруте | `4.0` / `3.0` / `1.5` / `1.0` / `1.0` |
+| `DESCRIPTION_FT_BOOST_NAME`, `DESCRIPTION_FT_BOOST_SYNONYM`, `DESCRIPTION_FT_BOOST_COMMENT`, `DESCRIPTION_FT_BOOST_DESCRIPTION`, `DESCRIPTION_FT_BOOST_HELP` | Веса полей в полнотекстовом маршруте | `4.0` / `3.0` / `1.5` / `1.0` / `1.0` |
 | `CHUNK_EXCERPTS_PER_OBJECT` | Сколько фрагментов одного объекта попадает в ответ | `3` |
 | `CHUNK_OBJECT_DUAL_HIT_BOOST` | Прибавка к оценке, если объект найден и на уровне объекта, и на уровне фрагментов. `0.0` отключает | `0.05` |
 | `CHUNK_EVIDENCE_WEIGHT` | Прибавка за каждый дополнительный совпавший фрагмент объекта | `0.02` |
@@ -325,6 +327,7 @@ docker run --rm -v "E:/plugins/mcp_graph/10-facts.py:/tmp/my_plugin.py" `
 | `EMBEDDING_CARRY_BATCH_MODULES` | Сколько изменённых модулей одновременно проходят цикл «снять эмбеддинги процедур → удалить → загрузить → восстановить» при инкрементальном обновлении. Это не чекпоинт: на время пачки вектор каждой снятой процедуры держится в памяти, поэтому значение намеренно меньше размера чекпоинта — иначе релиз, затронувший тысячи модулей, приводит к OOM | `100` |
 | `INGESTION_TRACKER_BACKEND` | Где хранится состояние загрузки: `json` (без БД) или `neo4j` | `json` |
 | `INGESTION_STATE_DIRECTORY` | Каталог для состояния при бэкенде `json` | — |
+| `INDEXING_STATE_PATH` | Путь к JSON-состоянию фоновых задач старта | `<app>/data/.indexing_state.json` |
 | `GRAPH_STAGING_VALIDATION_ENABLED` | Проверять инварианты staging-поколения перед promote | `false` |
 | `GRAPH_STAGING_VALIDATION_MODE` | Что делает нарушение: `blocking` (отказ в promote) или `report` (promote с отчётом) | `blocking` |
 | `GRAPH_STAGING_VALIDATION_SAMPLE_LIMIT` | Количество примеров нарушений в отчёте | `5` |
@@ -349,7 +352,7 @@ docker run --rm -v "E:/plugins/mcp_graph/10-facts.py:/tmp/my_plugin.py" `
 |------------|----------|--------------|
 | `MCP_HOST` | Хост MCP-сервера | `0.0.0.0` |
 | `MCP_PORT` | Порт MCP | `8006` |
-| `MCP_PATH` | URL-путь для MCP эндпоинта | `/mcp` |
+| `MCP_PATH` | Совместимое поле конфигурации; текущие точки запуска его не применяют, MCP-эндпоинт фиксирован на `/mcp` | `/mcp` |
 | `MCP_USE_SSE` | SSE транспорт (для legacy клиентов) | `false` |
 | `NEO4J_DATABASE` | Имя базы Neo4j | `neo4j` |
 | `NEO4J_PARALLEL_WRITE_WORKERS` | Количество параллельных воркеров записи в Neo4j. Допустимый диапазон `1..16`, значение вне диапазона отклоняется при старте. Значения выше `1` приводили к взаимным блокировкам BSL-писателей на `NODE_RELATIONSHIP_GROUP_DELETE` при первой индексации — повышайте только по результатам замеров на своих данных | `1` |
@@ -361,12 +364,30 @@ docker run --rm -v "E:/plugins/mcp_graph/10-facts.py:/tmp/my_plugin.py" `
 | `PROJECT_NAME` | Название проекта (для логов, интерфейса и мультипроектности) | `1C Metadata Project` |
 | `DEBUG` | Режим отладки — дополнительные логи | `false` |
 
-## Переменные Neo4j
+## Переменные Docker Compose и Neo4j
 
-| Переменная | Описание | Пример |
-|------------|----------|--------|
-| `NEO4J_AUTH` | Логин/пароль | `neo4j/password123` |
-| `NEO4J_server_memory_heap_max__size` | Макс. память | `1g` |
+Эти имена читает `docker-compose.yml`; под тем же именем они не обязательно передаются приложению MCP.
+
+| Переменная | Назначение | По умолчанию в поставляемом compose-профиле |
+|------------|------------|-------------------------------------------|
+| `COMPOSE_PROJECT_NAME` | Имя проекта Compose | `graph_metadata_stable` |
+| `IMAGE_TAG` | Тег образа Graph Metadata Search | `light` |
+| `NEO4J_IMAGE` | Образ Neo4j | закреплённый digest в compose-файле |
+| `NEO4J_CONTAINER_NAME` | Имя контейнера Neo4j | `neo4j` |
+| `NEO4J_HTTP_PORT` / `NEO4J_BOLT_PORT` | Порты Neo4j на хосте | `7474` / `7687` |
+| `NEO4J_DATA_PATH` | Каталог данных Neo4j на хосте | `./data/neo4j_data` |
+| `NEO4J_HEAP_INITIAL_SIZE` / `NEO4J_HEAP_SIZE` | Начальный и максимальный heap Neo4j | `512m` / `2g` |
+| `NEO4J_PAGECACHE_SIZE` | Page cache Neo4j | `2g` |
+| `NEO4J_DEFAULT_CYPHER` | Язык запросов по умолчанию | `CYPHER_25` |
+| `NEO4J_MEMORY_LIMIT` | Лимит памяти контейнера Neo4j | `5G` |
+| `NEO4J_MEMORY_OVERHEAD` | Резерв поверх heap и page cache для проверки конфигурации | `1g` |
+| `MCP_CONTAINER_NAME` | Имя контейнера MCP | `1c_graph_metadata` |
+| `MCP_HOST_PORT` | Порт MCP на хосте | `8006` |
+| `METADATA_HOST_PATH` | Каталог готового отчёта для compose-файлов серверного репозитория | `./data/metadata_placeholder` |
+| `METADATA_FILES_HOST_PATH` | Designer XML / 1C:EDT на хосте | `./data/code_placeholder` в дистрибутиве |
+| `EXTENSIONS_HOST_PATH` | Каталог выгрузок расширений на хосте | значение `METADATA_FILES_HOST_PATH` |
+| `GRAPH_STATE_PATH` | Записываемое состояние MCP на хосте | `./data/mcp_state` |
+| `MCP_APP_MEMORY_LIMIT` | Лимит памяти контейнера MCP | `6G` |
 
 ## Монтируемые тома
 
@@ -374,8 +395,8 @@ docker run --rm -v "E:/plugins/mcp_graph/10-facts.py:/tmp/my_plugin.py" `
 
 | Хост | Контейнер | Назначение |
 |------|-----------|------------|
-| `E:/1C_Export/Report` | `/app/metadata` | Отчёт по метаданным |
-| `E:/1C_Export/Files` | `/app/metadata_files` | Файлы кода (BSL, XML, справка) |
+| `E:/1C_Export/Files` | `/app/code:ro` | Designer XML или проект 1C:EDT, только чтение |
+| `E:/bases/mcp_graph/app` | `/app/data` | Служебное состояние Graph Metadata Search |
 
 ### Neo4j
 
@@ -399,14 +420,14 @@ services:
     environment:
       - NEO4J_AUTH=neo4j/password123
       - NEO4J_server_memory_heap_initial__size=512m
-      - NEO4J_server_memory_heap_max__size=1g
-      - NEO4J_server_memory_pagecache_size=512m
+      - NEO4J_server_memory_heap_max__size=2g
+      - NEO4J_server_memory_pagecache_size=2g
     volumes:
       - E:/bases/mcp_graph/neo4j:/data
     deploy:
       resources:
         limits:
-          memory: 2G
+          memory: 5G
     healthcheck:
       test: ["CMD-SHELL", "wget --spider localhost:7474 || exit 1"]
       interval: 30s
@@ -425,7 +446,6 @@ services:
       - NEO4J_URI=bolt://neo4j:7687
       - NEO4J_USERNAME=neo4j
       - NEO4J_PASSWORD=password123
-      - METADATA_DIRECTORY=/app/metadata
       - RESET_DATABASE=false
       # === Embedding / LLM ===
       - OPENAI_API_BASE=http://host.docker.internal:1234/v1
@@ -435,7 +455,6 @@ services:
       # === Шаблонный режим ===
       - TEMPLATE_MODE_ENABLED=true
       # === BSL-граф ===
-      - CODE_EXPORT_PATH=/app/metadata_files
       - LOAD_BSL_SIGNATURES=true
       - ENABLE_ROUTINE_EMBEDDINGS=true
       # === XML-данные (опционально) ===
@@ -454,12 +473,12 @@ services:
       - CODE_EXPORT_PATH=/app/code
       - GENERATED_REPORT_DIRECTORY=/app/data/generated-report
     volumes:
-      - E:/1C_Export/Files:/app/code
+      - E:/1C_Export/Files:/app/code:ro
       - E:/bases/mcp_graph/app:/app/data
     deploy:
       resources:
         limits:
-          memory: 1G
+          memory: 6G
     depends_on:
       neo4j:
         condition: service_healthy
@@ -478,8 +497,7 @@ services:
       - NEO4J_URI=bolt://neo4j:7687
       - NEO4J_USERNAME=neo4j
       - NEO4J_PASSWORD=password123
-      - METADATA_DIRECTORY=/app/metadata
-      - RESET_DATABASE=true
+      - RESET_DATABASE=false
       - EXTENSION_NAME=МоёРасширение
       - EXTENSION_BASE_PROJECT=МояКонфигурация
       - OPENAI_API_BASE=http://host.docker.internal:1234/v1
@@ -489,7 +507,7 @@ services:
       - CODE_EXPORT_PATH=/app/code
       - LOAD_BSL_SIGNATURES=true
     volumes:
-      - E:/1C_Export_Extension/Files:/app/code
+      - E:/1C_Export_Extension/Files:/app/code:ro
     depends_on:
       neo4j:
         condition: service_healthy
@@ -510,7 +528,6 @@ services:
       - NEO4J_URI=bolt://neo4j:7687
       - NEO4J_USERNAME=neo4j
       - NEO4J_PASSWORD=password123
-      - METADATA_DIRECTORY=/app/metadata
       - METADATA_SOURCE=xml
       - CODE_EXPORT_PATH=/app/code
       - EXTENSION_BASE_PROJECT=МояКонфигурация
@@ -518,7 +535,7 @@ services:
       - EXTENSION_CATALOG_SYNC=true
       - LOAD_BSL_SIGNATURES=true
     volumes:
-      - E:/1C_Export/Files:/app/code
+      - E:/1C_Export/Files:/app/code:ro
     depends_on:
       neo4j:
         condition: service_healthy

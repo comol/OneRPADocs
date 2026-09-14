@@ -9,9 +9,9 @@
 | Переменная | Описание | Обязательная | По умолчанию |
 |------------|----------|--------------|--------------|
 | `LICENSE_KEY` | Лицензионный ключ | Да | — |
-| `RESET_DATABASE` | Переиндексировать данные | Нет | `true` / `false` (зависит от сервера) |
-| `RESET_CACHE` | Очистить кэш моделей при старте | Нет | `false` (в HelpSearchServer, SSL, Templates) |
-| `USESSE` | Включить SSE-транспорт для legacy-клиентов. При `false` используется `streamable-http` | Нет | `false` |
+| `RESET_DATABASE` | Переиндексировать данные в серверах, которые поддерживают сохранённый индекс | Нет | `false` |
+| `RESET_CACHE` | Очистить кэш моделей при старте | Нет | `false` (в HelpSearchServer и TemplatesSearchServer) |
+| `USESSE` | Включить SSE-транспорт для legacy-клиентов. При `false` используется `streamable-http`; Graph Metadata Search использует отдельную переменную `MCP_USE_SSE` | Нет | `false` |
 
 ## Переменные дистрибутива
 
@@ -22,6 +22,16 @@
 | `RELEASE_CHANNEL` | Канал `stable` или `beta` | `stable` |
 | `IMAGE_VARIANT` | Базовый вариант: `latest`, `light` или `arm64` | `latest` |
 | `IMAGE_TAG` | Явный тег; если задан, перекрывает канал и вариант | *(пусто)* |
+| `PATH_1C_BIN` | Путь на хосте к каталогу `bin` платформы 1С для HelpSearchServer | — |
+| `PATH_CODE` | Designer XML-выгрузка или корень базового проекта 1C:EDT на хосте | — |
+| `PATH_EXTENSIONS` | Каталог выгрузок/проектов расширений; для 1C:EDT — общий родитель workspace | — |
+| `PATH_BASES` | Корневой каталог постоянных данных серверов на хосте | — |
+| `CODE_METADATA_SOURCE_FORMAT` | Поставочное значение `SOURCE_FORMAT` для CodeMetadataSearchServer: `auto`, `designer_xml` или `edt` | `auto` |
+| `CODE_METADATA_INDEX_EXTENSIONS` | Поставочное значение `INDEX_EXTENSIONS`; команды установки передают его явно | `false` |
+| `CODE_METADATA_EXTENSION_PATHS` | Список путей проектов-расширений внутри контейнера для `EXTENSION_PATHS` | *(пусто)* |
+| `CHAT_API_BASE` / `CHAT_API_KEY` / `CHAT_MODEL` | OpenAI-совместимый LLM-провайдер для функций Graph, которым нужна генерация текста | зависит от профиля |
+| `USE_GPU` | Добавлять GPU к full/arm64-команде запуска, если сервер и хост его поддерживают | `false` |
+| `SUPPORT_KEY` / `SUPPORT_API_URL` / `SUPPORT_EMAIL` | Настройки команды `/support` из правил 1c-rules; контейнерам MCP не передаются | зависит от поставки |
 | `LICENSE_KEY_<СЕРВЕР>` | Ключ stable-канала | — |
 | `LICENSE_KEY_<СЕРВЕР>_BETA` | Ключ beta-канала | — |
 
@@ -43,7 +53,7 @@
 | `EMBEDDING_MODEL` | Модель с Hugging Face | `intfloat/multilingual-e5-base` |
 
 {% hint style="info" %}
-Если задан `EMBEDDING_API_BASE` или используется light-образ, сервер обращается к внешнему API. Старые `OPENAI_API_BASE`, `OPENAI_API_KEY` и `OPENAI_MODEL` поддерживаются HelpSearchServer, CodeMetadataSearchServer, SSLSearchServer и TemplatesSearchServer как совместимые алиасы. CloudEmbeddingsServer по-прежнему использует provider-specific ключи (`OPENAI_API_KEY`, `OPENROUTER_API_KEY`, `COHERE_API_KEY`, `JINA_API_KEY`).
+Если задан `EMBEDDING_API_BASE` или используется light-образ, сервер обращается к внешнему API. Старые `OPENAI_API_BASE`, `OPENAI_API_KEY` и `OPENAI_MODEL` поддерживаются HelpSearchServer, CodeMetadataSearchServer, SSLSearchServer и TemplatesSearchServer как совместимые алиасы.
 {% endhint %}
 
 ## Настройки индексации
@@ -105,7 +115,7 @@
 | `METADATA_SOURCE` | `xml` — метаданные из `CODE_PATH`; `report` — готовый отчёт; `auto` — выгрузка, иначе отчёт | `xml` |
 | `CODE_PATH` | Путь к коду | `/app/code` |
 | `MCP_HOST` | Хост для привязки сервера | `0.0.0.0` |
-| `MCP_PORT` | Порт сервера | `8000` |
+| `MCP_PORT` | Порт сервера; его же использует встроенная проверка здоровья контейнера | `8000` |
 | `MCP_PATH` | Путь MCP-эндпоинта | `/mcp` |
 | `FASTMCP_STATELESS_HTTP` | Stateless-режим HTTP | `true` |
 | `MCP_SESSION_IDLE_TTL_SEC` | Таймаут простоя MCP-сессии | `1800` |
@@ -121,7 +131,7 @@
 | `EMBEDDING_MODEL` | Модель API или локальная модель. Полный образ без явной настройки использует `sentence-transformers/paraphrase-multilingual-mpnet-base-v2`; удалённый профиль поставки закрепляет `qwen/qwen3-embedding-8b` | зависит от профиля |
 | `RESET_DATABASE` | Переиндексировать | `false` |
 | `BACKGROUND_INDEXING` | Индексировать в фоне, не блокируя запуск MCP | `true` |
-| `INCREMENTAL_INDEXING` | Обновлять только изменившиеся файлы по SHA-256 | `true` |
+| `INCREMENTAL_INDEXING` | Обновлять только изменившиеся файлы по SHA-256. Само переключение флага не требует повторного расчёта сохранённых embeddings | `true` |
 | `INDEX_NESTED_CONFIGURATIONS` | Индексировать вложенные конфигурации поставщика отдельными источниками | `false` |
 | `PROJECT_ID` | Явное закрепление идентификатора проекта индекса | *(выводится из путей)* |
 | `GENERATION_RETENTION_COUNT` | Сколько поколений индекса хранить | `2` |
@@ -137,6 +147,8 @@
 | `STRUCTURAL_EXCLUDE` | JSON-массив glob-шаблонов (не больше 64) относительно `CODE_PATH`; модули исключаются только из структурного парсера | *(не задано)* |
 | `LIVE_XML_FALLBACK` | Дочитывать XML-выгрузку, когда индекс не содержит факта | `true` |
 | `NESTED_CONFIGURATION_PATHS` | Каталоги-контейнеры вложенных конфигураций через запятую | `Ext/ParentConfigurations` |
+| `CHUNK_SIZE` | Совместимая настройка отпечатка и предела контекстного окна; текущий splitter использует фиксированные 1000 символов, поэтому переменная не меняет нарезку, но инвалидирует поколение | `1000` |
+| `CHUNK_OVERLAP` | Совместимая настройка отпечатка; текущий splitter использует фиксированные 200 символов, поэтому переменная не меняет нарезку, но инвалидирует поколение | `200` |
 | `INDEX_EXTENSIONS` | Индексировать найденные расширения конфигурации; обнаружение не отключается | `true` |
 | `EXTENSION_PATHS` | Явные корни расширений через запятую (абсолютные или относительно `CODE_PATH`) | *(не задано)* |
 | `EXTENSION_DISCOVERY_DEPTH` | Сколько уровней выше `CODE_PATH` просматривать при поиске соседних расширений; `0` — не искать | `1` |
@@ -156,6 +168,12 @@
 | `MIN_SCORE_THRESHOLD` | Минимальный порог оценки результата (0–1) | `0.15` |
 | `EMBEDDING_CACHE_SIZE` | Размер LRU-кэша эмбеддингов запросов | `256` |
 | `EMBEDDING_DIMENSIONS` | Размерность эмбеддингов | *(авто)* |
+| `EMBED_BATCH_SIZE_API` | Размер пакета для внешнего embedding API | `64` |
+| `EMBED_BATCH_SIZE_LOCAL` | Размер пакета для локальной embedding-модели | `64` |
+| `EMBED_QUEUE_CAPACITY` | Ёмкость очереди подготовленных пакетов | *(авто: четыре размера пакета)* |
+| `BATCH_MAX_RETRIES` | Максимум попыток пакета при временной ошибке провайдера | `10` |
+| `BATCH_BACKOFF_BASE` | Основание экспоненциальной паузы между попытками | `2.0` |
+| `BATCH_BACKOFF_MAX` | Максимальная пауза между попытками, секунды | `60.0` |
 | `ENABLE_RERANKER` | Включить нейронный реранкер (cross-encoder) | `false` |
 | `RERANKER_MODEL` | Модель реранкера | *(авто)* |
 | `RERANKER_TOP_K` | Макс. кандидатов для реранкера | `20` |
@@ -165,6 +183,7 @@
 | `EMBEDDING_MEMORY_BUDGET_MODE` | `refuse`, `warn` или `off` | `refuse` |
 | `VECTOR_PROFILE` | Профиль zvec: `fast_index`, `balanced`, `memory_saver`, `quality` | `fast_index` |
 | `VECTOR_OPTIMIZE_ENABLED` | Разрешить оптимизацию zvec | `true` |
+| `VECTOR_FLUSH_EVERY` | Число новых документов между промежуточными сбросами на диск; `0` — только финальный сброс | `2000` |
 | `VECTOR_OPTIMIZE_DEADLINE_SEC` | Таймаут фоновой оптимизации | `1800` |
 | `VECTOR_OPTIMIZE_CANCEL_DEADLINE_SEC` | Таймаут оптимизации из запроса | `5` |
 | `VECTOR_WRITE_FAILURE_THRESHOLD` | Ошибки записи до терминального состояния | `5` |
@@ -181,31 +200,6 @@
 {% hint style="warning" %}
 `INDEX_STRUCTURAL`, `INDEX_DEPENDENCY_GRAPH`, `INDEX_FORM_INDEX`, `INDEX_XSD_SCHEMAS`, `SUB_INDEX_PROGRESS_WARN_SEC`, `SUB_INDEX_PROGRESS_HEARTBEAT_SEC`, `SUB_INDEX_LIVENESS_WITNESS`, `STRUCTURAL_PARSE_TIMEOUT_SEC`, `STRUCTURAL_EXCLUDE`, `GREP_DEADLINE_SEC`, `GREP_MAX_CACHED_FILE_MB` и `MCP_TOOL_WORKERS` относятся к текущему beta-кандидату CodeMetadataSearchServer. В stable и ранее опубликованных beta-тегах их может ещё не быть.
 {% endhint %}
-
-### CloudEmbeddingsServer (порт 8000 по умолчанию)
-
-| Переменная | Описание | По умолчанию |
-|------------|----------|--------------|
-| `LICENSE_KEY` | Лицензионный ключ | Обязательно |
-| `USESSE` | Включить SSE-транспорт. При `false` используется `streamable-http` | `false` |
-| `EMBEDDING_PROVIDER` | Провайдер embedding | `openai` |
-| `OPENAI_API_KEY` | Ключ OpenAI-совместимого API | Обязательно для cloud-режима |
-| `OPENROUTER_API_KEY` | Ключ OpenRouter | — |
-| `COHERE_API_KEY` | Ключ Cohere | — |
-| `JINA_API_KEY` | Ключ Jina | — |
-| `OPENAI_API_BASE` | URL OpenAI-совместимого API | — |
-| `EMBEDDING_MODEL` | Явное имя модели провайдера | *(по умолчанию провайдера)* |
-| `SOURCE_PATH` | Каталог исходных данных для индексации | `/data/source` |
-| `CHROMA_PATH` | Каталог векторной БД | `/data/chroma_db` |
-| `HOST` | Адрес привязки приложения | `0.0.0.0` |
-| `PORT` | Внутренний порт приложения | `8000` |
-| `AUTO_INDEX` | Индексировать каталог при запуске | `true` |
-| `CHUNK_SIZE` | Размер чанка | `1000` |
-| `CHUNK_OVERLAP` | Перекрытие чанков | `100` |
-| `MAX_BATCH_SIZE` | Максимальный размер пакета индексации | `100` |
-| `DEFAULT_SEARCH_LIMIT` | Количество результатов поиска по умолчанию | `10` |
-| `EMBEDDING_CONCURRENCY` | Количество параллельных embedding-запросов | `1` |
-| `EMBEDDING_BATCH_SIZE` | Размер пакета embedding-запроса | `10` |
 
 ### SSLSearchServer (порт 8008)
 
@@ -252,6 +246,7 @@
 | `NEO4J_PASSWORD` | Пароль | Обязательно |
 | `METADATA_DIRECTORY` | Каталог готового текстового отчёта; при `auto` выгрузка его перекрывает | `/app/metadata` |
 | `METADATA_SOURCE` | `auto` — Designer XML, иначе EDT, иначе `*.txt`; `report` — только отчёт; `xml` — только Designer XML; `edt` — только проект EDT | `auto` |
+| `METADATA_FALLBACK_DIR_1`, `METADATA_FALLBACK_DIR_2`, `METADATA_FALLBACK_DIR_3` | Дополнительные каталоги готового отчёта, проверяемые по порядку после `METADATA_DIRECTORY`; используются только если заданы явно | — |
 | `NEO4J_DATABASE` | Имя базы Neo4j | `neo4j` |
 | `NEO4J_PARALLEL_WRITE_WORKERS` | Число параллельных потоков записи в Neo4j при индексации, диапазон `1..16` | `1` |
 | `PROJECT_NAME` | Название проекта | `1C Metadata Project` |
@@ -261,7 +256,8 @@
 | `GRAPH_FORM_XML_BATCH_MAX_ROWS` | Порог сброса, проверяемый после целой формы; не является жёстким пределом транзакции | `20000` |
 | `MAX_TOKENS_PER_BATCH` | Макс. токенов на пакет API | `28000` |
 | `EMBEDDING_REQUEST_CONCURRENCY` | Параллельные запросы к API эмбеддингов | `6` |
-| `OPENAI_EMBEDDING_DIMENSIONS` | Размерность эмбеддингов | *(авто)* |
+| `OPENAI_EMBEDDING_DIMENSIONS` | Размерность эмбеддингов, запрашиваемая у API | *(авто)* |
+| `VECTOR_INDEX_DIMENSION` | Ожидаемая размерность векторного индекса процедур; если не задана, читается из метаданных индекса | *(авто)* |
 | `EMBEDDING_API_BASE` | URL API эмбеддингов | — |
 | `EMBEDDING_API_KEY` | Ключ API эмбеддингов | — |
 | `EMBEDDING_MODEL` | Модель API эмбеддингов | `qwen/qwen3-embedding-8b` |
@@ -272,7 +268,7 @@
 | `ENABLE_METADATA_DESCRIPTION_EMBEDDING` | Эмбеддинги для описательных полей | `true` |
 | `MCP_HOST` | Хост MCP-сервера | `0.0.0.0` |
 | `MCP_PORT` | Порт MCP | `8006` |
-| `MCP_PATH` | URL-путь MCP эндпоинта | `/mcp` |
+| `MCP_PATH` | Совместимое поле конфигурации; текущий сервер его не применяет, MCP-эндпоинт фиксирован на `/mcp` | `/mcp` |
 | `MCP_TOOL_PROFILE` | Профиль публикуемых инструментов: `admin` или `read-only` | `admin` |
 | `MCP_NAMESPACE` | Namespace регистрации графовых проектов | `default` |
 | `GRAPH_SCOPE_ENFORCED` | Записан ли scope в графе: при `true` и закрытом миграционном окне `project_id` обязателен; при `false` отсутствующий id подставляется из единственного/legacy-проекта и ответ помечается `deprecated` | `false` |
@@ -284,6 +280,7 @@
 | `EMBEDDING_CARRY_BATCH_MODULES` | Изменённых модулей в одной пачке переноса эмбеддингов процедур при инкрементальном обновлении; ограничивает пиковую память | `100` |
 | `INGESTION_TRACKER_BACKEND` | Хранилище состояния загрузки: `json` или `neo4j` | `json` |
 | `INGESTION_STATE_DIRECTORY` | Каталог состояния для backend `json` | — |
+| `INDEXING_STATE_PATH` | Путь к JSON-состоянию фоновых задач старта | `<app>/data/.indexing_state.json` |
 | `GRAPH_MAX_ITEMS` | Жёсткий предел элементов в ответе | `200` |
 | `GRAPH_TOOL_TIMEOUT_SECONDS` | Таймаут выполнения инструмента | `300` |
 | `EMBEDDING_ALLOW_OFFLINE_FALLBACK` | Автопереход на локальную модель | `true` |

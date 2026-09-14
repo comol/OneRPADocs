@@ -194,7 +194,7 @@
 | `PRODUCT` | `graph-metadata-search` |
 | Версии | `HOST_CONTRACT_VERSION = 1`, `HOOKS_VERSION = 1` |
 | Каталог | `plugins` относительно `/app` (`GRAPH_PLUGINS_DIRECTORY`) |
-| Включение | **`GRAPH_PLUGINS_ENABLED=true`** — иначе каталог не читается |
+| Включение | **`GRAPH_PLUGINS_ENABLED=true`** (по умолчанию) — при `false` каталог не читается |
 | Интроспекция | `list_plugins` (оба профиля), `reload_plugins(operation_id)` (только профиль `admin`) |
 | Dry-run | `python run.py plugin-dry-run <файл>` — без Neo4j, метаданных, поколения и лицензии |
 | Цена derived-state правки | Пересборка проекта: граф, полнотекстовый и векторный маршруты |

@@ -27,10 +27,9 @@ MCP-серверы поставляются готовыми Docker-образа
 | [Graph Metadata Search](../servery/graph-metadata-search/) | Да | `graph-metadata-search` | `/app/plugins` (`GRAPH_PLUGINS_DIRECTORY`) | `GRAPH_PLUGINS_ENABLED=true` |
 | [CodeMetadataSearchServer](../servery/code-metadata-search/) | Да | `code-metadata-search` | `/app/plugins` (`PLUGIN_DIR`) | Всегда включены |
 | [1CCodeChecker](../servery/code-checker/) | Да (beta) | `onec-code-checker` | `/app/plugins` (`PLUGIN_DIR`) | Всегда включены |
-| [CloudEmbeddingsServer](../servery/cloud-embeddings-server/) | Нет | — | — | См. [Серверы без плагинов](dorabotka-bez-pluginov.md) |
 
-{% hint style="warning" %}
-У Graph Metadata Search подсистема плагинов **выключена по умолчанию**. Без `GRAPH_PLUGINS_ENABLED=true` каталог не читается вообще, а `reload_plugins` отвечает, что подсистема отключена.
+{% hint style="info" %}
+У Graph Metadata Search подсистема плагинов **включена по умолчанию**. При `GRAPH_PLUGINS_ENABLED=false` каталог не читается вообще, а `reload_plugins` отвечает, что подсистема отключена.
 {% endhint %}
 
 {% hint style="info" %}
@@ -129,8 +128,4 @@ REQUIRES = {"host": 1, "product": "ssl-search", "hooks": 1}
 
 {% content-ref url="recepty.md" %}
 [recepty.md](recepty.md)
-{% endcontent-ref %}
-
-{% content-ref url="dorabotka-bez-pluginov.md" %}
-[dorabotka-bez-pluginov.md](dorabotka-bez-pluginov.md)
 {% endcontent-ref %}

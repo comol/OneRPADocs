@@ -134,7 +134,7 @@ docker run -d -p 8003:8003 `
   comol/1c_help_mcp:latest
 ```
 
-Для Graph Metadata Search каталог мало смонтировать — подсистему нужно включить:
+У Graph Metadata Search подсистема включена по умолчанию. В примере флаг указан явно, чтобы конфигурация не зависела от default образа:
 
 ```powershell
 docker run -d -p 8006:8006 `
@@ -153,7 +153,7 @@ docker run -d -p 8006:8006 `
 | `PLUGINS_DIR` | Syntax | То же; пустое значение означает `/app/plugins` | *(пусто)* |
 | `PLUGIN_STRICT_DERIVED_STATE` | Help, SSL, Templates, Code | `true` — упавший derived-state хук роняет сборку вместо пропуска единицы | `false` |
 | `PLUGIN_HOOK_TIMEOUT_SECONDS` | Code | Бюджет времени одного хука; превысивший его хук считается упавшим | `5.0` |
-| `GRAPH_PLUGINS_ENABLED` | Graph | Читать каталог плагинов вообще | `false` |
+| `GRAPH_PLUGINS_ENABLED` | Graph | Читать каталог плагинов вообще | `true` |
 | `GRAPH_PLUGINS_DIRECTORY` | Graph | Каталог плагинов; относительный путь считается от `/app` | `plugins` |
 | `GRAPH_PLUGIN_STRICT_BUILD` | Graph | Ронять построение поколения при ошибке derived-state хука | `false` |
 | `GRAPH_PLUGIN_HOOK_TIMEOUT_SECONDS` | Graph | Бюджет времени одного хука; `0` отключает контроль | `5.0` |
@@ -190,7 +190,7 @@ Invoke-RestMethod -Method Post -Uri "http://localhost:8003/plugins/reload"
 
 Три вопроса, на которые он отвечает быстрее, чем журнал:
 
-* **Плагин загрузился?** Файла нет в списке — он не в каталоге или каталог не смонтирован (у Graph — ещё и `GRAPH_PLUGINS_ENABLED`).
+* **Плагин загрузился?** Файла нет в списке — он не в каталоге или каталог не смонтирован (у Graph проверьте, что `GRAPH_PLUGINS_ENABLED` не отключён).
 * **Почему хук не срабатывает?** Отключён после исключения — рядом будет ошибка и счётчик сбоев.
 * **Почему стало медленно?** У каждого хука показано накопленное время.
 

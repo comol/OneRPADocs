@@ -213,7 +213,7 @@ docker logs --tail 50 <container_name>
 
 ### Решение
 
-Добавьте переменную окружения `USESSE=true`:
+Добавьте переменную окружения `USESSE=true`. Для Graph Metadata Search используйте `MCP_USE_SSE=true`:
 
 ```powershell
 docker run -d -p 8002:8002 `

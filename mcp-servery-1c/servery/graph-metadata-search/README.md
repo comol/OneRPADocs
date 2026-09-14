@@ -97,7 +97,7 @@ Graph Metadata Search строит граф связей метаданных в
 |------------|----------|
 | `search_forms` | Поиск форм проекта — обычных, управляемых или всех |
 | `get_form_structure` | Полная структура формы: элементы, реквизиты, команды, меню, события |
-| `find_form_links` | Связи формы: обработчики, привязки, метаданные, модуль |
+| `find_form_links` | Связи формы: обработчики, привязки, метаданные, модуль. Владелец может быть указан как `ПереносОтпуска` или `Документ.ПереносОтпуска` |
 | `get_access_rights` | Права ролей на объект или на его поле |
 | `get_event_subscriptions` | Цепочка «источник → подписка на событие → обработчик» |
 | `find_predefined_values` | Предопределённые элементы объекта с иерархией |
@@ -198,6 +198,36 @@ Graph Metadata Search строит граф связей метаданных в
 {% endhint %}
 
 Инструменты, не привязанные к проекту (`get_metadata_prompt`, `get_indexing_status`, `health_graph`, `get_graph_capabilities`, `list_graph_capabilities`, `get_graph_tool_schema`, `metadata_report`, `unpack_ordinary_form`, `build_ordinary_form`, а также инструменты управления проектами), получают только `cursor` и `max_items`; `project_id` у административных инструментов — обычный доменный аргумент.
+
+### Краткие сигнатуры остальных инструментов
+
+Ниже перечислены доменные параметры инструментов, для которых дальше нет отдельной таблицы параметров. Общие параметры контракта добавляются по правилам выше. Точные JSON Schema, типы и значения по умолчанию текущего образа возвращает `get_graph_tool_schema`.
+
+| Инструмент | Доменные параметры |
+|------------|--------------------|
+| `explain_graph_evidence` | `ref`, `label`, `key`, `include_inferred`, `min_confidence`, `include_closed` |
+| `explain_path` | `path`, `include_inferred`, `min_confidence`, `include_closed` |
+| `fetch_graph_nodes` | `node_ids` |
+| `resolve_graph_entity` | `reference`, `reference_kind`, `entity_kind`, `source_path`, `line`, `form_kind` |
+| `explain_graph_entity` | `reference`, `reference_kind`, `entity_kind`, `source_path`, `line`, `relation_kind`, `direction`, `group_limit`, `include_inferred`, `min_confidence` |
+| `find_graph_path` | `from_ref`, `to_ref`, `direction`, `edge_types`, `max_depth`, `max_paths`, `include_inferred`, `min_confidence`, `form_kind` |
+| `affected_subgraph` | `roots`, `direction`, `max_depth`, `edge_types`, `node_kinds`, `stop_kinds`, `include_inferred`, `min_confidence`, `max_nodes`, `max_paths`, `form_kind` |
+| `get_graph_capabilities` | `capability` |
+| `search_forms` | `name`, `form_kind`, `object_name` |
+| `get_access_rights` | `role`, `object_name`, `rights`, `field_name`, `direction` |
+| `get_event_subscriptions` | `subscription`, `source_object`, `event`, `handler`, `depth` |
+| `find_predefined_values` | `object_name`, `name`, `is_folder`, `depth` |
+| `get_register_writers` | `register`, `document`, `direction` |
+| `find_object_referrers` | `object_name`, `access`, `min_referrers` |
+| `get_data_links` | `object_name`, `direction`, `usage_type`, `attribute_name`, `depth` |
+| `get_report_dcs_lineage` | `report`, `layout`, `data_set`, `depth`, `stages` |
+| `resolve_effective_entity` | `object_name`, `entity_kind`, `entity_name` |
+| `compare_graph_scope` | `base_generation`, `target_generation`, `compare_project_id`, `extension_ref`, `node_kinds`, `edge_types` |
+| `register_graph_project` | `project_id`, `configuration_root`, `operation_id`, `mode` |
+| `refresh_graph_project` | `project_id`, `operation_id`, `mode`, `changed_paths`, `expected_generation` |
+| `get_graph_tool_schema` | `tool` |
+| `unpack_ordinary_form` | `form_path`, `workspace_path`, `overwrite`, `include`, `max_chars` |
+| `build_ordinary_form` | `workspace_path`, `output_path`, `overwrite`, `verify` |
 
 ### search_metadata
 
@@ -366,6 +396,7 @@ Cypher-запрос по тексту модели больше не генер�
 |----------|-----|--------------|----------|
 | `object_name` | string | — | Имя объекта метаданных |
 | `sections` | list | все | Список секций: `structure`, `forms`, `subscriptions`, `roles`, `dependencies`, `code`, `business_info` |
+| `project_name` | string | — | Фильтр по имени конфигурации |
 
 **Секции досье**:
 
@@ -412,6 +443,7 @@ Cypher-запрос по тексту модели больше не генер�
 | `object_name` | string | — | Имя объекта-владельца (для устранения неоднозначности) |
 | `direction` | string | `callees` | Направление: `callees` (кого вызывает), `callers` (кто вызывает) |
 | `depth` | int | 3 | Глубина обхода (максимум 10) |
+| `project_name` | string | — | Фильтр по имени конфигурации |
 
 **Возврат**: Дерево вызовов с обогащёнными данными: имя процедуры, объект-владелец, тип модуля, директива, сигнатура, export-флаг, глубина. Результат усекается до 200 записей.
 
@@ -424,6 +456,7 @@ Cypher-запрос по тексту модели больше не генер�
 | Параметр | Тип | По умолчанию | Описание |
 |----------|-----|--------------|----------|
 | `guid` | string | — | GUID для поиска (например, `8f1c2d34-5678-4abc-9def-0123456789ab`) |
+| `project_name` | string | — | Фильтр по имени конфигурации |
 
 **Возврат**: Информация о найденном узле или сообщение об ошибке.
 
@@ -434,6 +467,7 @@ Cypher-запрос по тексту модели больше не генер�
 | Параметр | Тип | По умолчанию | Описание |
 |----------|-----|--------------|----------|
 | `qualified_name` | string | — | Точечное квалифицированное имя (например, `Справочник.Контрагенты.Реквизит.ИНН`) |
+| `project_name` | string | — | Фильтр по имени конфигурации |
 
 **Возврат**: Информация о резолвленном узле.
 
@@ -455,6 +489,10 @@ Cypher-запрос по тексту модели больше не генер�
 | `extension_name` | string | Имя расширения |
 
 **Возврат**: Детальное сравнение по секциям — реквизиты, формы, процедуры — с указанием статуса каждого элемента (из базы / переопределён / добавлен расширением).
+
+Процедура или форма с явной связью `OVERRIDES` относится к переопределённым,
+даже если её имя отличается от имени базового элемента; в добавленных она
+повторно не перечисляется.
 
 > Требует предварительной загрузки и базовой конфигурации, и расширения (через `EXTENSION_NAME` и `EXTENSION_BASE_PROJECT`).
 

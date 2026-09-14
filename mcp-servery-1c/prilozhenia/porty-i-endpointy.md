@@ -4,20 +4,17 @@
 
 ## Порты серверов
 
-По умолчанию современные образы используют `streamable-http` на `/mcp`. Если клиент требует SSE, включите `USESSE=true`. У большинства серверов URL остаётся `/mcp`; SyntaxCheckServer использует стандартные SSE-пути `/sse` и `/messages/`.
+По умолчанию современные образы используют `streamable-http` на `/mcp`. Если клиент требует SSE, включите `USESSE=true`; у Graph Metadata Search эта переменная называется `MCP_USE_SSE`. У большинства серверов URL остаётся `/mcp`; SyntaxCheckServer использует стандартные SSE-пути `/sse` и `/messages/`.
 
 | Сервер | Порт | MCP Endpoint | Дополнительные |
 |--------|------|--------------|----------------|
 | CodeMetadataSearchServer | 8000 | `/mcp` | `/live`, `/ready`, `/health` (устаревший алиас `/live`) |
-| CloudEmbeddingsServer | 8000* | `/mcp` | `/health`, `/reindex` |
 | SyntaxCheckServer | 8002 | `/mcp` (`streamable-http`) или `/sse` (SSE) | `/messages/` (SSE) |
 | HelpSearchServer | 8003 | `/mcp` | `/health`, `/ready`, `/plugins`, `/plugins/reload` |
 | TemplatesSearchServer | 8004 | `/mcp` | `/health`, `/ready`, `/extend/`, `/extend/memory` (веб-интерфейс) |
 | Graph Metadata Search | 8006 | `/mcp` | `/health` (`/healthz`), `/ready` (`/readyz`) |
-| 1CCodeChecker | 8007 | `/mcp` | `/health`, `/metrics/sessions`, `/release` |
+| 1CCodeChecker | 8007 | `/mcp` | `/health`, `/ready`, `/metrics/sessions`, `/release`, `/plugins`, `/plugins/reload` |
 | SSLSearchServer | 8008 | `/mcp` | `/ready` |
-
-`*` CloudEmbeddingsServer внутри контейнера слушает `PORT=8000`. В `docker-compose.yml` подстановка `MCP_PORT` управляет только внешним портом публикации; при совместном запуске с CodeMetadataSearchServer используйте свободный внешний порт, например 8001.
 
 ## Neo4j (для Graph Metadata Search)
 
@@ -34,10 +31,6 @@
     "1c-code-metadata-mcp": {
       "url": "http://localhost:8000/mcp",
       "connection_id": "1c_metadata_service_001"
-    },
-    "1c-cloud-embeddings-mcp": {
-      "url": "http://localhost:8001/mcp",
-      "connection_id": "1c_cloud_embeddings_001"
     },
     "1c-syntax-checker-mcp": {
       "url": "http://localhost:8002/mcp",

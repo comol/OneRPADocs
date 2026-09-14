@@ -160,7 +160,7 @@ def on_template(template):
 
 ## Graph Metadata Search: свои факты об объектах и свой Cypher
 
-Не забудьте `GRAPH_PLUGINS_ENABLED=true` — иначе каталог не читается.
+`GRAPH_PLUGINS_ENABLED` по умолчанию равен `true`; не отключайте его, иначе каталог не читается.
 
 ```python
 """Разметка объектов и шаблон запроса. /app/plugins/10-facts.py"""
