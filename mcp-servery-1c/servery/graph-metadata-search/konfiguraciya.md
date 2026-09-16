@@ -46,6 +46,9 @@
 | `GRAPH_FORM_XML_BATCH_SIZE` | Сколько управляемых форм вместе проходят bulk-поиск владельцев и проверку resume. Запись этой пачки может дополнительно делиться по `GRAPH_FORM_XML_BATCH_MAX_ROWS`. Значение `1` возвращает прежний путь «по одной форме». Допустимый диапазон `1..500`, значение вне диапазона отклоняется при старте | `50` |
 | `GRAPH_FORM_XML_BATCH_MAX_ROWS` | Порог сброса накопленных строк, проверяемый после добавления целой формы; это не жёсткий предел транзакции. Форма крупнее порога записывается отдельно и сама может превысить это значение. Минимум `1`, значение ниже отклоняется при старте | `20000` |
 | `MAX_TOKENS_PER_BATCH` | Максимальное количество токенов в одном пакете запроса к API эмбеддингов | `28000` |
+| `BATCH_MAX_RETRIES` | Сколько раз повторить пакет эмбеддингов (бизнес-описания, описания объектов, код, процедуры) после временной ошибки провайдера — обрыв соединения, `503` от прокси, лимит запросов. Пакеты, не прошедшие и после повторов, получают ещё один проход в конце лейна. Только если и он не помог, задача (`vector_indexing` / `routine_embedding_indexing`) помечается `failed`, а в ошибке указывается доля объектов без эмбеддингов; следующий старт дозаполняет именно их | `10` |
+| `BATCH_BACKOFF_BASE` | Основание экспоненциальной паузы между повторами пакета: `min(BASE^попытка, MAX)` секунд | `2.0` |
+| `BATCH_BACKOFF_MAX` | Максимальная пауза между повторами пакета, секунды | `60.0` |
 | `EMBEDDING_REQUEST_CONCURRENCY` | Количество параллельных запросов к API эмбеддингов | `6` |
 | `EMBEDDING_MAX_TOKENS` | Максимальное количество токенов на один текст при генерации эмбеддингов. Определяется автоматически по модели, но можно переопределить | *(авто)* |
 | `EMBEDDING_CHUNK_TARGET_TOKENS` | Целевой размер чанка при разбивке длинных текстов | *(авто)* |
@@ -144,7 +147,7 @@
 | `LOAD_PREDEFINED_VALUES` | Загружать предопределённые элементы из `*/Predefined.xml` | `false` |
 | `LOAD_ROLE_RIGHTS` | Загружать права ролей из `Roles/*/Ext/Rights.xml` | `false` |
 | `LOAD_HELP_FROM_HTML` | Загружать справку объектов из `*/Help/ru.html` | `false` |
-| `LOAD_DCS_TEMPLATES` | Загружать схемы компоновки данных (для `get_report_dcs_lineage`) | `false` |
+| `LOAD_DCS_TEMPLATES` | Загружать схемы компоновки данных из макетов `Templates/<Макет>/Ext/Template.dcs` отчётов и обработок. Для каждой СКД узел макета `Layout` получает признак `dcs = true`, а под ним создаются узлы `DcsDataSet` (наборы данных и их запросы), `DcsField` (поля; связь `HAS_DCS_FIELD` и от макета, и от набора данных, который поле поставляет), `DcsParameter`, `DcsGrouping`, `DcsFilter` и `DcsTemplateArea` (области макетов) со связями `HAS_DCS_DATA_SET`, `HAS_DCS_PARAMETER`, `HAS_DCS_GROUPING`, `HAS_DCS_FILTER`, `HAS_DCS_TEMPLATE`. Каждая связь хранит XML-путь элемента, из которого прочитана. Это данные инструмента `get_report_dcs_lineage` (отчёт → СКД → наборы данных и запросы → поля/параметры/группировки/отборы/макеты). На крупной конфигурации это заметная часть графа — порядка десятка тысяч узлов | `false` |
 
 ### Поддержка расширений
 
@@ -318,16 +321,26 @@ docker run --rm -v "E:/plugins/mcp_graph/10-facts.py:/tmp/my_plugin.py" `
 
 ### Поколения графа и загрузка данных
 
+Модель поколений — координатор, привязка векторных лейнов к поколению, готовность лейнов в `health_graph` и `refresh_graph_project` — собирается из трёх переключателей, каждый из которых по умолчанию выключен:
+
+| Переключатель | Что появляется при `true` | Что видно при `false` |
+|---|---|---|
+| `INGESTION_COORDINATOR_ENABLED` | Записи фаз загрузки, `active_generation` / `staging_generation`, задача `ingestion_promote`, привязка `vector_lane_binding`, готовность лейнов (`readiness.lanes`) в `health_graph` и `get_graph_project_status` | Поколений нет: `active_generation = null`, `readiness.state = unknown`, лейны `null`; задача `vector_lane_binding` помечена `skipped` с причиной `INGESTION_COORDINATOR_ENABLED=false`. Поиск при этом работает — он отвечает из графа, а не из поколения |
+| `GRAPH_SCOPE_ENFORCED` | Scope проекта в самой базе — staging-изоляция, без которой `refresh_graph_project` с `mode=full` отвечает `data_store_unavailable`; scope нужен и манифесту исходников | Одна инсталляция — один граф; `refresh_graph_project` недоступен |
+| `SOURCE_UNIT_MANIFEST_ENABLED` | Инкрементальный `refresh_graph_project` (`mode=incremental`); без манифеста он отвечает `refresh_capability_unavailable` | Пересборка только полная |
+
+Граф, загруженный без координатора (или томом Neo4j, перенесённым с другой инсталляции), в `get_graph_project_status` показывается как `ingestion_state = inherited`: данные читаемы, все инструменты чтения отвечают, но записей фаз и поколения у него нет. `list_graph_projects` — облегчённый список и координатор для каждого проекта не читает, поэтому до первого `get_graph_project_status` он показывает `never_run`; после него список повторяет проверенный ответ. Ни `inherited`, ни `never_run` при рабочем поиске не означают «граф пуст, переиндексируйте».
+
 | Переменная | Описание | По умолчанию |
 |------------|----------|--------------|
-| `INGESTION_COORDINATOR_ENABLED` | Координатор загрузки с фазами, лизом и чекпоинтами | `false` |
+| `INGESTION_COORDINATOR_ENABLED` | Координатор загрузки с фазами, лизом и чекпоинтами. Включать осознанно: первый прогон под координатором записывает документ состояния проекта, и фаза, записанная как завершённая, повторно не входится | `false` |
 | `INGESTION_LEASE_TTL_SECONDS` | Время жизни лиза загрузчика. Живой писатель продлевает лиз heartbeat'ом каждые TTL/3, штатная остановка (SIGTERM) освобождает лиз сразу, поэтому срок платит только аварийное завершение: при большом TTL контейнер, убитый по OOM, видел после перезапуска живой лиз мёртвого писателя и помечал задачи индексации как skipped | `120` |
 | `INGESTION_CHECKPOINT_BATCH_SIZE` | Размер пакета между чекпоинтами | `500` |
 | `INGESTION_CHECKPOINT_INTERVAL_SECONDS` | Интервал записи чекпоинтов | `30` |
 | `EMBEDDING_CARRY_BATCH_MODULES` | Сколько изменённых модулей одновременно проходят цикл «снять эмбеддинги процедур → удалить → загрузить → восстановить» при инкрементальном обновлении. Это не чекпоинт: на время пачки вектор каждой снятой процедуры держится в памяти, поэтому значение намеренно меньше размера чекпоинта — иначе релиз, затронувший тысячи модулей, приводит к OOM | `100` |
 | `INGESTION_TRACKER_BACKEND` | Где хранится состояние загрузки: `json` (без БД) или `neo4j` | `json` |
 | `INGESTION_STATE_DIRECTORY` | Каталог для состояния при бэкенде `json` | — |
-| `INDEXING_STATE_PATH` | Путь к JSON-состоянию фоновых задач старта | `<app>/data/.indexing_state.json` |
+| `INDEXING_STATE_PATH` | Путь к JSON-состоянию фоновых задач старта. По нему работает защита от цикла перезапусков: если три старта подряд находят незавершённые задачи предыдущего прогона, все задачи индексации помечаются `skipped` с причиной `restart-loop protection`, а `get_indexing_status` и `/search/index-status` отдают блок `restart_loop_protection` и `warning`. Штатная остановка контейнера (`docker stop`, `docker compose up -d` после правки конфигурации — SIGTERM) записывается в это состояние как остановка по запросу и крашем не считается; считаются только обрывы без сигнала — OOM-kill (SIGKILL) и потеря питания. Сбросить счётчик — удалить файл и перезапустить | `<app>/data/.indexing_state.json` |
 | `GRAPH_STAGING_VALIDATION_ENABLED` | Проверять инварианты staging-поколения перед promote | `false` |
 | `GRAPH_STAGING_VALIDATION_MODE` | Что делает нарушение: `blocking` (отказ в promote) или `report` (promote с отчётом) | `blocking` |
 | `GRAPH_STAGING_VALIDATION_SAMPLE_LIMIT` | Количество примеров нарушений в отчёте | `5` |
@@ -339,7 +352,7 @@ docker run --rm -v "E:/plugins/mcp_graph/10-facts.py:/tmp/my_plugin.py" `
 | `REFERENCE_EVIDENCE_ENABLED` | Сохранять evidence для `explain_graph_evidence` / `explain_path` | `false` |
 | `REFERENCE_EVIDENCE_RETENTION_DAYS` | Срок хранения evidence в днях | `90` |
 | `REFERENCE_EVIDENCE_RETENTION_GENERATIONS` | Сколько поколений evidence хранить | `3` |
-| `SOURCE_UNIT_MANIFEST_ENABLED` | Манифест единиц исходников для инкрементальной пересборки | `false` |
+| `SOURCE_UNIT_MANIFEST_ENABLED` | Манифест единиц исходников для инкрементальной пересборки (`refresh_graph_project` с `mode=incremental`). Манифест ключует каждую единицу по scope проекта, поэтому действует только при `GRAPH_SCOPE_ENFORCED=true`; без него сервер пишет в журнал предупреждение `SOURCE_UNIT_MANIFEST_ENABLED is set but this Indexer has no project scope` и лейны обходят выгрузку сами, как раньше | `false` |
 | `SOURCE_UNIT_MANIFEST_DIRECTORY` | Каталог хранения манифеста | — |
 | `SOURCE_UNIT_IGNORE_PATTERNS` | Шаблоны исключения файлов из манифеста | — |
 | `SOURCE_UNIT_SCAN_PREFIX_BYTES` | Сколько байт файла читается при сканировании | `4096` |

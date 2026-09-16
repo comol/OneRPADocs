@@ -65,6 +65,9 @@
 | `INDEX_BATCH_SIZE` | Размер пакета при добавлении в векторное хранилище | `512` | Graph |
 | `MAX_TOKENS_PER_BATCH` | Максимум токенов в одном пакете API | `28000` | Graph |
 | `EMBEDDING_MAX_TOKENS` | Максимум токенов на текст для эмбеддингов | *(авто)* | Graph |
+| `BATCH_MAX_RETRIES` | Повторы пакета эмбеддингов после временной ошибки провайдера (обрыв, `503`, лимит); упавшие пакеты получают ещё один проход в конце лейна | `10` | Graph, CodeMetadata |
+| `BATCH_BACKOFF_BASE` | Основание экспоненциальной паузы между повторами пакета | `2.0` | Graph, CodeMetadata |
+| `BATCH_BACKOFF_MAX` | Максимальная пауза между повторами пакета, секунды | `60.0` | Graph, CodeMetadata |
 | `REINDEX_INTERVAL_SEC` | Интервал автоматической инкрементальной индексации (секунды); `0` — отключить | `3600` | CodeMetadata |
 | `REINDEX_INTERVAL_HOURS` | Алиас интервала в часах; `REINDEX_INTERVAL_SEC` имеет приоритет | *(не задано)* | CodeMetadata |
 | `ENABLE_RERANKER` | Нейронный реранкер (cross-encoder) | `false` | CodeMetadata |
@@ -296,7 +299,7 @@
 | `LOAD_PREDEFINED_VALUES` | Загружать предопределённые элементы | `false` |
 | `LOAD_ROLE_RIGHTS` | Загружать права ролей | `false` |
 | `LOAD_HELP_FROM_HTML` | Загружать справку из HTML | `false` |
-| `LOAD_DCS_TEMPLATES` | Загружать схемы компоновки данных (СКД) | `false` |
+| `LOAD_DCS_TEMPLATES` | Загружать схемы компоновки данных (СКД) из макетов отчётов и обработок: узлы `DcsDataSet`, `DcsField`, `DcsParameter`, `DcsGrouping`, `DcsFilter`, `DcsTemplateArea` под макетом `Layout` — данные `get_report_dcs_lineage`. Состав узлов и связей — на странице конфигурации Graph | `false` |
 | `EXTENSION_NAME` | Имя расширения | — |
 | `EXTENSION_BASE_PROJECT` | Имя базового проекта для расширения | — |
 | `EXTENSION_BASE_PROJECT_ID` | `PROJECT_ID` базовой конфигурации, если он отличается от её отображаемого имени | — |
