@@ -121,6 +121,7 @@
 | `MCP_PORT` | Порт сервера; его же использует встроенная проверка здоровья контейнера | `8000` |
 | `MCP_PATH` | Путь MCP-эндпоинта | `/mcp` |
 | `FASTMCP_STATELESS_HTTP` | Stateless-режим HTTP | `true` |
+| `MCP_STRUCTURED_CONTENT` | Дублировать ответы-словари и списки в `structuredContent`; при `false` публикуется только один JSON-блок `text content` | `false` |
 | `MCP_SESSION_IDLE_TTL_SEC` | Таймаут простоя MCP-сессии | `1800` |
 | `MCP_SESSION_MAX_LIFETIME_SEC` | Максимальное время жизни MCP-сессии | `86400` |
 | `MCP_SESSION_MAX_CONCURRENT` | Максимум одновременных MCP-сессий | `64` |
@@ -272,6 +273,9 @@
 | `MCP_HOST` | Хост MCP-сервера | `0.0.0.0` |
 | `MCP_PORT` | Порт MCP | `8006` |
 | `MCP_PATH` | Совместимое поле конфигурации; текущий сервер его не применяет, MCP-эндпоинт фиксирован на `/mcp` | `/mcp` |
+| `MCP_USE_SSE` | Использовать legacy SSE-транспорт вместо `streamable-http` | `false` |
+| `FASTMCP_STATELESS_HTTP` | Не хранить серверную HTTP-сессию для `streamable-http` | `true` |
+| `FASTMCP_JSON_RESPONSE` | Отвечать на POST обычным JSON вместо SSE-потока; используется вместе со stateless-режимом | `true` |
 | `MCP_TOOL_PROFILE` | Профиль публикуемых инструментов: `admin` или `read-only` | `admin` |
 | `MCP_NAMESPACE` | Namespace регистрации графовых проектов | `default` |
 | `GRAPH_SCOPE_ENFORCED` | Записан ли scope в графе: при `true` и закрытом миграционном окне `project_id` обязателен; при `false` отсутствующий id подставляется из единственного/legacy-проекта и ответ помечается `deprecated` | `false` |
@@ -285,7 +289,7 @@
 | `INGESTION_STATE_DIRECTORY` | Каталог состояния для backend `json` | — |
 | `INDEXING_STATE_PATH` | Путь к JSON-состоянию фоновых задач старта | `<app>/data/.indexing_state.json` |
 | `GRAPH_MAX_ITEMS` | Жёсткий предел элементов в ответе | `200` |
-| `GRAPH_TOOL_TIMEOUT_SECONDS` | Таймаут выполнения инструмента | `300` |
+| `GRAPH_TOOL_TIMEOUT_SECONDS` | Таймаут выполнения инструмента; значение по умолчанию меньше типичного 30-секундного лимита клиента, чтобы сервер успел вернуть типизированную ошибку `timeout` | `25` |
 | `EMBEDDING_ALLOW_OFFLINE_FALLBACK` | Автопереход на локальную модель | `true` |
 | `TEMPLATE_MODE_ENABLED` | Шаблонный режим (JSON-запросы без LLM) | `true` |
 | `TEMPLATE_MODE_ONLY` | Только шаблоны, без LLM | `false` |
