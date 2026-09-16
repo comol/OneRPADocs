@@ -679,9 +679,12 @@ http://localhost:7474
 |----------|------------|
 | `/healthz` | Liveness-проба опубликованных beta-образов: процесс жив и драйвер Neo4j создан. Не выполняет запросов к графу |
 | `/readyz` | Readiness-проба опубликованных beta-образов: Neo4j доступен и MCP tool surface опубликован |
+| `/status`, `/search/index-status` | Состояние фоновых задач и индексов — то же, что отдаёт MCP-инструмент `get_indexing_status` |
+| `/search`, `/docs` | Страница поиска и описание HTTP API (OpenAPI) |
+| `POST /search/update-graph`, `/search/update-business`, `/search/reindex-only`, `/search/generate-business-info` | Административные операции: обновить граф из источников, загрузить бизнес-описания, подтянуть `business_info.html` с диска, явный запуск генерации описаний. Требуют заголовок `X-Admin-Token` (`ADMIN_TOKEN`) — см. «Конфигурация» |
 
 {% hint style="info" %}
-Healthcheck в docker-compose использует дешёвый `/healthz`. В более новом исходном дереве также есть короткие алиасы `/health` и `/ready`, но инструкции установки используют маршруты, подтверждённые в опубликованной beta. Серверный режим больше не публикует старые `/search`, `/status`, `/search/index-status` и `/docs`: статус индексации читают через MCP-инструменты `get_indexing_status` и `get_graph_project_status`.
+Healthcheck в docker-compose использует дешёвый `/healthz`; текущий сервер публикует и короткие алиасы `/health` и `/ready`. Статус индексации и поколений удобнее читать MCP-инструментами `get_indexing_status` и `get_graph_project_status` — они доступны из того же клиента, что и поиск.
 {% endhint %}
 
 ## Требования

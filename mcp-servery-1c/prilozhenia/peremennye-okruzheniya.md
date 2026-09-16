@@ -268,7 +268,9 @@
 | `LOCAL_EMBEDDING_MODEL` | Резервная локальная CPU-модель. Совместимый алиас — `OFFLINE_EMBEDDING_MODEL` | `intfloat/multilingual-e5-small` |
 | `ENABLE_CODE_SEARCH` | Поиск по BSL-коду | `true` |
 | `ENABLE_BUSINESS_SEARCH` | Семантический поиск по бизнес-описаниям | `true` |
-| `CALCULATE_BUSINESS_INFO` | Генерировать AI бизнес-описания | `false` |
+| `CALCULATE_BUSINESS_INFO` | Использовать бизнес-описания: генерировать LLM и подтягивать `business_info.html` рядом с объектом | `false` |
+| `BUSINESS_INFO_UPDATE_POLICY` | Когда автоматический запуск вправе вызвать LLM: `never` (только объекты без описания), `threshold` (плюс объекты, изменившиеся сильнее порога), `manual` (только явный запуск) | `never` |
+| `BUSINESS_INFO_CHANGE_THRESHOLD` | Порог доли структурных изменений объекта для `threshold`, от `0` до `1` | `0.2` |
 | `ENABLE_METADATA_DESCRIPTION_EMBEDDING` | Эмбеддинги для описательных полей | `true` |
 | `MCP_HOST` | Хост MCP-сервера | `0.0.0.0` |
 | `MCP_PORT` | Порт MCP | `8006` |

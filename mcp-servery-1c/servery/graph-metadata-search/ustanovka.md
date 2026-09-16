@@ -119,7 +119,7 @@ curl http://localhost:8006/healthz
 curl http://localhost:8006/readyz
 ```
 
-Текущий сервер публикует обе пары алиасов: `/health` и `/healthz` для liveness, `/ready` и `/readyz` для readiness. Автоматические проверки дистрибутива используют варианты с `z`. Статус фоновых задач и поколений читайте MCP-инструментами `get_indexing_status` и `get_graph_project_status`: серверный режим не публикует старые веб-маршруты `/status`, `/search/*` и `/docs`.
+Текущий сервер публикует обе пары алиасов: `/health` и `/healthz` для liveness, `/ready` и `/readyz` для readiness. Автоматические проверки дистрибутива используют варианты с `z`. Статус фоновых задач и поколений читайте MCP-инструментами `get_indexing_status` и `get_graph_project_status`; HTTP-маршруты `/status`, `/search/*` и `/docs` тоже опубликованы, административные из них требуют `X-Admin-Token` (см. «Конфигурация»).
 
 ## Конвейер запуска (Startup Pipeline)
 
