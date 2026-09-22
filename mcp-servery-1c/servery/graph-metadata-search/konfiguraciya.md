@@ -410,6 +410,8 @@ docker run --rm -v "E:/plugins/mcp_graph/10-facts.py:/tmp/my_plugin.py" `
 | `GRAPH_DELETE_VISIBILITY_MODE` | Режим контроля видимости удалений | `blocking` |
 | `GRAPH_GENERATION_FENCE_ENABLED` | Фенс поколений — защита от чтения из устаревшего поколения | `true` |
 | `GRAPH_GENERATION_FENCE_ATTEMPTS` | Количество повторов при срабатывании фенса | `4` |
+| `GRAPH_GENERATION_FENCE_WAIT_S` | Публикация поколения (`refresh_graph_project` с `mode=full`, промоушен под координатором) идёт пачками по 2000 узлов, каждая — своя транзакция, и объявляет о себе до первой пачки. Чтение, попавшее на объявленную публикацию, ждёт её окончания не дольше этого времени вместо того, чтобы вернуть проект, в котором ещё нет ни старого, ни нового поколения целиком (образы от 22.09.2026; раньше такое чтение могло вернуть пустой или частичный ответ). По истечении — ошибка `generation_fence_exhausted` с просьбой повторить вызов | `120` |
+| `GRAPH_GENERATION_FENCE_STALE_S` | Через сколько секунд объявленная, но не завершённая публикация (процесс погиб между пачками) считается брошенной: чтения перестают ждать и идут по данным как есть, в журнале — предупреждение | `900` |
 | `REFERENCE_EVIDENCE_ENABLED` | Сохранять evidence для `explain_graph_evidence` / `explain_path` | `false` |
 | `REFERENCE_EVIDENCE_RETENTION_DAYS` | Срок хранения evidence в днях | `90` |
 | `REFERENCE_EVIDENCE_RETENTION_GENERATIONS` | Сколько поколений evidence хранить | `3` |
