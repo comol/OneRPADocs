@@ -85,6 +85,7 @@
 | `EMBEDDING_API_BASE` | URL OpenAI-совместимого API, включая `/v1` | `http://host.docker.internal:1234/v1` |
 | `EMBEDDING_API_KEY` | Ключ API эмбеддингов | `lm-studio` |
 | `EMBEDDING_MODEL` | Модель API или локальная модель | `intfloat/multilingual-e5-small` |
+| `EMBEDDING_API_TIMEOUT` | Секунд ожидания ответа на один запрос к embedding API (beta с 23.09.2026) | `600` |
 | `HF_HOME` | Каталог кэша модели | `/app/model_cache` |
 | `HF_HUB_OFFLINE` | Запрет загрузок при старте; `0` разрешает докачку | `1` |
 | `RESET_CACHE` | Очистить кэш моделей при старте | `false` |

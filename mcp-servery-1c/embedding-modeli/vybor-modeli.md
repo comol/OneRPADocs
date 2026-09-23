@@ -100,6 +100,10 @@ EMBEDDING_MODEL=intfloat/multilingual-e5-small
 5. Дождитесь переиндексации
 6. Измените `RESET_DATABASE=false` для следующих запусков
 
+{% hint style="info" %}
+CodeMetadataSearchServer в beta-сборках с 23.09.2026 пересобирает индекс сам: смените модель и пересоздайте контейнер, `RESET_DATABASE` не нужен. Подробнее — в [конфигурации сервера](../servery/code-metadata-search/konfiguraciya.md).
+{% endhint %}
+
 ### Пример
 
 ```powershell
