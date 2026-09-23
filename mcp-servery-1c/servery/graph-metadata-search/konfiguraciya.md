@@ -74,7 +74,7 @@
 | `OPENAI_MODEL_IS_REASONING` | Принудительное указание, является ли модель «рассуждающей». Если не указано — определяется автоматически по имени модели (o1*, o3*, gpt-5*) | *(авто)* |
 | `EMBEDDING_API_BASE` | Отдельный URL для API эмбеддингов (если отличается от LLM API) | — |
 | `EMBEDDING_API_KEY` | Отдельный ключ для API эмбеддингов | — |
-| `EMBEDDING_MODEL` | Модель для API эмбеддингов | `qwen/qwen3-embedding-8b` |
+| `EMBEDDING_MODEL` | Модель для API эмбеддингов. У модели Qwen3-Embedding запрос идёт с инструкцией задачи (см. [Инструкция к запросу у Qwen3](../../embedding-modeli/vybor-modeli.md#инструкция-к-запросу-у-qwen3)) | `qwen/qwen3-embedding-8b` |
 | `OPENAI_EMBEDDING_DIMENSIONS` | Явное указание размерности эмбеддингов, запрашиваемой у API | *(авто)* |
 | `VECTOR_INDEX_DIMENSION` | Ожидаемая размерность векторного индекса процедур; если не задана, сервер читает её из метаданных индекса | *(авто)* |
 | `LOCAL_EMBEDDING_MODEL` | Локальная CPU модель (sentence-transformers). Совместимый алиас — `OFFLINE_EMBEDDING_MODEL` | `intfloat/multilingual-e5-small` |

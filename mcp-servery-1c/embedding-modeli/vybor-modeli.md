@@ -85,6 +85,28 @@ EMBEDDING_MODEL=intfloat/multilingual-e5-small
 2. **Обучение модели** — Qwen обучен на русском языке
 3. **Квантизация** — Q8 лучше Q4
 
+### Инструкция к запросу у Qwen3
+
+Qwen3-Embedding рассчитан на то, что перед поисковым запросом стоит инструкция задачи: `Instruct: <задача>`, перевод строки, `Query:` и сам запрос. Серверы добавляют её сами, если имя модели содержит `qwen` и `embed` (`qwen/qwen3-embedding-8b`, `Qwen3-Embedding-4B`, `text-embedding-qwen3-embedding-0.6b` в LM Studio, `qwen3-embedding:8b` в Ollama). Инструкция добавляется только к запросу: документы индексируются как раньше, поэтому переиндексация не нужна. Отдельной переменной для неё нет.
+
+| Сервер | Задача в инструкции |
+|--------|---------------------|
+| HelpSearchServer | `Given a 1C developer question, retrieve the matching 1C:Enterprise documentation page (built-in language or query language reference, platform object, file format specification, or development standard) that answers it.` |
+| SSLSearchServer | `Given a 1C developer question, retrieve the matching 1C Standard Subsystems Library (SSL/BSP) API procedure or function that answers it.` |
+| Graph Metadata Search | `Given a 1C developer question, retrieve the matching 1C configuration metadata object or code fragment (BSL, query language, or module) that answers it.` |
+| TemplatesSearchServer, `templatesearch` | `Given a 1C developer question, retrieve the matching 1C code template (BSL or query language) that answers it.` |
+| TemplatesSearchServer, `recall` | `Given a 1C developer question, retrieve the matching project memory note (solution, observation, or fact) that answers it.` |
+| CodeMetadataSearchServer | `Given a web search query, retrieve relevant passages that answer the query` — текст из карточки модели |
+
+Замеры на `qwen/qwen3-embedding-8b` (23.09.2026):
+
+* **HelpSearchServer**, 219 страниц синтакс-помощника: нужная страница стала ближе к запросу. По короткому имени медианное расстояние 0,310 → 0,292, по фразе описания 0,247 → 0,214. Доля нужных страниц в пределах `RELEVANCE_MAX_VECTOR_DISTANCE` (0,35) выросла с 0,61 до 0,77 и с 0,79 до 0,85. Ближайший запрос не по теме остался на расстоянии 0,454, поэтому порог не менялся.
+* **SSLSearchServer**, вся база 311 (1613 записей): на 22 вопросах разработчика MRR почти не изменился (0,716 без инструкции, 0,707 с ней). Зато порог `MIN_SCORE` стал отсекать часть запросов не по теме: без инструкции его проходили 10 из 10, с инструкцией — 7.
+* **CodeMetadataSearchServer**: формулировки под 1С проверялись на корпусе бенчмарка и оказались хуже текста карточки (nDCG@10 0,836–0,844 против 0,866), поэтому там остался текст карточки. Подробно — в [конфигурации сервера](../servery/code-metadata-search/konfiguraciya.md).
+* **Graph Metadata Search** и **TemplatesSearchServer** не измерялись.
+
+У TemplatesSearchServer заданный `EMBEDDING_QUERY_PREFIX` заменяет инструкцию; у CodeMetadataSearchServer её так же заменяет `EMBEDDING_QUERY_PREFIX`. У SSLSearchServer `EMBEDDING_INPUT_TYPE_ENABLED=false` выключает инструкцию вместе с остальным разделением запроса и документа.
+
 ## Смена модели
 
 {% hint style="warning" %}

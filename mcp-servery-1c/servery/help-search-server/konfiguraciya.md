@@ -14,7 +14,7 @@
 |------------|----------|--------------|
 | `EMBEDDING_API_BASE` | URL OpenAI-совместимого API, включая `/v1`. Пробуется раньше локальной модели | `http://host.docker.internal:1234/v1` |
 | `EMBEDDING_API_KEY` | Ключ API (LM Studio значение не проверяет) | `lm-studio` |
-| `EMBEDDING_MODEL` | Имя модели — и для API, и для локального режима | `intfloat/multilingual-e5-small` |
+| `EMBEDDING_MODEL` | Имя модели — и для API, и для локального режима. У модели Qwen3-Embedding запрос идёт с инструкцией задачи (см. [Инструкция к запросу у Qwen3](../../embedding-modeli/vybor-modeli.md#инструкция-к-запросу-у-qwen3)) | `intfloat/multilingual-e5-small` |
 | `EMBEDDING_API_TIMEOUT` | Сколько секунд один запрос к embedding API ждёт ответа. Если модель считает на CPU и обрабатывает `INDEXING_WORKERS` батчей по очереди, последний из них может ждать дольше — увеличьте значение (или уменьшите `INDEXING_WORKERS`) | `600` |
 | `HF_HOME` | Каталог кэша модели; в полный образ модель уложена сюда при сборке | `/app/model_cache` |
 | `HF_HUB_OFFLINE` | Запрет загрузок при старте; `0` разрешает докачать модель | `1` |
