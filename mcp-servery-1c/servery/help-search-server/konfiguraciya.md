@@ -155,6 +155,8 @@ docker run -d -p 8003:8003 `
   comol/1c_help_mcp:light
 ```
 
+Локальной модели в light-образе нет: если embedding API недоступен, индекс не строится, `/ready` отвечает `degraded` с причиной в поле `failure`, а процесс продолжает работать.
+
 ### CPU с выбором модели
 
 ```powershell

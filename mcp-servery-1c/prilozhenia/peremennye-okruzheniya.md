@@ -253,6 +253,7 @@
 | `METADATA_FALLBACK_DIR_1`, `METADATA_FALLBACK_DIR_2`, `METADATA_FALLBACK_DIR_3` | Дополнительные каталоги готового отчёта, проверяемые по порядку после `METADATA_DIRECTORY`; используются только если заданы явно | — |
 | `NEO4J_DATABASE` | Имя базы Neo4j | `neo4j` |
 | `NEO4J_PARALLEL_WRITE_WORKERS` | Число параллельных потоков записи в Neo4j при индексации, диапазон `1..16` | `1` |
+| `NEO4J_READ_TRANSACTION_TIMEOUT_S` | Предел времени одного запроса чтения к Neo4j (серверный таймаут транзакции); `0` — без предела | `30.0` |
 | `PROJECT_NAME` | Название проекта | `1C Metadata Project` |
 | `RESET_DATABASE` | Переиндексировать при запуске | `false` |
 | `INDEX_BATCH_SIZE` | Размер пакета индексации | `512` |
