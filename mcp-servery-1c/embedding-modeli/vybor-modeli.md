@@ -105,7 +105,13 @@ Qwen3-Embedding рассчитан на то, что перед поисковы
 * **CodeMetadataSearchServer**: формулировки под 1С проверялись на корпусе бенчмарка и оказались хуже текста карточки (nDCG@10 0,836–0,844 против 0,866), поэтому там остался текст карточки. Подробно — в [конфигурации сервера](../servery/code-metadata-search/konfiguraciya.md).
 * **Graph Metadata Search** и **TemplatesSearchServer** не измерялись.
 
-У TemplatesSearchServer заданный `EMBEDDING_QUERY_PREFIX` заменяет инструкцию; у CodeMetadataSearchServer её так же заменяет `EMBEDDING_QUERY_PREFIX`. У SSLSearchServer `EMBEDDING_INPUT_TYPE_ENABLED=false` выключает инструкцию вместе с остальным разделением запроса и документа.
+Кроме этой инструкции серверы ничего к тексту не добавляют. В beta-сборках с 23.09.2026 (поздний вечер) убраны префиксы вида `query: ` / `passage: `, встроенные prompts моделей и переменные `EMBEDDING_QUERY_PREFIX`, `EMBEDDING_DOCUMENT_PREFIX` и `EMBEDDING_PASSAGE_PREFIX`: заданная переменная теперь только выводит предупреждение в журнал. Индекс, документы которого были записаны с префиксом, сервер один раз пересобирает сам:
+
+* CodeMetadataSearchServer — модели e5, EmbeddingGemma, `qwen/qwen3-embedding-8b` (префикс `document: `) или заданный `EMBEDDING_DOCUMENT_PREFIX`; пересборка идёт в новом поколении, прежнее отвечает до её конца;
+* SSLSearchServer — локальная модель e5 (модель полного образа по умолчанию), nomic или модель со встроенным prompt документа;
+* TemplatesSearchServer — если был задан `EMBEDDING_QUERY_PREFIX` или `EMBEDDING_PASSAGE_PREFIX`.
+
+Остальные индексы не меняются и не пересчитываются. У HelpSearchServer префиксы и раньше не применялись. У SSLSearchServer `EMBEDDING_INPUT_TYPE_ENABLED=false` выключает инструкцию вместе с параметром `input_type`.
 
 ## Смена модели
 

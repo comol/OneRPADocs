@@ -441,8 +441,6 @@
 | `INDEX_RECOVERY_BACKOFF_CAP` | Максимальная пауза retry, секунды | `300` |
 | `INDEX_RECOVERY_MAX_ATTEMPTS` | Попыток до stuck state | `6` |
 | `INDEX_RECOVERY_BATCH` | Маркеров outbox за проход | `100` |
-| `EMBEDDING_QUERY_PREFIX` | Префикс запросов перед эмбеддингом; пустой у модели Qwen3-Embedding заменяется инструкцией задачи Qwen3 | *(пусто)* |
-| `EMBEDDING_PASSAGE_PREFIX` | Префикс документов перед эмбеддингом | *(пусто)* |
 | `EMBEDDING_TRUST_REMOTE_CODE` | Opt-in для custom model code; требует allowlist и immutable revision | `false` |
 | `EMBEDDING_TRUST_REMOTE_CODE_MODELS` | Allowlist model ID для custom code | *(пусто)* |
 | `EMBEDDING_MODEL_REVISION` | Полный commit SHA или content digest модели | *(пусто)* |

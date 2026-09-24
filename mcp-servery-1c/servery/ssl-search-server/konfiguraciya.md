@@ -117,7 +117,7 @@ docker run --rm -v "E:/plugins/mcp_ssl/10-terms.py:/tmp/my_plugin.py" `
 | `EMBEDDING_MODEL` | Имя модели, с которым вызывается API эмбеддингов. У модели Qwen3-Embedding запрос идёт с инструкцией задачи (см. [Инструкция к запросу у Qwen3](../../embedding-modeli/vybor-modeli.md#инструкция-к-запросу-у-qwen3)); `EMBEDDING_INPUT_TYPE_ENABLED=false` выключает её вместе с остальным разделением запроса и документа | `qwen/qwen3-embedding-8b` |
 | `LOCAL_EMBEDDING_MODEL` | Hugging Face repo id модели, которую загружает локальный (CPU) режим, когда API недоступен. Совместимый алиас — `OFFLINE_EMBEDDING_MODEL`. Если задана только `EMBEDDING_MODEL`, локальный режим использует её | `intfloat/multilingual-e5-small` |
 | `EMBEDDING_DIMENSIONS` | Явное указание размерности эмбеддингов. Для моделей с переменной размерностью (Qwen3, text-embedding-3). Если не указано — определяется автоматически | *(авто)* |
-| `EMBEDDING_INPUT_TYPE_ENABLED` | Включить параметр `input_type` для различения query/document при генерации эмбеддингов. Полезно для моделей Qwen3, BGE, E5 | `true` |
+| `EMBEDDING_INPUT_TYPE_ENABLED` | Передавать провайдеру параметр `input_type` (query/document), если он его принимает; `false` выключает его и инструкцию Qwen3. Текстовых префиксов сервер не добавляет | `true` |
 
 Старые имена `OPENAI_API_BASE`, `OPENAI_API_KEY` и `OPENAI_MODEL` остаются совместимыми алиасами.
 
