@@ -190,7 +190,7 @@ docker exec 1c_graph_metadata python run.py generate-business-info --regenerate 
 | `LOAD_ORDINARY_FORMS` | Загружать структуру обычных форм (отдельная модель узлов от управляемых) | `true` |
 | `LOAD_EVENT_SUBSCRIPTIONS` | Загружать подписки на события из `EventSubscriptions/*.xml` | `false` |
 | `LOAD_PREDEFINED_VALUES` | Загружать предопределённые элементы из `*/Predefined.xml` | `false` |
-| `LOAD_ROLE_RIGHTS` | Загружать права ролей из `Roles/*/Ext/Rights.xml` | `false` |
+| `LOAD_ROLE_RIGHTS` | Загружать права ролей из `Roles/*/Ext/Rights.xml`: выданные и явно запрещённые права, условия ограничений на уровне записей (RLS) и шаблоны ограничений роли | `false` |
 | `LOAD_HELP_FROM_HTML` | Загружать справку объектов из `*/Help/ru.html` | `false` |
 | `LOAD_DCS_TEMPLATES` | Загружать схемы компоновки данных из макетов `Templates/<Макет>/Ext/Template.dcs` отчётов и обработок. Для каждой СКД узел макета `Layout` получает признак `dcs = true`, а под ним создаются узлы `DcsDataSet` (наборы данных и их запросы), `DcsField` (поля; связь `HAS_DCS_FIELD` и от макета, и от набора данных, который поле поставляет), `DcsParameter`, `DcsGrouping`, `DcsFilter` и `DcsTemplateArea` (области макетов) со связями `HAS_DCS_DATA_SET`, `HAS_DCS_PARAMETER`, `HAS_DCS_GROUPING`, `HAS_DCS_FILTER`, `HAS_DCS_TEMPLATE`. Каждая связь хранит XML-путь элемента, из которого прочитана. Это данные инструмента `get_report_dcs_lineage` (отчёт → СКД → наборы данных и запросы → поля/параметры/группировки/отборы/макеты). На крупной конфигурации это заметная часть графа — порядка десятка тысяч узлов | `false` |
 
