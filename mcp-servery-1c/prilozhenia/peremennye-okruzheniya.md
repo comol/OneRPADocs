@@ -86,6 +86,7 @@
 | `EMBEDDING_API_KEY` | Ключ API эмбеддингов | `lm-studio` |
 | `EMBEDDING_MODEL` | Модель API или локальная модель | `intfloat/multilingual-e5-small` |
 | `EMBEDDING_API_TIMEOUT` | Секунд ожидания ответа на один запрос к embedding API (beta с 23.09.2026) | `600` |
+| `EMBEDDING_ALLOW_OFFLINE_FALLBACK` | Можно ли заменить недоступный на старте embedding API встроенной моделью. `false` — старт ждёт API (5 с, удваивая до 60 с, без ограничения числа попыток); при отказе 400/401/403/404 сервер переходит в `degraded`, индекс не трогается. `true` — как раньше: после неудачной проверки грузится встроенная модель (beta с 27.09.2026) | `false`, если задан `EMBEDDING_API_BASE`; иначе `true` |
 | `HF_HOME` | Каталог кэша модели | `/app/model_cache` |
 | `HF_HUB_OFFLINE` | Запрет загрузок при старте; `0` разрешает докачку | `1` |
 | `RESET_CACHE` | Очистить кэш моделей при старте | `false` |
@@ -188,6 +189,8 @@
 | `EMBEDDING_MEMORY_BUDGET_MODE` | `refuse`, `warn` или `off` | `refuse` |
 | `VECTOR_PROFILE` | Профиль zvec: `fast_index`, `balanced`, `memory_saver`, `quality` | `fast_index` |
 | `VECTOR_OPTIMIZE_ENABLED` | Разрешить оптимизацию zvec | `true` |
+| `VECTOR_OPTIMIZE_EVERY` | Число новых документов между промежуточными слияниями векторного индекса; `0` — только финальное слияние в конце фазы (в образах до beta 27.09.2026 значение `0` не действовало) | `100000` |
+| `VECTOR_OPTIMIZE_FINAL_MIN_DOCS` | Финальное слияние не запускается, пока его ждут меньше N документов (исход `skipped_below_threshold`): они находятся поиском, переходят в следующее поколение и сливаются, когда их наберётся N; переиндексацию не вызывает. `0` — сливать любой непустой хвост | `0` |
 | `VECTOR_FLUSH_EVERY` | Число новых документов между промежуточными сбросами на диск; `0` — только финальный сброс | `2000` |
 | `VECTOR_OPTIMIZE_DEADLINE_SEC` | Таймаут фоновой оптимизации | `1800` |
 | `VECTOR_OPTIMIZE_CANCEL_DEADLINE_SEC` | Таймаут оптимизации из запроса | `5` |
@@ -203,7 +206,7 @@
 | `PLUGIN_HOOK_TIMEOUT_SECONDS` | Бюджет времени одного вызова hook; превысивший его hook считается упавшим | `5.0` |
 
 {% hint style="warning" %}
-`INDEX_STRUCTURAL`, `INDEX_DEPENDENCY_GRAPH`, `INDEX_FORM_INDEX`, `INDEX_XSD_SCHEMAS`, `SUB_INDEX_PROGRESS_WARN_SEC`, `SUB_INDEX_PROGRESS_HEARTBEAT_SEC`, `SUB_INDEX_LIVENESS_WITNESS`, `STRUCTURAL_PARSE_TIMEOUT_SEC`, `STRUCTURAL_EXCLUDE`, `GREP_DEADLINE_SEC`, `GREP_MAX_CACHED_FILE_MB` и `MCP_TOOL_WORKERS` относятся к текущему beta-кандидату CodeMetadataSearchServer. В stable и ранее опубликованных beta-тегах их может ещё не быть.
+`INDEX_STRUCTURAL`, `INDEX_DEPENDENCY_GRAPH`, `INDEX_FORM_INDEX`, `INDEX_XSD_SCHEMAS`, `SUB_INDEX_PROGRESS_WARN_SEC`, `SUB_INDEX_PROGRESS_HEARTBEAT_SEC`, `SUB_INDEX_LIVENESS_WITNESS`, `STRUCTURAL_PARSE_TIMEOUT_SEC`, `STRUCTURAL_EXCLUDE`, `GREP_DEADLINE_SEC`, `GREP_MAX_CACHED_FILE_MB`, `MCP_TOOL_WORKERS` и `VECTOR_OPTIMIZE_FINAL_MIN_DOCS` относятся к текущему beta-кандидату CodeMetadataSearchServer. В stable и ранее опубликованных beta-тегах их может ещё не быть.
 {% endhint %}
 
 ### SSLSearchServer (порт 8008)
@@ -217,12 +220,13 @@
 | `EMBEDDING_API_KEY` | Ключ API эмбеддингов | — |
 | `EMBEDDING_MODEL` | Имя модели для API эмбеддингов | `qwen/qwen3-embedding-8b` |
 | `LOCAL_EMBEDDING_MODEL` | Резервная локальная CPU-модель (Hugging Face repo id). Совместимый алиас — `OFFLINE_EMBEDDING_MODEL` | `intfloat/multilingual-e5-small` |
+| `EMBEDDING_ALLOW_OFFLINE_FALLBACK` | Разрешить вариантам `latest`/`arm64` переходить на `LOCAL_EMBEDDING_MODEL`, если API эмбеддингов недоступен на старте. `true` — разрешить, любое другое значение — запретить. При запрете старт ждёт API (пауза 5 с, удваивается до 60 с), а при 401/403/404 завершается с «No embedding backend available», как `light`. Даже при разрешённом переходе коллекция, построенная через API, не удаляется и не пересобирается: старт останавливается, коллекция остаётся нетронутой. На `light` не влияет. Beta с 27.09.2026 | `false`, если задан `EMBEDDING_API_BASE` (или `OPENAI_API_BASE`); иначе `true` |
 | `INDEXING_THREADS` | Потоки индексации | `5` |
 | `MIGRATE_VECTOR_STORE` | Выполнить миграцию векторного хранилища на этом старте | `false` |
 | `DEMOTE_VECTOR_STORE` | Вернуть обслуживание предыдущему поколению | `false` |
 | `EMBEDDING_DIMENSIONS` | Размерность эмбеддингов | *(авто)* |
 | `EMBEDDING_INPUT_TYPE_ENABLED` | Различение query/document для эмбеддингов | `true` |
-| `FORCE_REINDEX_ON_DIMENSION_MISMATCH` | Автопересоздание при несовпадении размерности; иначе старт останавливается с ошибкой | `false` |
+| `FORCE_REINDEX_ON_DIMENSION_MISMATCH` | Автопересоздание при несовпадении размерности; иначе старт останавливается с ошибкой. Не действует, если старт перешёл на локальную модель поверх коллекции, построенной через API: такую коллекцию сервер не пересоздаёт (beta с 27.09.2026) | `false` |
 | `MIN_SCORE` | Порог cosine similarity для результатов `ssl_search` | `0.3826` |
 | `EXACT_LOOKUP` | Точный поиск по имени символа перед семантическим (`lane=exact`) | `true` |
 | `HYBRID_SEARCH` | Гибридное извлечение: векторная + полнотекстовая (BM25) дорожки с RRF | `true` |
@@ -405,6 +409,7 @@
 | `LOCAL_EMBEDDING_MODEL` | Резервная локальная CPU-модель (Hugging Face repo id). Совместимый алиас — `OFFLINE_EMBEDDING_MODEL` | `intfloat/multilingual-e5-small` |
 | `EMBEDDING_DIMENSIONS` | Размерность эмбеддингов | *(авто)* |
 | `EMBEDDING_API_TIMEOUT` | Предел одного запроса к API эмбеддингов, секунды (на попытку). Ограничивает ожидание семантической полосы, за которой стоит полнотекстовая | `60` |
+| `EMBEDDING_ALLOW_OFFLINE_FALLBACK` | Разрешить переход на `LOCAL_EMBEDDING_MODEL`, если API эмбеддингов не ответил при старте. При запрете старт повторяется (5, 15, 30 с), затем процесс завершается с кодом 70 до следующего запуска контейнера; индекс не трогается. Даже при `true` локальная модель не заменяет непустой индекс, построенный через API: старт отклоняется, индекс сохраняется (beta с 27.09.2026) | `false`, если задан `EMBEDDING_API_BASE`; иначе `true` |
 | `TEMPLATES_DB_PATH` | Путь к SQLite-базе шаблонов и заметок | `/app/chroma_db/templates.db` |
 | `ZVEC_DB_PATH` | Каталог векторного индекса zvec | `/app/chroma_db/zvec_db` |
 | `RECALL_RELEVANCE_THRESHOLD` | Максимальная cosine-distance для `recall` | `1.0` |
