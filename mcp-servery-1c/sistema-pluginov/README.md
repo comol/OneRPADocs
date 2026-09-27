@@ -1,6 +1,6 @@
 # Система плагинов: доработка MCP-серверов
 
-MCP-серверы поставляются готовыми Docker-образами, внутри которых почти всё скомпилировано. Чтобы их можно было адаптировать под конкретную конфигурацию, компанию и терминологию **без пересборки образа**, в новых beta-сборках прикладных серверов встроена единая система плагинов.
+MCP-серверы поставляются готовыми Docker-образами, внутри которых почти всё скомпилировано. Чтобы их можно было адаптировать под конкретную конфигурацию, компанию и терминологию **без пересборки образа**, в прикладные серверы встроена единая система плагинов.
 
 **Плагин — это один Python-файл в каталоге плагинов сервера.** Ни базового класса, ни декоратора, ни регистрации, ни манифеста, ни шага сборки. Пустой файл — валидный плагин, который ничего не меняет.
 
@@ -26,7 +26,7 @@ MCP-серверы поставляются готовыми Docker-образа
 | [TemplatesSearchServer](../servery/templates-search-server/) | Да | `template-search` | `/app/plugins` (`PLUGIN_DIR`) | Всегда включены |
 | [Graph Metadata Search](../servery/graph-metadata-search/) | Да | `graph-metadata-search` | `/app/plugins` (`GRAPH_PLUGINS_DIRECTORY`) | `GRAPH_PLUGINS_ENABLED=true` |
 | [CodeMetadataSearchServer](../servery/code-metadata-search/) | Да | `code-metadata-search` | `/app/plugins` (`PLUGIN_DIR`) | Всегда включены |
-| [1CCodeChecker](../servery/code-checker/) | Да (beta) | `onec-code-checker` | `/app/plugins` (`PLUGIN_DIR`) | Всегда включены |
+| [1CCodeChecker](../servery/code-checker/) | Да | `onec-code-checker` | `/app/plugins` (`PLUGIN_DIR`) | Всегда включены |
 
 {% hint style="info" %}
 У Graph Metadata Search подсистема плагинов **включена по умолчанию**. При `GRAPH_PLUGINS_ENABLED=false` каталог не читается вообще, а `reload_plugins` отвечает, что подсистема отключена.

@@ -93,27 +93,27 @@ docker run --rm -v "E:/plugins/mcp_docs/10-terminy.py:/tmp/my_plugin.py" `
 
 # SSLSearchServer
 docker run --rm -v "E:/plugins/mcp_ssl/10-terminy.py:/tmp/my_plugin.py" `
-  comol/mcp_ssl_server:latest-beta python launcher.py --dry-run /tmp/my_plugin.py
+  comol/mcp_ssl_server:latest python launcher.py --dry-run /tmp/my_plugin.py
 
 # SyntaxCheckServer
 docker run --rm -v "E:/plugins/mcp_syntax/10-podavlenie.py:/tmp/my_plugin.py" `
-  comol/1c_syntaxcheck_mcp:latest-beta python mcp_server.py --dry-run /tmp/my_plugin.py
+  comol/1c_syntaxcheck_mcp:latest python mcp_server.py --dry-run /tmp/my_plugin.py
 
 # TemplatesSearchServer
 docker run --rm -v "E:/plugins/mcp_templates/10-aliasy.py:/tmp/my_plugin.py" `
-  comol/template-search-mcp:latest-beta python main.py --dry-run /tmp/my_plugin.py
+  comol/template-search-mcp:latest python main.py --dry-run /tmp/my_plugin.py
 
 # Graph Metadata Search
 docker run --rm -v "E:/plugins/mcp_graph/10-svojstva.py:/tmp/my_plugin.py" `
-  comol/1c_graph_metadata:latest-beta python run.py plugin-dry-run /tmp/my_plugin.py
+  comol/1c_graph_metadata:latest python run.py plugin-dry-run /tmp/my_plugin.py
 
 # CodeMetadataSearchServer
 docker run --rm -v "E:/plugins/mcp_code/10-terminy.py:/tmp/my_plugin.py" `
-  comol/1c_code_metadata_mcp:latest-beta python src/plugin_dry_run.py /tmp/my_plugin.py
+  comol/1c_code_metadata_mcp:latest python src/plugin_dry_run.py /tmp/my_plugin.py
 
 # 1CCodeChecker
 docker run --rm -v "E:/plugins/checker/10-policy.py:/tmp/my_plugin.py" `
-  comol/1c-code-checker:latest-beta `
+  comol/1c-code-checker:latest `
   python -m MCP_1copilot --dry-run /tmp/my_plugin.py
 ```
 
@@ -142,7 +142,7 @@ docker run -d -p 8006:8006 `
   -e LICENSE_KEY=YOUR_LICENSE_KEY `
   -e GRAPH_PLUGINS_ENABLED=true `
   -v "E:/plugins/mcp_graph:/app/plugins" `
-  comol/1c_graph_metadata:latest-beta
+  comol/1c_graph_metadata:latest
 ```
 
 Переменные, которые относятся к плагинам:

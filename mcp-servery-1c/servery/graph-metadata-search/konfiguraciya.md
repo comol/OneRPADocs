@@ -57,7 +57,7 @@
 | `EMBEDDING_CHUNK_OVERLAP_TOKENS` | Перекрытие чанков при разбивке длинных текстов | *(авто)* |
 
 {% hint style="warning" %}
-`GRAPH_FORM_XML_BATCH_SIZE` и `GRAPH_FORM_XML_BATCH_MAX_ROWS` описывают текущий beta-кандидат исходников. Наличие этого контракта в конкретном опубликованном образе проверяйте по release notes перед изменением настроек.
+`GRAPH_FORM_XML_BATCH_SIZE` и `GRAPH_FORM_XML_BATCH_MAX_ROWS` описывают текущие исходники. Наличие этого контракта в конкретном опубликованном образе проверяйте по release notes перед изменением настроек.
 
 В актуальном исходном коде структурная транзакция ставит свойству `form_xml_structure_state` значение `pending`, а после сохранения reference evidence — `complete`. Resume пропускает только завершённые формы. Если evidence не сохранился, счётчик `left recoverable` показывает оставшиеся `pending`: следующий прогон перепишет именно их. Частичная структура при ошибке записи удаляется, чтобы следующий прогон не продолжил поверх неполных данных.
 {% endhint %}
@@ -371,7 +371,7 @@ C:/Work/edt-workspace-zup/       <- EXTENSIONS_HOST_PATH -> /app/extensions:ro
 ```powershell
 # Проверить плагин без Neo4j, метаданных, поколения и лицензии
 docker run --rm -v "E:/plugins/mcp_graph/10-facts.py:/tmp/my_plugin.py" `
-  comol/1c_graph_metadata:latest-beta python run.py plugin-dry-run /tmp/my_plugin.py
+  comol/1c_graph_metadata:latest python run.py plugin-dry-run /tmp/my_plugin.py
 ```
 
 {% hint style="warning" %}
@@ -516,7 +516,7 @@ services:
       retries: 5
 
   mcp-app:
-    image: comol/1c_graph_metadata:latest-beta
+    image: comol/1c_graph_metadata:latest
     container_name: 1c_graph_metadata
     restart: unless-stopped
     ports:
@@ -571,7 +571,7 @@ services:
 
 ```yaml
   mcp-extension:
-    image: comol/1c_graph_metadata:latest-beta
+    image: comol/1c_graph_metadata:latest
     container_name: 1c_graph_metadata_ext
     environment:
       - LICENSE_KEY=YOUR_LICENSE_KEY
@@ -602,7 +602,7 @@ services:
 
 ```yaml
   mcp-extensions:
-    image: comol/1c_graph_metadata:latest-beta
+    image: comol/1c_graph_metadata:latest
     container_name: 1c_graph_metadata_ext
     environment:
       - LICENSE_KEY=YOUR_LICENSE_KEY

@@ -83,7 +83,7 @@
 | `USESSE`    | Использовать SSE-транспорт вместо streamable-http | `false`      |
 | `HTTP_PORT` | Порт HTTP-сервера | `8007` |
 
-### Идентичность выпуска (beta-кандидат)
+### Идентичность выпуска
 
 | Переменная | Описание | По умолчанию |
 |------------|----------|--------------|
@@ -93,7 +93,7 @@
 Без `CHECKER_IMAGE_DIGEST` эндпоинт `/release` возвращает пустой `image_digest`, `image_digest_available=false` и `image_digest_source="not-supplied"`. Корректное значение даёт `image_digest_available=true` и источник `runtime-environment`; некорректное — пустой digest и источник `malformed`. Два пустых digest не доказывают, что экземпляры запущены из одного образа. Этот контракт реализован в текущих исходниках, но ещё не подтверждён в опубликованных образах.
 {% endhint %}
 
-### Плагины (beta)
+### Плагины
 
 | Переменная | Описание | По умолчанию |
 |------------|----------|--------------|
@@ -183,7 +183,7 @@ docker run -d -p 8007:8007 `
 | streamable-http (по умолчанию) | `USESSE=false` | `http://localhost:8007/mcp` |
 | SSE                            | `USESSE=true`  | `http://localhost:8007/mcp` |
 
-## Доработка плагинами (beta)
+## Доработка плагинами
 
 Каталог `/app/plugins` включён по умолчанию. Полный справочник находится в `/app/MCP_1copilot/plugin_api.py`; доступны `on_startup`, `on_request`, `on_upstream_call`, `on_result` и таблица `TOOL_PRESETS`. Интроспекция и атомарная перезагрузка — `GET /plugins` и `POST /plugins/reload`. Все хуки call-scoped: индекса и derived-state у сервера нет.
 

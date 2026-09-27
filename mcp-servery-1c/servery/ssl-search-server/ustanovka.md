@@ -33,7 +33,7 @@ docker run -d -p 8008:8008 `
   -e EMBEDDING_API_KEY=lm-studio `
   -e EMBEDDING_MODEL=Qwen3-Embedding-4B `
   -v "E:/bases/mcp_ssl:/app/zvec_db" `
-  comol/mcp_ssl_server:latest-beta
+  comol/mcp_ssl_server:latest
 ```
 
 ### С CPU (без GPU)
@@ -45,7 +45,7 @@ docker run -d -p 8008:8008 `
   -e SSL_VERSION=3.1.11 `
   -e RESET_DATABASE=false `
   -v "E:/bases/mcp_ssl:/app/zvec_db" `
-  comol/mcp_ssl_server:latest-beta
+  comol/mcp_ssl_server:latest
 ```
 
 {% hint style="warning" %}
@@ -113,5 +113,5 @@ docker run -d -p 8008:8008 `
   -e SSL_VERSION=3.2.1 `
   -e RESET_DATABASE=true `
   -v "E:/bases/mcp_ssl:/app/zvec_db" `
-  comol/mcp_ssl_server:latest-beta
+  comol/mcp_ssl_server:latest
 ```

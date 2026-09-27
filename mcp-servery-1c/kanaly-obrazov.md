@@ -1,37 +1,28 @@
-# Каналы образов: stable и beta
+# Теги и ключи образов
 
-MCP-серверы публикуются в двух независимых каналах. **Stable** предназначен для обычной эксплуатации, **beta** — для предварительного доступа к новым контрактам, инструментам и форматам хранения.
+MCP-серверы публикуются в одном канале: теги `latest`, `light` и `arm64`, без суффикса. Образы от 27.09.2026 — текущие; что вошло в каждую сборку, записано в [Выпусках образов](vypuski.md).
 
-> Состав тегов ниже проверен в Docker Hub 24.08.2026. Актуальный список всегда смотрите по ссылке на образ.
-
-## Как выбрать канал
-
-| Канал | Теги | Когда использовать |
-|-------|------|--------------------|
-| `stable` | `latest`, `light`, `arm64` — если вариант существует у сервера | Нужна максимально консервативная поставка |
-| `beta` | `latest-beta`, `light-beta`, `arm64-beta` — если вариант существует у сервера | Нужны последние функции и контракты, описанные в этой документации |
-
-Суффикс beta пишется **через дефис**. Тегов `latestbeta` и `lightbeta` нет.
-
-В дистрибутиве итоговый тег вычисляется так:
-
-```text
-IMAGE_TAG = IMAGE_VARIANT + ("-beta", если RELEASE_CHANNEL=beta)
-```
-
-Непустой `IMAGE_TAG` в `config.env` перекрывает `RELEASE_CHANNEL` и `IMAGE_VARIANT`.
+> Состав тегов ниже проверен в Docker Hub 27.09.2026. Актуальный список всегда смотрите по ссылке на образ.
 
 ## Доступные теги
 
-| Сервер | Образ | Stable | Beta |
-|--------|-------|--------|------|
-| HelpSearchServer | [`comol/1c_help_mcp`](https://hub.docker.com/r/comol/1c_help_mcp/tags) | `latest`, `light`, `arm64` | `latest-beta`, `light-beta`, `arm64-beta` |
-| Graph Metadata Search | [`comol/1c_graph_metadata`](https://hub.docker.com/r/comol/1c_graph_metadata/tags) | `latest`, `light`, `arm64` | `latest-beta`, `light-beta`, `arm64-beta` |
-| CodeMetadataSearchServer | [`comol/1c_code_metadata_mcp`](https://hub.docker.com/r/comol/1c_code_metadata_mcp/tags) | `latest`, `light`, `arm64` | `latest-beta`, `light-beta`, `arm64-beta` |
-| SSLSearchServer | [`comol/mcp_ssl_server`](https://hub.docker.com/r/comol/mcp_ssl_server/tags) | `latest`, `light`, `arm64` | `latest-beta`, `light-beta`, `arm64-beta` |
-| TemplatesSearchServer | [`comol/template-search-mcp`](https://hub.docker.com/r/comol/template-search-mcp/tags) | `latest`, `light`, `arm64` | `latest-beta`, `light-beta`, `arm64-beta` |
-| SyntaxCheckServer | [`comol/1c_syntaxcheck_mcp`](https://hub.docker.com/r/comol/1c_syntaxcheck_mcp/tags) | только `latest` | `latest-beta`, `arm64-beta` |
-| 1CCodeChecker | [`comol/1c-code-checker`](https://hub.docker.com/r/comol/1c-code-checker/tags) | `latest`, `arm64` | `latest-beta`, `light-beta`, `arm64-beta` |
+| Сервер | Образ | Теги |
+|--------|-------|------|
+| HelpSearchServer | [`comol/1c_help_mcp`](https://hub.docker.com/r/comol/1c_help_mcp/tags) | `latest`, `light`, `arm64` |
+| Graph Metadata Search | [`comol/1c_graph_metadata`](https://hub.docker.com/r/comol/1c_graph_metadata/tags) | `latest`, `light`, `arm64` |
+| CodeMetadataSearchServer | [`comol/1c_code_metadata_mcp`](https://hub.docker.com/r/comol/1c_code_metadata_mcp/tags) | `latest`, `light`, `arm64` |
+| SSLSearchServer | [`comol/mcp_ssl_server`](https://hub.docker.com/r/comol/mcp_ssl_server/tags) | `latest`, `light`, `arm64` |
+| TemplatesSearchServer | [`comol/template-search-mcp`](https://hub.docker.com/r/comol/template-search-mcp/tags) | `latest`, `light`, `arm64` |
+| SyntaxCheckServer | [`comol/1c_syntaxcheck_mcp`](https://hub.docker.com/r/comol/1c_syntaxcheck_mcp/tags) | `latest`, `arm64` (варианта `light` нет) |
+| 1CCodeChecker | [`comol/1c-code-checker`](https://hub.docker.com/r/comol/1c-code-checker/tags) | `latest`, `light`, `arm64` |
+
+В дистрибутиве тег задаётся так:
+
+```text
+IMAGE_TAG = IMAGE_VARIANT
+```
+
+Непустой `IMAGE_TAG` в `config.env` перекрывает `IMAGE_VARIANT`.
 
 {% hint style="warning" %}
 Не используйте теги с префиксом `staging-` как канал поставки. Это технические теги сборки; их наличие и срок жизни не гарантируются.
@@ -39,39 +30,57 @@ IMAGE_TAG = IMAGE_VARIANT + ("-beta", если RELEASE_CHANNEL=beta)
 
 ## Лицензионные ключи
 
-Выбирайте ключ того же канала, что и образ. В `config.env` стабильный ключ хранится в `LICENSE_KEY_<СЕРВЕР>`, beta-ключ — в `LICENSE_KEY_<СЕРВЕР>_BETA`.
+У каждого сервера один ключ. В `config.env` дистрибутива он хранится в `LICENSE_KEY_<СЕРВЕР>`, контейнеру передаётся как `LICENSE_KEY`.
 
-| Сервер | Stable | Beta |
-|--------|--------|------|
-| HelpSearchServer | `LICENSE_KEY_HELP` | `LICENSE_KEY_HELP_BETA` |
-| Graph Metadata Search | `LICENSE_KEY_GRAPH` | `LICENSE_KEY_GRAPH_BETA` |
-| CodeMetadataSearchServer | `LICENSE_KEY_CODEMETADATA` | `LICENSE_KEY_CODEMETADATA_BETA` |
-| SSLSearchServer | `LICENSE_KEY_SSL` | `LICENSE_KEY_SSL_BETA` |
-| TemplatesSearchServer | `LICENSE_KEY_TEMPLATES` | `LICENSE_KEY_TEMPLATES_BETA` |
-| SyntaxCheckServer | `LICENSE_KEY_SYNTAX` | `LICENSE_KEY_SYNTAX_BETA` |
-| 1CCodeChecker | `LICENSE_KEY_CODECHECKER` | `LICENSE_KEY_CODECHECKER_BETA` |
+| Сервер | Переменная в `config.env` |
+|--------|---------------------------|
+| HelpSearchServer | `LICENSE_KEY_HELP` |
+| Graph Metadata Search | `LICENSE_KEY_GRAPH` |
+| CodeMetadataSearchServer | `LICENSE_KEY_CODEMETADATA` |
+| SSLSearchServer | `LICENSE_KEY_SSL` |
+| TemplatesSearchServer | `LICENSE_KEY_TEMPLATES` |
+| SyntaxCheckServer | `LICENSE_KEY_SYNTAX` |
+| 1CCodeChecker | `LICENSE_KEY_CODECHECKER` |
 
-Ключи каналов считайте невзаимозаменяемыми, даже если конкретный ключ временно принимается обеими сборками. Неверная пара образа и ключа приводит к `Invalid LICENSE_KEY` и немедленному завершению контейнера.
+Ключ одного сервера другой сервер не принимает. Образы от 27.09.2026 принимают только ключи, выпущенные 27.09.2026; ключ, выданный раньше, отклоняется с `Invalid LICENSE_KEY`, и контейнер сразу завершается. Действующий ключ — в `config.env` текущего дистрибутива MCP_Distr или в личном кабинете https://vibecoding1c.ru/.
 
-{% hint style="warning" %}
-**27.09.2026 beta-ключи всех семи серверов заменены.** Beta-образы, опубликованные с этого дня, принимают только новые ключи `LICENSE_KEY_<СЕРВЕР>_BETA` из обновлённого дистрибутива (`config.env` в `MCP_Distr.zip` от 27.09.2026); прежний beta-ключ отклоняется с `Invalid LICENSE_KEY`. Стабильные образы и ключи не менялись. Перед обновлением beta-контейнера возьмите новый ключ из дистрибутива.
+## Переход на образы от 27.09.2026
+
+27.09.2026 beta-образы стали стабильными: теги `latest`, `light` и `arm64` указывают на те же манифесты, что и `latest-beta`, `light-beta` и `arm64-beta` на эту дату. Отдельного beta-канала больше нет, теги `*-beta` не поддерживаются, в `config.env` нет параметра `RELEASE_CHANNEL` и переменных `LICENSE_KEY_<СЕРВЕР>_BETA`.
+
+{% hint style="info" %}
+Ключи, выпущенные 27.09.2026 при ротации beta-ключей, теперь и есть ключи stable. Отдельных beta-ключей больше нет.
 {% endhint %}
 
-## Совместимость каналов
+Порты (80xx), URL `/mcp`, имена серверов в `mcp.json` и `connection_id` — стандартные, как на страницах серверов. Что делать при переходе, зависит от того, какие образы стояли раньше.
 
-Порты, URL `/mcp`, имена серверов в `mcp.json` и `connection_id` при переключении канала не меняются. Меняются тег образа, лицензионный ключ и иногда формат постоянных данных.
+### Со stable до 27.09.2026
 
-{% hint style="danger" %}
-Не подключайте один каталог индекса одновременно к stable- и beta-контейнерам. Для отката сохраняйте старый контейнер и используйте отдельный каталог данных. У HelpSearchServer это обязательно: stable хранит ChromaDB в `/app/chroma_db`, новые beta-сборки — поколения zvec в `/app/index`.
-{% endhint %}
+Нужны новый ключ и новые каталоги данных. Старые индексы новые образы не переиспользуют: например, HelpSearchServer хранит индекс в `/app/index`, а не в ChromaDB `/app/chroma_db`. Индекс строится заново.
 
-Безопасное переключение:
-
-1. Остановите старый контейнер.
-2. Переименуйте его в резервную копию с датой.
-3. Скачайте тег выбранного канала.
-4. Запустите новый контейнер с ключом этого канала и отдельным каталогом данных, если формат хранения отличается.
+1. Возьмите новый ключ `LICENSE_KEY_<СЕРВЕР>` из текущего дистрибутива или личного кабинета.
+2. Остановите старый контейнер и переименуйте его в `<имя>_backup_<дата>` — он нужен для отката.
+3. Создайте новый каталог данных.
+4. Скачайте образ заново (`docker pull`) и запустите контейнер по команде со страницы сервера — с новым ключом и новым каталогом.
 5. Проверьте readiness и `tools/list`, а не только состояние `running`.
 6. После проверки удалите резервную копию или оставьте её для быстрого отката.
+
+### С бывшего beta
+
+Ключ тот же, выпущенный 27.09.2026: в `config.env` он теперь называется `LICENSE_KEY_<СЕРВЕР>`. Каталоги `*_beta` совместимы с новыми образами, переиндексация не нужна.
+
+1. Остановите beta-контейнер и сохраните его как `<имя>_backup_<дата>`.
+2. Создайте контейнер со стандартным именем и портом 80xx из тега без суффикса и подключите к нему каталог `*_beta`.
+3. Проверьте readiness и `tools/list`.
+4. Уберите из `mcp.json` подключения с суффиксом `-beta` (порты 81xx): остаются стандартные подключения.
+
+{% hint style="danger" %}
+Не подключайте один каталог данных одновременно к двум работающим контейнерам — например, к резервной копии и к новому контейнеру.
+{% endhint %}
+
+### Если контейнер не стартует
+
+* **`Invalid LICENSE_KEY`, контейнер сразу завершается.** Ключ не подходит к образу: это ключ, выданный до 27.09.2026, или ключ другого сервера. Возьмите `LICENSE_KEY_<СЕРВЕР>` этого сервера из текущего дистрибутива или личного кабинета и пересоздайте контейнер.
+* **`manifest unknown` при `docker pull` или `docker run`.** У образа нет такого тега. Сверьте его с таблицей выше: у SyntaxCheckServer нет `light`; тегов `latestbeta` и `lightbeta` не было никогда, а теги `*-beta` не поддерживаются — замените их тегом без суффикса.
 
 Команды запуска и особенности томов приведены на страницах каждого сервера.

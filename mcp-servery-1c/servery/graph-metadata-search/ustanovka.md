@@ -45,7 +45,7 @@ services:
       retries: 5
 
   mcp-app:
-    image: comol/1c_graph_metadata:latest-beta
+    image: comol/1c_graph_metadata:latest
     container_name: 1c_graph_metadata
     restart: unless-stopped
     ports:

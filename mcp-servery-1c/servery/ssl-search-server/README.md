@@ -15,12 +15,12 @@ SSLSearchServer предоставляет ИИ доступ к справке �
 | `ssl_search` | Поиск функций и процедур БСП по описанию или имени |
 | `plugin_state` | Состояние плагинов, активные hooks, ошибки и fingerprint производного индекса |
 | `plugin_reload` | Атомарно перечитать каталог плагинов без перезапуска сервера |
-| `embedding_state` | Состояние embedding-провайдера: поддержка `input_type`, размерность и причина выбранного режима; блок `active` (beta с 27.09.2026) — активная модель, её размерность, backend (`api`/`local`), разрешён ли переход на локальную модель (`fallback_permitted`) и произошёл ли он (`fell_back`) |
+| `embedding_state` | Состояние embedding-провайдера: поддержка `input_type`, размерность и причина выбранного режима; блок `active` (с 27.09.2026) — активная модель, её размерность, backend (`api`/`local`), разрешён ли переход на локальную модель (`fallback_permitted`) и произошёл ли он (`fell_back`) |
 | `vector_store_state` | Состояние векторного хранилища: рантайм zvec, обслуживающее поколение, запись манифеста и итог последней миграции |
 | `session_state` | Границы и счётчики HTTP-сессий сервера |
 
 {% hint style="warning" %}
-Расширенная сигнатура `ssl_search` (`limit`, `min_score`, `database`, `detail`, `cursor`, `doc_id`) и пять служебных инструментов опубликованы в beta. Stable-теги сохраняют прежнюю поверхность. Перед автоматическим использованием сверяйтесь с `tools/list` текущего подключения. `plugin_reload` меняет активное поведение процесса: агент вызывает его только по явному поручению оператора, а не как часть обычного поиска.
+Расширенная сигнатура `ssl_search` (`limit`, `min_score`, `database`, `detail`, `cursor`, `doc_id`) и пять служебных инструментов опубликованы в текущих образах. Перед автоматическим использованием сверяйтесь с `tools/list` текущего подключения. `plugin_reload` меняет активное поведение процесса: агент вызывает его только по явному поручению оператора, а не как часть обычного поиска.
 {% endhint %}
 
 ### ssl_search
@@ -93,10 +93,10 @@ SSLSearchServer предоставляет ИИ доступ к справке �
 ## Образ Docker
 
 ```
-comol/mcp_ssl_server:latest-beta
+comol/mcp_ssl_server:latest
 ```
 
-Stable: `latest`, `light`, `arm64`; beta: `latest-beta`, `light-beta`, `arm64-beta`. Новые функции сначала появляются в beta. Подробнее: [Каналы образов](../../kanaly-obrazov.md).
+Теги: `latest`, `light`, `arm64`. Подробнее: [Теги и ключи образов](../../kanaly-obrazov.md).
 
 ## Быстрый старт
 
@@ -105,8 +105,8 @@ docker run -d -p 8008:8008 `
   --name mcp_ssl_server `
   -e LICENSE_KEY=YOUR_LICENSE_KEY `
   -e SSL_VERSION=3.1.11 `
-  -v "E:/bases/mcp_ssl_beta:/app/zvec_db" `
-  comol/mcp_ssl_server:latest-beta
+  -v "E:/bases/mcp_ssl:/app/zvec_db" `
+  comol/mcp_ssl_server:latest
 ```
 
 {% hint style="warning" %}

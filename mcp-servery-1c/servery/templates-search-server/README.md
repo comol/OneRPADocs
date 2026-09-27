@@ -60,7 +60,7 @@ TemplatesSearchServer предоставляет ИИ библиотеку го�
 {% endhint %}
 
 {% hint style="warning" %}
-Пагинация `list_templates`, проектная память, защищённые изменяющие инструменты и служебный plugin surface опубликованы в beta. Stable-теги сохраняют прежний контракт; сверяйтесь с `tools/list`. Вызов `plugin_reload` меняет активное поведение процесса и допустим только по явному поручению оператора.
+Пагинация `list_templates`, проектная память, защищённые изменяющие инструменты и служебный plugin surface опубликованы в текущих образах; сверяйтесь с `tools/list`. Вызов `plugin_reload` меняет активное поведение процесса и допустим только по явному поручению оператора.
 {% endhint %}
 
 
@@ -266,10 +266,10 @@ http://localhost:8004/extend/
 ## Образ Docker
 
 ```
-comol/template-search-mcp:latest-beta
+comol/template-search-mcp:latest
 ```
 
-Stable: `latest`, `light`, `arm64`; beta: `latest-beta`, `light-beta`, `arm64-beta`. Новые функции сначала появляются в beta. Подробнее: [Каналы образов](../../kanaly-obrazov.md).
+Теги: `latest`, `light`, `arm64`. Подробнее: [Теги и ключи образов](../../kanaly-obrazov.md).
 
 ## Быстрый старт
 
@@ -278,7 +278,7 @@ docker run -d -p 127.0.0.1:8004:8004 `
   --name template_search_mcp `
   -e LICENSE_KEY=YOUR_LICENSE_KEY `
   -v "E:/bases/mcp_templates:/app/chroma_db" `
-  comol/template-search-mcp:latest-beta
+  comol/template-search-mcp:latest
 ```
 
 ## Конфигурация Cursor

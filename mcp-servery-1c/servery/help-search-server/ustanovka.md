@@ -1,7 +1,7 @@
 # Установка
 
 {% hint style="warning" %}
-Эта страница описывает новые beta-сборки HelpSearchServer: теги `latest-beta`, `light-beta`, `arm64-beta` и индекс поколений в `/app/index`. Stable-теги используют прежнюю ChromaDB в `/app/chroma_db`; команды для каналов нельзя смешивать. См. [Каналы образов](../../kanaly-obrazov.md).
+Индекс HelpSearchServer хранится поколениями в `/app/index`. Образы до 27.09.2026 хранили его в ChromaDB `/app/chroma_db`; при переходе с них заведите новый каталог данных — см. [Теги и ключи образов](../../kanaly-obrazov.md).
 {% endhint %}
 
 ## Предварительные требования
@@ -13,11 +13,11 @@
 ## Создание папки для индекса
 
 ```powershell
-New-Item -ItemType Directory -Force -Path "E:\bases\mcp_docs_beta"
+New-Item -ItemType Directory -Force -Path "E:\bases\mcp_docs"
 ```
 
 {% hint style="info" %}
-Путь `E:\bases\mcp_docs_beta` — это **пример**. Используйте любой удобный путь на вашем компьютере.
+Путь `E:\bases\mcp_docs` — это **пример**. Используйте любой удобный путь на вашем компьютере.
 {% endhint %}
 
 {% hint style="danger" %}
@@ -31,13 +31,13 @@ New-Item -ItemType Directory -Force -Path "E:\bases\mcp_docs_beta"
 ```powershell
 docker run -d -p 8003:8003 `
   --name 1c_help_mcp `
-  -e LICENSE_KEY=YOUR_BETA_LICENSE_KEY `
+  -e LICENSE_KEY=YOUR_LICENSE_KEY `
   -e EMBEDDING_API_BASE=http://host.docker.internal:1234/v1 `
   -e EMBEDDING_API_KEY=lm-studio `
   -e EMBEDDING_MODEL=Qwen3-Embedding-4B `
-  -v "E:/bases/mcp_docs_beta:/app/index" `
+  -v "E:/bases/mcp_docs:/app/index" `
   -v "E:/bases/mcp_model_cache:/app/model_cache" `
-  comol/1c_help_mcp:latest-beta
+  comol/1c_help_mcp:latest
 ```
 
 {% hint style="success" %}
@@ -49,10 +49,10 @@ docker run -d -p 8003:8003 `
 ```powershell
 docker run -d -p 8003:8003 `
   --name 1c_help_mcp `
-  -e LICENSE_KEY=YOUR_BETA_LICENSE_KEY `
-  -v "E:/bases/mcp_docs_beta:/app/index" `
+  -e LICENSE_KEY=YOUR_LICENSE_KEY `
+  -v "E:/bases/mcp_docs:/app/index" `
   -v "E:/bases/mcp_model_cache:/app/model_cache" `
-  comol/1c_help_mcp:latest-beta
+  comol/1c_help_mcp:latest
 ```
 
 ## Справка своей версии платформы
@@ -75,15 +75,15 @@ Test-Path "C:\Program Files\1cv8\8.3.23.1997\bin"
 ```powershell
 docker run -d -p 8003:8003 `
   --name 1c_help_mcp `
-  -e LICENSE_KEY=YOUR_BETA_LICENSE_KEY `
+  -e LICENSE_KEY=YOUR_LICENSE_KEY `
   -e 1C_BIN_PATH=/1c_docs `
   -e EMBEDDING_API_BASE=http://host.docker.internal:1234/v1 `
   -e EMBEDDING_API_KEY=lm-studio `
   -e EMBEDDING_MODEL=Qwen3-Embedding-4B `
   -v "C:/Program Files/1cv8/8.3.23.1997/bin:/1c_docs" `
-  -v "E:/bases/mcp_docs_beta:/app/index" `
+  -v "E:/bases/mcp_docs:/app/index" `
   -v "E:/bases/mcp_model_cache:/app/model_cache" `
-  comol/1c_help_mcp:latest-beta
+  comol/1c_help_mcp:latest
 ```
 
 {% hint style="warning" %}
@@ -94,7 +94,7 @@ docker run -d -p 8003:8003 `
 
 ### Что происходит
 
-1. **Скачивание образа** (\~3,5 ГБ для `latest-beta`, \~120 МБ для `light-beta`)
+1. **Скачивание образа** (\~3,5 ГБ для `latest`, \~120 МБ для `light`)
 2. **HTTP-сервер поднимается сразу** — `/health`, `/ready` и `tools/list` отвечают с первой секунды, холодный старт никогда не выглядит как закрытый порт
 3. **Загрузка embedding-модели** (в полном образе она уже внутри)
 4. **Индексация корпусов** — справка платформы, руководства, спецификации форматов, стандарты (см. таблицу ниже)
@@ -128,13 +128,13 @@ Invoke-RestMethod -Uri "http://localhost:8003/ready"
 
 ## Миграция со старого индекса (chroma_db)
 
-Beta-сервер больше не использует ChromaDB: индекс лежит в `/app/index` поколениями. Stable продолжает использовать `/app/chroma_db`. Если у вас том со старым индексом в `chroma_db`, перенесите его разовой командой — переиндексация не нужна, векторы переносятся как есть:
+Сервер больше не использует ChromaDB: индекс лежит в `/app/index` поколениями. Если у вас том со старым индексом в `chroma_db` (образы до 27.09.2026), перенесите его разовой командой — переиндексация не нужна, векторы переносятся как есть:
 
 ```powershell
 docker run --rm `
   -v "E:/bases/mcp_docs_old:/app/chroma_db" `
-  -v "E:/bases/mcp_docs_beta:/app/index" `
-  comol/1c_help_mcp:latest-beta `
+  -v "E:/bases/mcp_docs:/app/index" `
+  comol/1c_help_mcp:latest `
   sh -c "pip install chromadb && python3 legacy_migration.py --legacy chroma_db --index index"
 ```
 
@@ -166,12 +166,12 @@ docker rm 1c_help_mcp
 
 docker run -d -p 8003:8003 `
   --name 1c_help_mcp `
-  -e LICENSE_KEY=YOUR_BETA_LICENSE_KEY `
+  -e LICENSE_KEY=YOUR_LICENSE_KEY `
   -e 1C_BIN_PATH=/1c_docs `
   -v "C:/Program Files/1cv8/8.3.24.1234/bin:/1c_docs" `
-  -v "E:/bases/mcp_docs_beta:/app/index" `
+  -v "E:/bases/mcp_docs:/app/index" `
   -v "E:/bases/mcp_model_cache:/app/model_cache" `
-  comol/1c_help_mcp:latest-beta
+  comol/1c_help_mcp:latest
 ```
 
 ## Установка в закрытом контуре
@@ -221,7 +221,7 @@ docker logs 1c_help_mcp
 
 Последняя сборка индекса упала. Смотрите журнал: запись о падении содержит шаг, на котором сборка остановилась, и полную трассировку. Обслуживание при этом продолжает предыдущее поколение, если оно есть.
 
-В том числе так выглядит незагрузившаяся embedding-модель: неверен `EMBEDDING_API_KEY` или модель, в полном образе нет модели в кэше `HF_HOME`. Если `EMBEDDING_API_BASE` задан, но просто недоступен, beta с 27.09.2026 не переходит в `degraded`, а ждёт API с повторами (строки `retrying in N s` в журнале). Процесс при этом не завершается; причина — в поле `failure` ответа `/ready` и в журнале на шаге «initializing the embedding model».
+В том числе так выглядит незагрузившаяся embedding-модель: неверен `EMBEDDING_API_KEY` или модель, в полном образе нет модели в кэше `HF_HOME`. Если `EMBEDDING_API_BASE` задан, но просто недоступен, сервер с 27.09.2026 не переходит в `degraded`, а ждёт API с повторами (строки `retrying in N s` в журнале). Процесс при этом не завершается; причина — в поле `failure` ответа `/ready` и в журнале на шаге «initializing the embedding model».
 
 ### Ошибка подключения к LM Studio
 

@@ -12,9 +12,7 @@
 ## Базовый docker-compose.yml
 
 {% hint style="warning" %}
-Пример намеренно использует beta для SSL, Templates, CodeMetadata и Graph, потому что ниже
-задействованы их новые контракты. Для beta выделены отдельные каталоги данных. Лицензионный
-ключ у каждого сервера и канала свой — один общий `LICENSE_KEY` использовать нельзя.
+Лицензионный ключ у каждого сервера свой — один общий `LICENSE_KEY` использовать нельзя.
 {% endhint %}
 
 ```yaml
@@ -57,29 +55,29 @@ services:
       - E:/bases/mcp_model_cache:/app/model_cache
 
   ssl-search:
-    image: comol/mcp_ssl_server:latest-beta
+    image: comol/mcp_ssl_server:latest
     container_name: mcp_ssl_server
     restart: unless-stopped
     ports:
       - "8008:8008"
     environment:
-      - LICENSE_KEY=${LICENSE_KEY_SSL_BETA}
+      - LICENSE_KEY=${LICENSE_KEY_SSL}
       - SSL_VERSION=${SSL_VERSION:-3.1.11}
       - RESET_DATABASE=false
       - EMBEDDING_API_BASE=http://host.docker.internal:1234/v1
       - EMBEDDING_API_KEY=lm-studio
       - EMBEDDING_MODEL=Qwen3-Embedding-4B
     volumes:
-      - E:/bases/mcp_ssl_beta:/app/zvec_db
+      - E:/bases/mcp_ssl:/app/zvec_db
 
   templates-search:
-    image: comol/template-search-mcp:latest-beta
+    image: comol/template-search-mcp:latest
     container_name: template_search_mcp
     restart: unless-stopped
     ports:
       - "8004:8004"
     environment:
-      - LICENSE_KEY=${LICENSE_KEY_TEMPLATES_BETA}
+      - LICENSE_KEY=${LICENSE_KEY_TEMPLATES}
       - MCP_ENABLE_WRITE_TOOLS=${MCP_ENABLE_WRITE_TOOLS:-false}
       - MCP_OPERATOR_TOKEN=${MCP_OPERATOR_TOKEN:-}
       - RESET_DATABASE=false
@@ -87,7 +85,7 @@ services:
       - EMBEDDING_API_KEY=lm-studio
       - EMBEDDING_MODEL=Qwen3-Embedding-4B
     volumes:
-      - E:/bases/mcp_templates_beta:/app/data
+      - E:/bases/mcp_templates:/app/data
 ```
 
 ## Файл .env
@@ -95,12 +93,12 @@ services:
 Создайте файл `.env` рядом с `docker-compose.yml`:
 
 ```env
-LICENSE_KEY_SYNTAX=YOUR_STABLE_SYNTAX_LICENSE_KEY
-LICENSE_KEY_HELP=YOUR_STABLE_HELP_LICENSE_KEY
-LICENSE_KEY_SSL_BETA=YOUR_BETA_SSL_LICENSE_KEY
-LICENSE_KEY_TEMPLATES_BETA=YOUR_BETA_TEMPLATES_LICENSE_KEY
-LICENSE_KEY_CODEMETADATA_BETA=YOUR_BETA_CODEMETADATA_LICENSE_KEY
-LICENSE_KEY_GRAPH_BETA=YOUR_BETA_GRAPH_LICENSE_KEY
+LICENSE_KEY_SYNTAX=YOUR_SYNTAX_LICENSE_KEY
+LICENSE_KEY_HELP=YOUR_HELP_LICENSE_KEY
+LICENSE_KEY_SSL=YOUR_SSL_LICENSE_KEY
+LICENSE_KEY_TEMPLATES=YOUR_TEMPLATES_LICENSE_KEY
+LICENSE_KEY_CODEMETADATA=YOUR_CODEMETADATA_LICENSE_KEY
+LICENSE_KEY_GRAPH=YOUR_GRAPH_LICENSE_KEY
 MCP_ENABLE_WRITE_TOOLS=false
 MCP_OPERATOR_TOKEN=
 1C_BIN_PATH=C:/Program Files/1cv8/8.3.23.1997/bin
@@ -158,13 +156,13 @@ services:
   # ============================================
   
   code-metadata:
-    image: comol/1c_code_metadata_mcp:latest-beta
+    image: comol/1c_code_metadata_mcp:latest
     container_name: 1c_code_metadata_mcp
     restart: unless-stopped
     ports:
       - "8000:8000"
     environment:
-      - LICENSE_KEY=${LICENSE_KEY_CODEMETADATA_BETA}
+      - LICENSE_KEY=${LICENSE_KEY_CODEMETADATA}
       - CODE_PATH=/app/code
       - METADATA_SOURCE=xml
       - SOURCE_FORMAT=auto
@@ -174,7 +172,7 @@ services:
       - EMBEDDING_MODEL=Qwen3-Embedding-4B
     volumes:
       - E:/1C_Export/Files:/app/code:ro
-      - E:/bases/mcp_codemetadata_beta:/app/chroma_db
+      - E:/bases/mcp_codemetadata:/app/chroma_db
 
   # ============================================
   # Graph Metadata Search (Neo4j + MCP)
@@ -191,7 +189,7 @@ services:
       - NEO4J_AUTH=neo4j/password123
       - NEO4J_server_memory_heap_max__size=1g
     volumes:
-      - E:/bases/mcp_graph_beta/neo4j:/data
+      - E:/bases/mcp_graph/neo4j:/data
     healthcheck:
       test: ["CMD-SHELL", "wget --spider localhost:7474 || exit 1"]
       interval: 30s
@@ -199,13 +197,13 @@ services:
       retries: 5
 
   graph-metadata:
-    image: comol/1c_graph_metadata:latest-beta
+    image: comol/1c_graph_metadata:latest
     container_name: 1c_graph_metadata
     restart: unless-stopped
     ports:
       - "8006:8006"
     environment:
-      - LICENSE_KEY=${LICENSE_KEY_GRAPH_BETA}
+      - LICENSE_KEY=${LICENSE_KEY_GRAPH}
       - NEO4J_URI=bolt://neo4j:7687
       - NEO4J_USERNAME=neo4j
       - NEO4J_PASSWORD=password123
@@ -219,7 +217,7 @@ services:
       - EMBEDDING_MODEL=Qwen3-Embedding-4B
     volumes:
       - E:/1C_Export/Files:/app/code:ro
-      - E:/bases/mcp_graph_beta/app:/app/data
+      - E:/bases/mcp_graph/app:/app/data
     depends_on:
       neo4j:
         condition: service_healthy

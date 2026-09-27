@@ -105,7 +105,7 @@ Qwen3-Embedding рассчитан на то, что перед поисковы
 * **CodeMetadataSearchServer**: формулировки под 1С проверялись на корпусе бенчмарка и оказались хуже текста карточки (nDCG@10 0,836–0,844 против 0,866), поэтому там остался текст карточки. Подробно — в [конфигурации сервера](../servery/code-metadata-search/konfiguraciya.md).
 * **Graph Metadata Search** и **TemplatesSearchServer** не измерялись.
 
-Кроме этой инструкции серверы ничего к тексту не добавляют. В beta-сборках с 23.09.2026 (поздний вечер) убраны префиксы вида `query: ` / `passage: `, встроенные prompts моделей и переменные `EMBEDDING_QUERY_PREFIX`, `EMBEDDING_DOCUMENT_PREFIX` и `EMBEDDING_PASSAGE_PREFIX`: заданная переменная теперь только выводит предупреждение в журнал. Индекс, документы которого были записаны с префиксом, сервер один раз пересобирает сам:
+Кроме этой инструкции серверы ничего к тексту не добавляют. В образах с 23.09.2026 (поздний вечер) убраны префиксы вида `query: ` / `passage: `, встроенные prompts моделей и переменные `EMBEDDING_QUERY_PREFIX`, `EMBEDDING_DOCUMENT_PREFIX` и `EMBEDDING_PASSAGE_PREFIX`: заданная переменная теперь только выводит предупреждение в журнал. Индекс, документы которого были записаны с префиксом, сервер один раз пересобирает сам:
 
 * CodeMetadataSearchServer — модели e5, EmbeddingGemma, `qwen/qwen3-embedding-8b` (префикс `document: `) или заданный `EMBEDDING_DOCUMENT_PREFIX`; пересборка идёт в новом поколении, прежнее отвечает до её конца;
 * SSLSearchServer — локальная модель e5 (модель полного образа по умолчанию), nomic или модель со встроенным prompt документа;
@@ -129,7 +129,7 @@ Qwen3-Embedding рассчитан на то, что перед поисковы
 6. Измените `RESET_DATABASE=false` для следующих запусков
 
 {% hint style="info" %}
-CodeMetadataSearchServer в beta-сборках с 23.09.2026 пересобирает индекс сам: смените модель и пересоздайте контейнер, `RESET_DATABASE` не нужен. Подробнее — в [конфигурации сервера](../servery/code-metadata-search/konfiguraciya.md).
+CodeMetadataSearchServer с 23.09.2026 пересобирает индекс сам: смените модель и пересоздайте контейнер, `RESET_DATABASE` не нужен. Подробнее — в [конфигурации сервера](../servery/code-metadata-search/konfiguraciya.md).
 {% endhint %}
 
 ### Пример

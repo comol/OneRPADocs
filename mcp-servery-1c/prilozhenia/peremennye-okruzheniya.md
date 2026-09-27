@@ -19,9 +19,8 @@
 
 | Переменная | Описание | По умолчанию |
 |------------|----------|--------------|
-| `RELEASE_CHANNEL` | Канал `stable` или `beta` | `stable` |
 | `IMAGE_VARIANT` | Базовый вариант: `latest`, `light` или `arm64` | `latest` |
-| `IMAGE_TAG` | Явный тег; если задан, перекрывает канал и вариант | *(пусто)* |
+| `IMAGE_TAG` | Явный тег; если задан, перекрывает вариант | *(пусто)* |
 | `PATH_1C_BIN` | Путь на хосте к каталогу `bin` платформы 1С для HelpSearchServer | — |
 | `PATH_CODE` | Designer XML-выгрузка или корень базового проекта 1C:EDT на хосте | — |
 | `PATH_EXTENSIONS` | Каталог выгрузок/проектов расширений; для 1C:EDT — общий родитель workspace | — |
@@ -32,10 +31,9 @@
 | `CHAT_API_BASE` / `CHAT_API_KEY` / `CHAT_MODEL` | OpenAI-совместимый LLM-провайдер для функций Graph, которым нужна генерация текста | зависит от профиля |
 | `USE_GPU` | Добавлять GPU к full/arm64-команде запуска, если сервер и хост его поддерживают | `false` |
 | `SUPPORT_KEY` / `SUPPORT_API_URL` / `SUPPORT_EMAIL` | Настройки команды `/support` из правил 1c-rules; контейнерам MCP не передаются | зависит от поставки |
-| `LICENSE_KEY_<СЕРВЕР>` | Ключ stable-канала | — |
-| `LICENSE_KEY_<СЕРВЕР>_BETA` | Ключ beta-канала | — |
+| `LICENSE_KEY_<СЕРВЕР>` | Лицензионный ключ сервера; контейнеру передаётся как `LICENSE_KEY` | — |
 
-Доступные комбинации различаются по серверам. См. [Каналы образов: stable и beta](../kanaly-obrazov.md).
+Набор вариантов различается по серверам. См. [Теги и ключи образов](../kanaly-obrazov.md).
 
 ## Embedding модели (LM Studio / Ollama / OpenRouter)
 
@@ -85,8 +83,8 @@
 | `EMBEDDING_API_BASE` | URL OpenAI-совместимого API, включая `/v1` | `http://host.docker.internal:1234/v1` |
 | `EMBEDDING_API_KEY` | Ключ API эмбеддингов | `lm-studio` |
 | `EMBEDDING_MODEL` | Модель API или локальная модель | `intfloat/multilingual-e5-small` |
-| `EMBEDDING_API_TIMEOUT` | Секунд ожидания ответа на один запрос к embedding API (beta с 23.09.2026) | `600` |
-| `EMBEDDING_ALLOW_OFFLINE_FALLBACK` | Можно ли заменить недоступный на старте embedding API встроенной моделью. `false` — старт ждёт API (5 с, удваивая до 60 с, без ограничения числа попыток); при отказе 400/401/403/404 сервер переходит в `degraded`, индекс не трогается. `true` — как раньше: после неудачной проверки грузится встроенная модель (beta с 27.09.2026) | `false`, если задан `EMBEDDING_API_BASE`; иначе `true` |
+| `EMBEDDING_API_TIMEOUT` | Секунд ожидания ответа на один запрос к embedding API (с 23.09.2026) | `600` |
+| `EMBEDDING_ALLOW_OFFLINE_FALLBACK` | Можно ли заменить недоступный на старте embedding API встроенной моделью. `false` — старт ждёт API (5 с, удваивая до 60 с, без ограничения числа попыток); при отказе 400/401/403/404 сервер переходит в `degraded`, индекс не трогается. `true` — как раньше: после неудачной проверки грузится встроенная модель (с 27.09.2026) | `false`, если задан `EMBEDDING_API_BASE`; иначе `true` |
 | `HF_HOME` | Каталог кэша модели | `/app/model_cache` |
 | `HF_HUB_OFFLINE` | Запрет загрузок при старте; `0` разрешает докачку | `1` |
 | `RESET_CACHE` | Очистить кэш моделей при старте | `false` |
@@ -106,7 +104,7 @@
 | `LEXICAL_PROFILE` | Токенизация лексической дорожки; смена вызывает переиндексацию | `stemmed` |
 
 {% hint style="warning" %}
-В новых beta-сборках индекс HelpSearchServer лежит в `/app/index` (поколения zvec); stable продолжает использовать `/app/chroma_db`. Не подключайте один каталог к обоим каналам. Полный список параметров: [Конфигурация HelpSearchServer](../servery/help-search-server/konfiguraciya.md).
+Индекс HelpSearchServer лежит в `/app/index` (поколения zvec), а не в `/app/chroma_db`, как в образах до 27.09.2026. Не подключайте один каталог данных одновременно к двум контейнерам. Полный список параметров: [Конфигурация HelpSearchServer](../servery/help-search-server/konfiguraciya.md).
 {% endhint %}
 
 ### CodeMetadataSearchServer (порт 8000)
@@ -189,7 +187,7 @@
 | `EMBEDDING_MEMORY_BUDGET_MODE` | `refuse`, `warn` или `off` | `refuse` |
 | `VECTOR_PROFILE` | Профиль zvec: `fast_index`, `balanced`, `memory_saver`, `quality` | `fast_index` |
 | `VECTOR_OPTIMIZE_ENABLED` | Разрешить оптимизацию zvec | `true` |
-| `VECTOR_OPTIMIZE_EVERY` | Число новых документов между промежуточными слияниями векторного индекса; `0` — только финальное слияние в конце фазы (в образах до beta 27.09.2026 значение `0` не действовало) | `100000` |
+| `VECTOR_OPTIMIZE_EVERY` | Число новых документов между промежуточными слияниями векторного индекса; `0` — только финальное слияние в конце фазы (в образах до 27.09.2026 значение `0` не действовало) | `100000` |
 | `VECTOR_OPTIMIZE_FINAL_MIN_DOCS` | Финальное слияние не запускается, пока его ждут меньше N документов (исход `skipped_below_threshold`): они находятся поиском, переходят в следующее поколение и сливаются, когда их наберётся N; переиндексацию не вызывает. `0` — сливать любой непустой хвост | `0` |
 | `VECTOR_FLUSH_EVERY` | Число новых документов между промежуточными сбросами на диск; `0` — только финальный сброс | `2000` |
 | `VECTOR_OPTIMIZE_DEADLINE_SEC` | Таймаут фоновой оптимизации | `1800` |
@@ -206,7 +204,7 @@
 | `PLUGIN_HOOK_TIMEOUT_SECONDS` | Бюджет времени одного вызова hook; превысивший его hook считается упавшим | `5.0` |
 
 {% hint style="warning" %}
-`INDEX_STRUCTURAL`, `INDEX_DEPENDENCY_GRAPH`, `INDEX_FORM_INDEX`, `INDEX_XSD_SCHEMAS`, `SUB_INDEX_PROGRESS_WARN_SEC`, `SUB_INDEX_PROGRESS_HEARTBEAT_SEC`, `SUB_INDEX_LIVENESS_WITNESS`, `STRUCTURAL_PARSE_TIMEOUT_SEC`, `STRUCTURAL_EXCLUDE`, `GREP_DEADLINE_SEC`, `GREP_MAX_CACHED_FILE_MB`, `MCP_TOOL_WORKERS` и `VECTOR_OPTIMIZE_FINAL_MIN_DOCS` относятся к текущему beta-кандидату CodeMetadataSearchServer. В stable и ранее опубликованных beta-тегах их может ещё не быть.
+`INDEX_STRUCTURAL`, `INDEX_DEPENDENCY_GRAPH`, `INDEX_FORM_INDEX`, `INDEX_XSD_SCHEMAS`, `SUB_INDEX_PROGRESS_WARN_SEC`, `SUB_INDEX_PROGRESS_HEARTBEAT_SEC`, `SUB_INDEX_LIVENESS_WITNESS`, `STRUCTURAL_PARSE_TIMEOUT_SEC`, `STRUCTURAL_EXCLUDE`, `GREP_DEADLINE_SEC`, `GREP_MAX_CACHED_FILE_MB`, `MCP_TOOL_WORKERS` и `VECTOR_OPTIMIZE_FINAL_MIN_DOCS` относятся к текущим исходникам CodeMetadataSearchServer. В ранее опубликованных образах их может ещё не быть.
 {% endhint %}
 
 ### SSLSearchServer (порт 8008)
@@ -220,13 +218,13 @@
 | `EMBEDDING_API_KEY` | Ключ API эмбеддингов | — |
 | `EMBEDDING_MODEL` | Имя модели для API эмбеддингов | `qwen/qwen3-embedding-8b` |
 | `LOCAL_EMBEDDING_MODEL` | Резервная локальная CPU-модель (Hugging Face repo id). Совместимый алиас — `OFFLINE_EMBEDDING_MODEL` | `intfloat/multilingual-e5-small` |
-| `EMBEDDING_ALLOW_OFFLINE_FALLBACK` | Разрешить вариантам `latest`/`arm64` переходить на `LOCAL_EMBEDDING_MODEL`, если API эмбеддингов недоступен на старте. `true` — разрешить, любое другое значение — запретить. При запрете старт ждёт API (пауза 5 с, удваивается до 60 с), а при 401/403/404 завершается с «No embedding backend available», как `light`. Даже при разрешённом переходе коллекция, построенная через API, не удаляется и не пересобирается: старт останавливается, коллекция остаётся нетронутой. На `light` не влияет. Beta с 27.09.2026 | `false`, если задан `EMBEDDING_API_BASE` (или `OPENAI_API_BASE`); иначе `true` |
+| `EMBEDDING_ALLOW_OFFLINE_FALLBACK` | Разрешить вариантам `latest`/`arm64` переходить на `LOCAL_EMBEDDING_MODEL`, если API эмбеддингов недоступен на старте. `true` — разрешить, любое другое значение — запретить. При запрете старт ждёт API (пауза 5 с, удваивается до 60 с), а при 401/403/404 завершается с «No embedding backend available», как `light`. Даже при разрешённом переходе коллекция, построенная через API, не удаляется и не пересобирается: старт останавливается, коллекция остаётся нетронутой. На `light` не влияет. С 27.09.2026 | `false`, если задан `EMBEDDING_API_BASE` (или `OPENAI_API_BASE`); иначе `true` |
 | `INDEXING_THREADS` | Потоки индексации | `5` |
 | `MIGRATE_VECTOR_STORE` | Выполнить миграцию векторного хранилища на этом старте | `false` |
 | `DEMOTE_VECTOR_STORE` | Вернуть обслуживание предыдущему поколению | `false` |
 | `EMBEDDING_DIMENSIONS` | Размерность эмбеддингов | *(авто)* |
 | `EMBEDDING_INPUT_TYPE_ENABLED` | Различение query/document для эмбеддингов | `true` |
-| `FORCE_REINDEX_ON_DIMENSION_MISMATCH` | Автопересоздание при несовпадении размерности; иначе старт останавливается с ошибкой. Не действует, если старт перешёл на локальную модель поверх коллекции, построенной через API: такую коллекцию сервер не пересоздаёт (beta с 27.09.2026) | `false` |
+| `FORCE_REINDEX_ON_DIMENSION_MISMATCH` | Автопересоздание при несовпадении размерности; иначе старт останавливается с ошибкой. Не действует, если старт перешёл на локальную модель поверх коллекции, построенной через API: такую коллекцию сервер не пересоздаёт (с 27.09.2026) | `false` |
 | `MIN_SCORE` | Порог cosine similarity для результатов `ssl_search` | `0.3826` |
 | `EXACT_LOOKUP` | Точный поиск по имени символа перед семантическим (`lane=exact`) | `true` |
 | `HYBRID_SEARCH` | Гибридное извлечение: векторная + полнотекстовая (BM25) дорожки с RRF | `true` |
@@ -327,7 +325,7 @@
 | `GRAPH_PLUGIN_HOOK_TIMEOUT_SECONDS` | Бюджет времени одного plugin hook; `0` отключает контроль | `5.0` |
 
 {% hint style="warning" %}
-`GRAPH_FORM_XML_BATCH_SIZE` и `GRAPH_FORM_XML_BATCH_MAX_ROWS` описывают текущий beta-кандидат исходников. Наличие в опубликованном образе проверяйте по release notes.
+`GRAPH_FORM_XML_BATCH_SIZE` и `GRAPH_FORM_XML_BATCH_MAX_ROWS` описывают текущие исходники. Наличие в опубликованном образе проверяйте по release notes.
 {% endhint %}
 
 Полный список переменных Graph Metadata Search, включая лимиты графовых ответов, поколения и загрузку данных: [Конфигурация Graph Metadata Search](../servery/graph-metadata-search/konfiguraciya.md).
@@ -345,7 +343,7 @@
 | `ONEC_AI_TRANSPORT_RETRIES` | Сколько дополнительных попыток делать при транспортном сбое (сетевая ошибка, таймаут одного запроса, HTTP 5xx/429), каждая — на свежей дискуссии и в пределах бюджета операции. `0` — одна попытка | `2` |
 | `ONEC_AI_SKILL_NAME` | Режим сессии: `custom` (с инструментами) или `raw` | `custom` |
 | `ONEC_AI_INPUT_MAX_LENGTH` | Максимальная длина каждого входного поля | `100000` |
-| `ONEC_AI_WORKSPACE_ROOTS` | Абсолютные корни, внутри которых beta-сервер может читать пути из `files`; пустое значение запрещает чтение | `/workspace` в Docker |
+| `ONEC_AI_WORKSPACE_ROOTS` | Абсолютные корни, внутри которых сервер может читать пути из `files`; пустое значение запрещает чтение | `/workspace` в Docker |
 | `ONEC_AI_WORKSPACE_MAX_FILE_BYTES` | Максимальный размер одного файла для `files` | `2000000` |
 | `ONEC_AI_WORKSPACE_PATH_MAP` | Пары `префикс_на_машине_клиента=корень_в_контейнере`, разделённые `;` или переводами строк. Каждый корень обязан входить в `ONEC_AI_WORKSPACE_ROOTS` | *(пусто)* |
 | `ONEC_AI_DOC_VERSION` | Версия документации платформы по умолчанию (конкретная версия, не `latest`) | `v8.5.1` |
@@ -363,10 +361,10 @@
 | `MCP_TRANSPORT_SESSION_SWEEP_BATCH` | Максимум сессий, закрываемых за один проход уборки | `100` |
 | `HTTP_PORT` | Порт HTTP-сервера | `8007` |
 | `CHECKER_IMAGE_DIGEST` | Переданный оператором registry digest вида `sha256:<64 lowercase hex>` для `/release`; образ должен запускаться по тому же digest | *(не задано)* |
-| `PLUGIN_DIR` | Каталог Python-плагинов (beta) | `/app/plugins` |
+| `PLUGIN_DIR` | Каталог Python-плагинов | `/app/plugins` |
 
 {% hint style="warning" %}
-`CHECKER_IMAGE_DIGEST` относится к текущему beta-кандидату исходников и ещё не подтверждён в опубликованных образах. Без переменной `/release` возвращает `image_digest_available=false`; два пустых digest не доказывают идентичность образов.
+`CHECKER_IMAGE_DIGEST` относится к текущим исходникам и ещё не подтверждён в опубликованных образах. Без переменной `/release` возвращает `image_digest_available=false`; два пустых digest не доказывают идентичность образов.
 {% endhint %}
 
 ### SyntaxCheckServer (порт 8002)
@@ -376,7 +374,7 @@
 | `LICENSE_KEY` | Лицензионный ключ | Обязательно |
 | `USESSE` | SSE транспорт | `false` |
 | `FILES_DIR` | Каталог с файлами BSL внутри контейнера. Если каталог задан и существует, сервер регистрирует инструмент `syntaxcheck_file` | *(пусто)* |
-| `FULLINDEX` | `true`/`1`/`yes`/`on` включает режим полного индекса (beta): `FILES_DIR` индексируется при старте, и `UnresolvedMethodCall`, `UnresolvedField`, `QueryToMissingMetadata` отвечают из индекса | *(пусто)* |
+| `FULLINDEX` | `true`/`1`/`yes`/`on` включает режим полного индекса: `FILES_DIR` индексируется при старте, и `UnresolvedMethodCall`, `UnresolvedField`, `QueryToMissingMetadata` отвечают из индекса | *(пусто)* |
 | `INDEX_DIR` | Каталог индекса конфигурации; образ объявляет его томом | `/index` |
 | `FULLINDEX_REINDEX_INTERVAL_SEC` | Только для режима полного индекса: как долго готовый индекс не переспрашивают, то есть как быстро подхватывается изменение исходников после первой сборки. Отключить переиндексацию нельзя: `0`, отрицательное значение и не-число читаются как значение по умолчанию, положительное ограничивается диапазоном 60…86400 секунд | `3600` |
 | `PLUGINS_DIR` | Каталог Python-плагинов; пустое значение использует `/app/plugins` | *(пусто)* |
@@ -409,7 +407,7 @@
 | `LOCAL_EMBEDDING_MODEL` | Резервная локальная CPU-модель (Hugging Face repo id). Совместимый алиас — `OFFLINE_EMBEDDING_MODEL` | `intfloat/multilingual-e5-small` |
 | `EMBEDDING_DIMENSIONS` | Размерность эмбеддингов | *(авто)* |
 | `EMBEDDING_API_TIMEOUT` | Предел одного запроса к API эмбеддингов, секунды (на попытку). Ограничивает ожидание семантической полосы, за которой стоит полнотекстовая | `60` |
-| `EMBEDDING_ALLOW_OFFLINE_FALLBACK` | Разрешить переход на `LOCAL_EMBEDDING_MODEL`, если API эмбеддингов не ответил при старте. При запрете старт повторяется (5, 15, 30 с), затем процесс завершается с кодом 70 до следующего запуска контейнера; индекс не трогается. Даже при `true` локальная модель не заменяет непустой индекс, построенный через API: старт отклоняется, индекс сохраняется (beta с 27.09.2026) | `false`, если задан `EMBEDDING_API_BASE`; иначе `true` |
+| `EMBEDDING_ALLOW_OFFLINE_FALLBACK` | Разрешить переход на `LOCAL_EMBEDDING_MODEL`, если API эмбеддингов не ответил при старте. При запрете старт повторяется (5, 15, 30 с), затем процесс завершается с кодом 70 до следующего запуска контейнера; индекс не трогается. Даже при `true` локальная модель не заменяет непустой индекс, построенный через API: старт отклоняется, индекс сохраняется (с 27.09.2026) | `false`, если задан `EMBEDDING_API_BASE`; иначе `true` |
 | `TEMPLATES_DB_PATH` | Путь к SQLite-базе шаблонов и заметок | `/app/chroma_db/templates.db` |
 | `ZVEC_DB_PATH` | Каталог векторного индекса zvec | `/app/chroma_db/zvec_db` |
 | `RECALL_RELEVANCE_THRESHOLD` | Максимальная cosine-distance для `recall` | `1.0` |

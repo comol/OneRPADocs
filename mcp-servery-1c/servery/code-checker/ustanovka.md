@@ -29,21 +29,21 @@ docker run -d -p 8007:8007 `
   comol/1c-code-checker:latest
 ```
 
-### Beta с чтением исходников из workspace
+### С чтением исходников из workspace
 
 Чтобы не передавать большие модули через JSON, смонтируйте репозиторий только для чтения и передавайте инструментам аргумент `files`:
 
 ```powershell
 docker run -d -p 8007:8007 `
-  --name 1c_code_checker_beta `
-  -e LICENSE_KEY=YOUR_BETA_LICENSE_KEY `
+  --name 1c_code_checker `
+  -e LICENSE_KEY=YOUR_LICENSE_KEY `
   -e ONEC_AI_TOKEN=YOUR_NAPARNIK_TOKEN `
   -e ONEC_AI_WORKSPACE_PATH_MAP="C:\Work\My1CProject=/workspace" `
   -v "C:/Work/My1CProject:/workspace:ro" `
-  comol/1c-code-checker:latest-beta
+  comol/1c-code-checker:latest
 ```
 
-В образе `ONEC_AI_WORKSPACE_ROOTS=/workspace`. Для относительных путей достаточно read-only монтирования; `ONEC_AI_WORKSPACE_PATH_MAP` нужен для абсолютных Windows/UNC-путей, которые передаёт клиент, и не расширяет разрешённые корни. Сервер разрешает только обычные файлы внутри объявленных корней, после полного разрешения ссылок, и никогда их не записывает. Stable- и beta-ключи не смешиваются; см. [Каналы образов](../../kanaly-obrazov.md).
+В образе `ONEC_AI_WORKSPACE_ROOTS=/workspace`. Для относительных путей достаточно read-only монтирования; `ONEC_AI_WORKSPACE_PATH_MAP` нужен для абсолютных Windows/UNC-путей, которые передаёт клиент, и не расширяет разрешённые корни. Сервер разрешает только обычные файлы внутри объявленных корней, после полного разрешения ссылок, и никогда их не записывает. Какой ключ нужен образу — см. [Теги и ключи образов](../../kanaly-obrazov.md).
 
 Полный список переменных окружения — в разделе [Конфигурация](konfiguraciya.md).
 
@@ -86,7 +86,7 @@ Invoke-RestMethod -Uri "http://localhost:8007/release"
 {% endhint %}
 
 {% hint style="warning" %}
-Образ не знает собственный registry digest автоматически. При digest-pinned запуске передайте одно и то же значение в ссылке на образ и в окружении: `-e CHECKER_IMAGE_DIGEST="sha256:<digest>" comol/1c-code-checker@sha256:<digest>`. Без этого `/release` честно сообщает `image_digest_available=false`; совпадение двух пустых строк не подтверждает одинаковый образ. Поля доступны в текущем beta-кандидате исходников, публикация пока не подтверждена.
+Образ не знает собственный registry digest автоматически. При digest-pinned запуске передайте одно и то же значение в ссылке на образ и в окружении: `-e CHECKER_IMAGE_DIGEST="sha256:<digest>" comol/1c-code-checker@sha256:<digest>`. Без этого `/release` честно сообщает `image_digest_available=false`; совпадение двух пустых строк не подтверждает одинаковый образ. Поля доступны в текущих исходниках, публикация пока не подтверждена.
 {% endhint %}
 
 ## Конфигурация Cursor
