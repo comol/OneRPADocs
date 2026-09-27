@@ -24,6 +24,7 @@ MCP-серверы решают эту проблему, предоставля�
 | [SyntaxCheckServer](servery/syntax-check-server/) | 8002 | Проверка синтаксиса BSL | Нет | Да |
 | [TemplatesSearchServer](servery/templates-search-server/) | 8004 | Шаблоны кода 1С | Нет | Да |
 | [1CCodeChecker](servery/code-checker/) | 8007 | Проверка через 1С:Напарник | Нет (нужен токен) | Да |
+| [MCP QA](servery/qa/) | 8020 | Автотестирование через 1С /TestClient | Тестовая база | Нет |
 
 ## Доработка под свою конфигурацию
 

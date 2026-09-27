@@ -231,6 +231,7 @@
       * [Получение токена](mcp-servery-1c/servery/code-checker/poluchenie-tokena.md)
       * [Инструменты](mcp-servery-1c/servery/code-checker/instrumenty.md)
       * [Конфигурация](mcp-servery-1c/servery/code-checker/konfiguraciya.md)
+    * [MCP QA — тестирование 1С](mcp-servery-1c/servery/qa/README.md)
   * [Интеграция](mcp-servery-1c/integraciya/README.md)
     * [Формат mcp.json](mcp-servery-1c/integraciya/cursor-mcp-json.md)
     * [Google Antigravity](mcp-servery-1c/integraciya/antigravity.md)

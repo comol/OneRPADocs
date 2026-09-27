@@ -15,6 +15,7 @@ MCP-серверы публикуются в одном канале: теги `
 | TemplatesSearchServer | [`comol/template-search-mcp`](https://hub.docker.com/r/comol/template-search-mcp/tags) | `latest`, `light`, `arm64` |
 | SyntaxCheckServer | [`comol/1c_syntaxcheck_mcp`](https://hub.docker.com/r/comol/1c_syntaxcheck_mcp/tags) | `latest`, `arm64` (варианта `light` нет) |
 | 1CCodeChecker | [`comol/1c-code-checker`](https://hub.docker.com/r/comol/1c-code-checker/tags) | `latest`, `light`, `arm64` |
+| MCP QA | [`comol/qa_mcp`](https://hub.docker.com/r/comol/qa_mcp/tags) | `latest` (только amd64; вариантов `light` и `arm64` нет) |
 
 В дистрибутиве тег задаётся так:
 
@@ -41,6 +42,7 @@ IMAGE_TAG = IMAGE_VARIANT
 | TemplatesSearchServer | `LICENSE_KEY_TEMPLATES` |
 | SyntaxCheckServer | `LICENSE_KEY_SYNTAX` |
 | 1CCodeChecker | `LICENSE_KEY_CODECHECKER` |
+| MCP QA | `LICENSE_KEY_QA` |
 
 Ключ одного сервера другой сервер не принимает. Образы от 27.09.2026 принимают только ключи, выпущенные 27.09.2026; ключ, выданный раньше, отклоняется с `Invalid LICENSE_KEY`, и контейнер сразу завершается. Действующий ключ — в `config.env` текущего дистрибутива MCP_Distr или в личном кабинете https://vibecoding1c.ru/.
 
@@ -84,3 +86,12 @@ IMAGE_TAG = IMAGE_VARIANT
 * **`manifest unknown` при `docker pull` или `docker run`.** У образа нет такого тега. Сверьте его с таблицей выше: у SyntaxCheckServer нет `light`; тегов `latestbeta` и `lightbeta` не было никогда, а теги `*-beta` не поддерживаются — замените их тегом без суффикса.
 
 Команды запуска и особенности томов приведены на страницах каждого сервера.
+
+## MCP QA
+
+`comol/qa_mcp:latest` — MCP QA 0.4.4, только Linux/amd64; тот же образ опубликован
+под тегом `0.4.4`. Вариантов `light` и `arm64` нет, поэтому общие
+`IMAGE_VARIANT`/`IMAGE_TAG` к QA не применяются: образ задаёт `QA_IMAGE` в `config.env`.
+С версии 0.4.4 ключ обязателен: `LICENSE_KEY_QA` передаётся серверу как `LICENSE_KEY`.
+Образ `0.4.3` ключ не проверял; при переходе с него задайте ключ, том `/data`
+переиспользуется. [Инструкция QA](servery/qa/README.md).

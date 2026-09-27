@@ -490,3 +490,17 @@
 -e EMBEDDING_API_KEY=ollama `
 -e EMBEDDING_MODEL=qwen3:embedding-4b
 ```
+
+## MCP QA (0.4.4)
+
+- `LICENSE_KEY` — ключ QA; в MCP_Distr хранится как `LICENSE_KEY_QA`.
+- `LICENSE_KEY_FILE` — UTF-8 файл с ключом, имеет приоритет над переменной.
+- `MCP_QA_HTTP_TOKEN` — необязательный Bearer-токен HTTP, отдельный от лицензии.
+- `MCP_QA_HOST` / `MCP_QA_HTTP_PORT` — адрес и порт слушателя (Docker: 0.0.0.0:8020).
+- `MCP_QA_BACKEND` — `manager` (Windows) либо `direct`/`testpilot` (Docker).
+- `MCP_QA_TRANSPORT` — `stdio` либо `http`/`streamable-http`.
+- `MCP_QA_TESTPILOT_TIMEOUT` — положительное число секунд, по умолчанию 300.
+- `TC1C_LOGGING` — включает возможность журнала действий; по умолчанию false.
+- В поставке: `QA_IMAGE`, `QA_HTTP_PORT`, `QA_HTTP_TOKEN` — настройки только QA.
+
+[Установка и первый сеанс QA](../servery/qa/README.md).
