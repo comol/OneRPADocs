@@ -97,7 +97,7 @@
 ```powershell
 docker rm -f template_search_mcp
 
-docker run -d -p 127.0.0.1:8004:8004 `
+docker run -d --restart unless-stopped -p 127.0.0.1:8004:8004 `
   --name template_search_mcp `
   -e LICENSE_KEY=YOUR_LICENSE_KEY `
   -e RESET_DATABASE=true `

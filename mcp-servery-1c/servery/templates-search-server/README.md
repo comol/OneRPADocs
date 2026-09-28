@@ -274,7 +274,7 @@ comol/template-search-mcp:latest
 ## Быстрый старт
 
 ```powershell
-docker run -d -p 127.0.0.1:8004:8004 `
+docker run -d --restart unless-stopped -p 127.0.0.1:8004:8004 `
   --name template_search_mcp `
   -e LICENSE_KEY=YOUR_LICENSE_KEY `
   -v "E:/bases/mcp_templates:/app/chroma_db" `

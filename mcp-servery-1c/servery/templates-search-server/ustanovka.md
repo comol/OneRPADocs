@@ -16,7 +16,7 @@ New-Item -ItemType Directory -Force -Path "E:\bases\mcp_templates"
 ### С LM Studio (рекомендуется)
 
 ```powershell
-docker run -d -p 127.0.0.1:8004:8004 `
+docker run -d --restart unless-stopped -p 127.0.0.1:8004:8004 `
   --name template_search_mcp `
   -e LICENSE_KEY=YOUR_LICENSE_KEY `
   -e RESET_CACHE=false `
@@ -31,7 +31,7 @@ docker run -d -p 127.0.0.1:8004:8004 `
 ### С CPU (без GPU)
 
 ```powershell
-docker run -d -p 127.0.0.1:8004:8004 `
+docker run -d --restart unless-stopped -p 127.0.0.1:8004:8004 `
   --name template_search_mcp `
   -e LICENSE_KEY=YOUR_LICENSE_KEY `
   -e RESET_CACHE=false `
