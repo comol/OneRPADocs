@@ -491,16 +491,26 @@
 -e EMBEDDING_MODEL=qwen3:embedding-4b
 ```
 
-## MCP QA (0.4.4)
+## MCP QA (0.6.0)
 
 - `LICENSE_KEY` — ключ QA; в MCP_Distr хранится как `LICENSE_KEY_QA`.
 - `LICENSE_KEY_FILE` — UTF-8 файл с ключом, имеет приоритет над переменной.
 - `MCP_QA_HTTP_TOKEN` — необязательный Bearer-токен HTTP, отдельный от лицензии.
 - `MCP_QA_HOST` / `MCP_QA_HTTP_PORT` — адрес и порт слушателя (Docker: 0.0.0.0:8020).
-- `MCP_QA_BACKEND` — `manager` (Windows) либо `direct`/`testpilot` (Docker).
+- `MCP_QA_BACKEND` — `native` (по умолчанию вне Windows и в образе: сервер сам
+  подключается к тест-клиенту) либо `manager` (Windows, сервер запускает 1С сам).
+- `MCP_QA_EXECUTOR` — `native` или `platform`; в образе `native`.
+- `MCP_QA_TESTCLIENT` — адрес тест-клиента `хост:порт`, по умолчанию
+  `host.docker.internal:1538`.
+- `MCP_QA_TESTCLIENT_USER` / `MCP_QA_TESTCLIENT_PASSWORD` / `MCP_QA_TESTCLIENT_DOMAIN` —
+  учётная запись Windows для проверки подлинности канала тестирования (NTLM
+  через `pyspnego`); из Linux-контейнера без них вход не выполняется. Секрет.
+- `MCP_QA_TESTCLIENT_ID` — идентификатор клиента для веб-клиента,
+  запущенного с `TestClientID=<ид>`; для тонкого клиента пусто.
 - `MCP_QA_TRANSPORT` — `stdio` либо `http`/`streamable-http`.
-- `MCP_QA_TESTPILOT_TIMEOUT` — положительное число секунд, по умолчанию 300.
-- `TC1C_LOGGING` — включает возможность журнала действий; по умолчанию false.
 - В поставке: `QA_IMAGE`, `QA_HTTP_PORT`, `QA_HTTP_TOKEN` — настройки только QA.
+
+Переменные прежних образов `MCP_QA_UPSTREAM_URL`/`MCP_QA_UPSTREAM_TOKEN` (0.5.0) и
+`MCP_QA_TESTPILOT_TIMEOUT`/`TC1C_LOGGING` (0.4.4) образ 0.6.0 в нативном режиме не использует.
 
 [Установка и первый сеанс QA](../servery/qa/README.md).

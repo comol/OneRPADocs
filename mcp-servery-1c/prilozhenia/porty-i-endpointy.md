@@ -16,7 +16,7 @@ Graph Metadata Search по умолчанию обслуживает `streamable
 | TemplatesSearchServer | 8004 | `/mcp` | `/health`, `/ready`, `/extend/`, `/extend/memory` (веб-интерфейс) |
 | Graph Metadata Search | 8006 | `/mcp` | `/health` (`/healthz`), `/ready` (`/readyz`) |
 | 1CCodeChecker | 8007 | `/mcp` | `/health`, `/ready`, `/metrics/sessions`, `/release`, `/plugins`, `/plugins/reload` |
-| MCP QA | 8020 | `/mcp` (stateful Streamable HTTP) | `/healthz` (liveness), `/` |
+| MCP QA | 8020 | `/mcp` (stateful Streamable HTTP) | `/healthz` (liveness), `/`; исходящее подключение к тест-клиенту 1С, по умолчанию `host.docker.internal:1538` |
 | SSLSearchServer | 8008 | `/mcp` | `/ready` |
 
 ## Neo4j (для Graph Metadata Search)
