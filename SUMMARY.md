@@ -232,6 +232,7 @@
       * [Инструменты](mcp-servery-1c/servery/code-checker/instrumenty.md)
       * [Конфигурация](mcp-servery-1c/servery/code-checker/konfiguraciya.md)
     * [MCP QA — тестирование 1С](mcp-servery-1c/servery/qa/README.md)
+    * [Конвертация данных 2.0 (KD20)](mcp-servery-1c/servery/kd20/README.md)
   * [Интеграция](mcp-servery-1c/integraciya/README.md)
     * [Формат mcp.json](mcp-servery-1c/integraciya/cursor-mcp-json.md)
     * [Google Antigravity](mcp-servery-1c/integraciya/antigravity.md)

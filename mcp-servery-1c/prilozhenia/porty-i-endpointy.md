@@ -17,6 +17,7 @@ Graph Metadata Search по умолчанию обслуживает `streamable
 | Graph Metadata Search | 8006 | `/mcp` | `/health` (`/healthz`), `/ready` (`/readyz`) |
 | 1CCodeChecker | 8007 | `/mcp` | `/health`, `/ready`, `/metrics/sessions`, `/release`, `/plugins`, `/plugins/reload` |
 | MCP QA | 8020 | `/mcp` (stateful Streamable HTTP) | `/healthz` (liveness), `/`; `POST /client-bus/v1/poll`, `POST /client-bus/v1/result` — сетевой канал расширения `MCPQAClient` с токеном сеанса в `X-MCP-QA-Token`; исходящее подключение к тест-клиенту 1С, по умолчанию `host.docker.internal:1538` |
+| Конвертация данных 2.0 (KD20) | 8009 | `/mcp` (Streamable HTTP) | `/healthz` (liveness) |
 | SSLSearchServer | 8008 | `/mcp` | `/ready` |
 
 ## Neo4j (для Graph Metadata Search)
@@ -58,6 +59,9 @@ Graph Metadata Search по умолчанию обслуживает `streamable
     "1c-ssl-mcp": {
       "url": "http://localhost:8008/mcp",
       "connection_id": "1c_ssl_service_001"
+    },
+    "1c-kd20": {
+      "url": "http://127.0.0.1:8009/mcp"
     }
   }
 }
@@ -75,7 +79,8 @@ $servers = @(
     @{Name="TemplatesSearchServer"; Port=8004; Endpoint="/mcp"},
     @{Name="GraphMetadataSearch"; Port=8006; Endpoint="/mcp"},
     @{Name="1CCodeChecker"; Port=8007; Endpoint="/mcp"},
-    @{Name="SSLSearchServer"; Port=8008; Endpoint="/mcp"}
+    @{Name="SSLSearchServer"; Port=8008; Endpoint="/mcp"},
+    @{Name="KD20"; Port=8009; Endpoint="/mcp"}
 )
 
 foreach ($server in $servers) {

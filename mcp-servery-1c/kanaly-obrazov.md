@@ -16,6 +16,7 @@ MCP-серверы публикуются в одном канале: теги `
 | SyntaxCheckServer | [`comol/1c_syntaxcheck_mcp`](https://hub.docker.com/r/comol/1c_syntaxcheck_mcp/tags) | `latest`, `arm64` (варианта `light` нет) |
 | 1CCodeChecker | [`comol/1c-code-checker`](https://hub.docker.com/r/comol/1c-code-checker/tags) | `latest`, `light`, `arm64` |
 | MCP QA | [`comol/qa_mcp`](https://hub.docker.com/r/comol/qa_mcp/tags) | `latest` (только amd64; вариантов `light` и `arm64` нет) |
+| Конвертация данных 2.0 (KD20) | [`comol/1c_conversion_data_mcp`](https://hub.docker.com/r/comol/1c_conversion_data_mcp/tags) | `latest`, `arm64` (варианта `light` нет) |
 
 В дистрибутиве тег задаётся так:
 
@@ -43,6 +44,7 @@ IMAGE_TAG = IMAGE_VARIANT
 | SyntaxCheckServer | `LICENSE_KEY_SYNTAX` |
 | 1CCodeChecker | `LICENSE_KEY_CODECHECKER` |
 | MCP QA | `LICENSE_KEY_QA` |
+| Конвертация данных 2.0 (KD20) | `LICENSE_KEY_KD20` |
 
 Ключ одного сервера другой сервер не принимает. Образы от 27.09.2026 принимают только ключи, выпущенные 27.09.2026; ключ, выданный раньше, отклоняется с `Invalid LICENSE_KEY`, и контейнер сразу завершается. Действующий ключ — в `config.env` текущего дистрибутива MCP_Distr или в личном кабинете https://vibecoding1c.ru/.
 
@@ -83,7 +85,7 @@ IMAGE_TAG = IMAGE_VARIANT
 ### Если контейнер не стартует
 
 * **`Invalid LICENSE_KEY`, контейнер сразу завершается.** Ключ не подходит к образу: это ключ, выданный до 27.09.2026, или ключ другого сервера. Возьмите `LICENSE_KEY_<СЕРВЕР>` этого сервера из текущего дистрибутива или личного кабинета и пересоздайте контейнер.
-* **`manifest unknown` при `docker pull` или `docker run`.** У образа нет такого тега. Сверьте его с таблицей выше: у SyntaxCheckServer нет `light`; тегов `latestbeta` и `lightbeta` не было никогда, а теги `*-beta` не поддерживаются — замените их тегом без суффикса.
+* **`manifest unknown` при `docker pull` или `docker run`.** У образа нет такого тега. Сверьте его с таблицей выше: у SyntaxCheckServer и KD20 нет `light`; тегов `latestbeta` и `lightbeta` не было никогда, а теги `*-beta` не поддерживаются — замените их тегом без суффикса.
 
 Команды запуска и особенности томов приведены на страницах каждого сервера.
 
@@ -99,3 +101,10 @@ IMAGE_TAG = IMAGE_VARIANT
 (для входа из контейнера нужно имя-заглушка `MCP_QA_TESTCLIENT_USER`), `0.6.0`
 (нативный менеджер с частью операций), `0.5.0` (сквозной прокси к
 Windows-серверу). Тегов `0.4.3` и `0.4.4` на Docker Hub нет. [Инструкция QA](servery/qa/README.md).
+
+## Конвертация данных 2.0 (KD20)
+
+`comol/1c_conversion_data_mcp` — первый выпуск 0.2.0 от 01.10.2026: `latest` (Linux/amd64) и
+`arm64` (Linux/arm64), те же образы — под тегами `0.2.0` и `0.2.0-arm64`. Варианта `light`
+нет: embeddings сервер не использует, поэтому при `IMAGE_VARIANT=light` ставится `latest`.
+Ключ `LICENSE_KEY_KD20` передаётся серверу как `LICENSE_KEY`. [Страница сервера](servery/kd20/README.md).
