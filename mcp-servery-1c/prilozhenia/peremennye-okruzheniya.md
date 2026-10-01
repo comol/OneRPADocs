@@ -491,7 +491,7 @@
 -e EMBEDDING_MODEL=qwen3:embedding-4b
 ```
 
-## MCP QA (0.7.7)
+## MCP QA (0.7.9)
 
 - `LICENSE_KEY` — ключ QA; в MCP_Distr хранится как `LICENSE_KEY_QA`.
 - `LICENSE_KEY_FILE` — UTF-8 файл с ключом, имеет приоритет над переменной.
@@ -519,6 +519,6 @@
 - В поставке: `QA_IMAGE`, `QA_HTTP_PORT`, `QA_HTTP_TOKEN` — настройки только QA.
 
 Переменные прежних образов `MCP_QA_UPSTREAM_URL`/`MCP_QA_UPSTREAM_TOKEN` (0.5.0) и
-`MCP_QA_TESTPILOT_TIMEOUT`/`TC1C_LOGGING` (0.4.4) образ 0.7.7 в нативном режиме не использует.
+`MCP_QA_TESTPILOT_TIMEOUT`/`TC1C_LOGGING` (0.4.4) образ 0.7.9 в нативном режиме не использует.
 
 [Установка и первый сеанс QA](../servery/qa/README.md).
