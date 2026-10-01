@@ -11,8 +11,8 @@ KD20 помогает ИИ писать и дорабатывать правил
 
 ## Поставка и требования
 
-- Образ: `comol/1c_conversion_data_mcp`, версия **0.2.0**; теги `latest` (Linux/amd64) и
-  `arm64` (Linux/arm64), те же образы — под тегами `0.2.0` и `0.2.0-arm64`. Варианта
+- Образ: `comol/1c_conversion_data_mcp`, версия **0.2.1**; теги `latest` (Linux/amd64) и
+  `arm64` (Linux/arm64), те же образы — под тегами `0.2.1` и `0.2.1-arm64`. Варианта
   `light` нет: embeddings сервер не использует. При `IMAGE_VARIANT=light` ставится `latest`.
 - Ключ в `config.env`: `LICENSE_KEY_KD20`; внутри контейнера — `LICENSE_KEY` или путь к файлу
   ключа в `LICENSE_KEY_FILE`.
@@ -23,7 +23,8 @@ KD20 помогает ИИ писать и дорабатывать правил
   При доработке — готовые правила: макет плана обмена
   `ExchangePlans\<План>\Templates\ПравилаОбмена\Ext\Template.txt` (он уже есть в выгрузке
   конфигурации), `ExchangeRules.xml`, `RegistrationRules.xml`.
-- Embeddings, LLM API, платформа 1С и сама «Конвертация данных» не нужны.
+- Embeddings, LLM API, платформа 1С и сама «Конвертация данных» не нужны. Для проверки
+  правил загрузкой в 1С нужна копия базы с сервером данных (1c-data-mcp).
 
 ## Что умеет
 
@@ -32,7 +33,7 @@ KD20 помогает ИИ писать и дорабатывать правил
 | Конфигурации | `load_configuration`, `list_configurations`, `list_metadata`, `describe_object`, `compare_configurations` |
 | Подбор соответствий | `suggest_object_mappings`, `suggest_property_mappings` |
 | Набор правил | `create_ruleset`, `draft_ruleset`, `list_rulesets`, `describe_ruleset`, `set_object_rule`, `delete_object_rule`, `set_object_rules_flags`, `set_property_rule`, `delete_property_rule`, `set_value_map`, `set_export_rule`, `delete_export_rule`, `set_clear_rule`, `set_conversion_handler`, `set_parameter`, `set_algorithm`, `set_query`, `bind_configurations`, `draft_correspondent_ruleset` |
-| Проверка и выгрузка | `validate_ruleset`, `generate_rules_xml`, `preview_rules_xml`, `import_rules_xml`, `diff_rulesets`, `export_handlers_bsl`, `locate_handler_line` |
+| Проверка и выгрузка | `validate_ruleset`, `check_rules_in_1c`, `generate_rules_xml`, `preview_rules_xml`, `import_rules_xml`, `diff_rulesets`, `export_handlers_bsl`, `locate_handler_line` |
 | Навигация по готовым правилам | `search_ruleset_code`, `read_handler`, `trace_object` |
 | Правила регистрации | `import_registration_rules`, `build_registration_rules`, `validate_registration_rules`, `describe_registration_rules`, `generate_registration_xml` |
 | Справка | `handler_interface`, `kd20_format_reference`, `search_kd20`, `explain_kd20`, `index_kd20_path` |
@@ -54,6 +55,16 @@ KD20 помогает ИИ писать и дорабатывать правил
   - объекты выборки ПВД и ПОД, неиспользуемые правила, длина строк, необъявленные параметры.
 
   Пока есть ошибки, `generate_rules_xml` файл не пишет (кроме явного `allow_errors=true`).
+- **Проверка в 1С.** `check_rules_in_1c` загружает правила обмена, корреспондента и
+  регистрации тем же методом БСП, что форма загрузки правил плана обмена
+  (`РегистрыСведений.ПравилаДляОбменаДанными.ЗагрузитьПравила`), — в копии базы через её
+  сервер данных (1c-data-mcp, инструмент `vcexecutecode`). Правила попадают только в
+  запись регистра в памяти, весь код выполняется в транзакции, которая всегда
+  отменяется. Ответ: загружены ли правила, информация о правилах и причина отказа —
+  сообщение БСП, исключение или запись журнала регистрации («Ошибка формата правил
+  обмена»). Проверено на копии ЗУП КОРП 3.1.26: типовые правила `ОбменЗарплата3Бухгалтерия3`
+  после импорта и записи сервером и черновик, собранный сервером с нуля, загружаются;
+  испорченные правила отвергаются с причиной.
 - **Правила регистрации.** Сборка по ПВД и составу плана обмена с сохранением существующих
   правил и отборов; проверка: объект есть и входит в состав плана, свойства отборов
   существуют, объект ПВД без правила регистрации.
@@ -72,8 +83,9 @@ KD20 помогает ИИ писать и дорабатывать правил
 
 - Только правила формата 2.01 («Конвертация данных» 2.0/2.1). КД 3 и EnterpriseData не
   поддерживаются.
-- Сервер не подключается к базам 1С и не исполняет обмен. Загрузку правил в базу КД и живой
-  обмен между копиями баз выполняют вручную.
+- С базами 1С сервер работает только через сервер данных копии базы и только для
+  проверочной загрузки правил с откатом. Живой обмен между копиями баз и загрузку правил
+  в базу КД выполняют вручную.
 - Состав плана обмена для правил регистрации читается из выгрузки Конфигуратора
   (`ExchangePlans\<План>\Ext\Content.xml`); из проекта 1C:EDT — пока нет.
 - Синтаксический анализатор не доказывает, что переменные контекста обработчика
@@ -97,6 +109,8 @@ KD20 помогает ИИ писать и дорабатывать правил
 docker run -d --name 1c_kd20_mcp --init --restart unless-stopped `
   -e LICENSE_KEY=ВАШ_КЛЮЧ `
   -e "KD20_PATH_MAP=E:\Dumps=/workspace;E:\bases\mcp\kd20=/data" `
+  -e KD20_SANDBOX_DATA_URL=http://host.docker.internal/zup_copy/hs/mcp `
+  --add-host host.docker.internal:host-gateway `
   -p 127.0.0.1:8009:8009 `
   -v "E:\Dumps:/workspace:ro" `
   -v "E:\bases\mcp\kd20:/data" `
@@ -111,7 +125,7 @@ docker run -d --name 1c_kd20_mcp --init --restart unless-stopped `
 `{"service":"kd20-mcp","status":"ok","check":"liveness"}`. `Exited (1)` сразу после старта —
 неподходящий ключ (`docker logs 1c_kd20_mcp` покажет `Invalid LICENSE_KEY`).
 
-Подключение клиента (ключ в `mcp.json` не пишется), клиент видит 46 инструментов:
+Подключение клиента (ключ в `mcp.json` не пишется), клиент видит 47 инструментов:
 
 ```json
 {"mcpServers":{"1c-kd20":{"url":"http://127.0.0.1:8009/mcp"}}}
@@ -133,8 +147,9 @@ docker run -d --name 1c_kd20_mcp --init --restart unless-stopped `
 
 Порядок работы над макетом: `import_rules_xml` → `bind_configurations` → `validate_ruleset`
 (запомнить исходные замечания) → правки → `validate_ruleset` (нет новых замечаний) →
-`diff_rulesets` с исходным макетом → `generate_rules_xml(style="kd")` → `export_handlers_bsl`
-и SyntaxCheckServer, если менялся код обработчиков.
+`diff_rulesets` с исходным макетом → `check_rules_in_1c` в копии базы →
+`generate_rules_xml(style="kd")` → `export_handlers_bsl` и SyntaxCheckServer, если менялся код
+обработчиков.
 
 ## Переменные окружения
 
@@ -146,6 +161,7 @@ docker run -d --name 1c_kd20_mcp --init --restart unless-stopped `
 | `KD20_DATA`, `KD20_OUTPUT`, `KD20_DB` | рабочие данные, файлы правил, поисковый индекс | `/data`, `/data/output`, `/data/kd20.sqlite3` |
 | `KD20_ALLOWED_ROOTS` | где разрешено читать и писать (через `;`) | `/data;/workspace` |
 | `MCP_TRANSPORT` | `http` или `stdio` | `http` |
+| `KD20_SANDBOX_DATA_URL` | сервер данных копии базы (1c-data-mcp, `…/hs/mcp`) для `check_rules_in_1c`; из контейнера база на этой машине — `host.docker.internal` | не задано |
 
 Пустой поисковый индекс при первом запуске наполняется справочниками сервера (формат правил,
 обработчики, грабли обменов). Контейнер работает от пользователя с uid 10001.

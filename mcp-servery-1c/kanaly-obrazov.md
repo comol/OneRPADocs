@@ -104,7 +104,8 @@ Windows-серверу). Тегов `0.4.3` и `0.4.4` на Docker Hub нет. [
 
 ## Конвертация данных 2.0 (KD20)
 
-`comol/1c_conversion_data_mcp` — первый выпуск 0.2.0 от 01.10.2026: `latest` (Linux/amd64) и
-`arm64` (Linux/arm64), те же образы — под тегами `0.2.0` и `0.2.0-arm64`. Варианта `light`
+`comol/1c_conversion_data_mcp` — выпуск 0.2.1 от 01.10.2026: `latest` (Linux/amd64) и
+`arm64` (Linux/arm64), те же образы — под тегами `0.2.1` и `0.2.1-arm64`; первый выпуск
+доступен по тегам `0.2.0` и `0.2.0-arm64`. Варианта `light`
 нет: embeddings сервер не использует, поэтому при `IMAGE_VARIANT=light` ставится `latest`.
 Ключ `LICENSE_KEY_KD20` передаётся серверу как `LICENSE_KEY`. [Страница сервера](servery/kd20/README.md).
