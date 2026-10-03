@@ -11,8 +11,8 @@ KD20 помогает ИИ писать и дорабатывать правил
 
 ## Поставка и требования
 
-- Образ: `comol/1c_conversion_data_mcp`, версия **0.2.1**; теги `latest` (Linux/amd64) и
-  `arm64` (Linux/arm64), те же образы — под тегами `0.2.1` и `0.2.1-arm64`. Варианта
+- Образ: `comol/1c_conversion_data_mcp`, версия **0.2.2**; теги `latest` (Linux/amd64) и
+  `arm64` (Linux/arm64), те же образы — под тегами `0.2.2` и `0.2.2-arm64`. Варианта
   `light` нет: embeddings сервер не использует. При `IMAGE_VARIANT=light` ставится `latest`.
 - Ключ в `config.env`: `LICENSE_KEY_KD20`; внутри контейнера — `LICENSE_KEY` или путь к файлу
   ключа в `LICENSE_KEY_FILE`.
