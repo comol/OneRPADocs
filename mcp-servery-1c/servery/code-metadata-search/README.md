@@ -566,7 +566,7 @@ comol/1c_code_metadata_mcp:latest
 |-----|-------------|--------|----------|
 | `latest` | amd64 | ~2.9 GB | Полная версия с PyTorch (локальные embedding + API) |
 | `light` | amd64 | ~290 MB | Без PyTorch (embedding только через API — LM Studio, OpenRouter и т.д.) |
-| `arm64` | arm64 | ~500 MB | Для Apple Silicon / ARM серверов |
+| `arm64` | arm64 | ~1.45 GB (сжатый) | Для Apple Silicon / ARM серверов: PyTorch CPU, без CUDA (локальные embedding на CPU + API) |
 
 {% hint style="info" %}
 Используйте `light`, если embedding модель работает через внешний API (LM Studio, OpenRouter). Образ в 10 раз легче. См. [Теги и ключи образов](../../kanaly-obrazov.md).

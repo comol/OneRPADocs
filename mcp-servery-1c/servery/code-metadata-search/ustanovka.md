@@ -21,7 +21,7 @@ New-Item -ItemType Directory -Force -Path @(
 |-----|--------|----------|
 | `latest` | ~2.9 GB | Полная: локальные embedding (CPU/GPU) + API |
 | `light` | ~290 MB | Облегчённая: embedding только через API (LM Studio, OpenRouter и т.д.) |
-| `arm64` | ~500 MB | Для Apple Silicon / ARM серверов |
+| `arm64` | ~1.45 GB (сжатый) | Для Apple Silicon / ARM серверов: локальные embedding на CPU (PyTorch CPU, без CUDA) + API |
 
 {% hint style="info" %}
 Если вы используете LM Studio или OpenRouter для embedding — выбирайте `light`. Образ в 10 раз легче и запускается быстрее.
