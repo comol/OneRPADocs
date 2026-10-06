@@ -142,7 +142,7 @@ New-Item -ItemType Directory -Force -Path @(
 |-------|----------|
 | `HAS_PREDEFINED` | MetadataObject → PredefinedItem |
 | `HAS_CHILD` | PredefinedItem → PredefinedItem (иерархия) |
-| `HAS_HANDLER` | EventSubscription (или FormEvent) → Routine |
+| `HAS_HANDLER` | EventSubscription → Routine общего модуля из свойства `handler` (или FormEvent → Routine) |
 | `HAS_CONTROL` | Form → FormControl |
 | `HAS_CHILD` | FormControl → FormControl (иерархия элементов) |
 | `HAS_EVENT` | Form (или FormControl) → FormEvent |
