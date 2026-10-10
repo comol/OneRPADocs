@@ -39,7 +39,8 @@
 
 | Переменная | Описание | Пример |
 |------------|----------|--------|
-| `EMBEDDING_API_BASE` | OpenAI-совместимый base URL. CodeMetadataSearch, SSLSearch и TemplatesSearch автоматически добавляют `/v1`; для остальных серверов используйте формат из их профильной страницы | `http://host.docker.internal:1234/v1` |
+| `EMBEDDING_API_BASE` | OpenAI-совместимый base URL. Все серверы сами добавляют `/v1`, если адрес им не заканчивается; автодобавление отключает `EMBEDDING_API_BASE_NO_V1` | `http://host.docker.internal:1234/v1` |
+| `EMBEDDING_API_BASE_NO_V1` | Отключить автоматическое добавление `/v1` к базе API: при значении `1`, `true` или `yes` база передаётся дословно — для корпоративных шлюзов, отдающих API без суффикса `/v1` | `1` |
 | `EMBEDDING_API_KEY` | Ключ API | `lm-studio` |
 | `EMBEDDING_MODEL` | Модель embedding для API или локального режима | `Qwen3-Embedding-4B` |
 | `EMBEDDING_DIMENSIONS` | Явное указание размерности эмбеддингов (для моделей с переменной размерностью) | *(авто)* |
@@ -81,6 +82,7 @@
 | `LICENSE_KEY` | Лицензионный ключ | Обязательно |
 | `1C_BIN_PATH` | Смонтированный каталог с `shcntx_ru.hbk`; не задан — берётся архив из образа | *(не задано)* |
 | `EMBEDDING_API_BASE` | URL OpenAI-совместимого API, включая `/v1` | `http://host.docker.internal:1234/v1` |
+| `EMBEDDING_API_BASE_NO_V1` | Отключить автоматическое добавление `/v1` к базе API: при значении `1`, `true` или `yes` (регистр и окружающие пробелы не важны) база передаётся дословно — для корпоративных шлюзов, отдающих API без суффикса `/v1` (с 10.10.2026) | `false` |
 | `EMBEDDING_API_KEY` | Ключ API эмбеддингов | `lm-studio` |
 | `EMBEDDING_MODEL` | Модель API или локальная модель | `intfloat/multilingual-e5-small` |
 | `EMBEDDING_API_TIMEOUT` | Секунд ожидания ответа на один запрос к embedding API (с 23.09.2026) | `600` |
@@ -133,6 +135,7 @@
 | `VECTOR_DB_PATH` | Путь к директории векторного хранилища zvec | `/app/chroma_db` |
 | `CHROMA_DB_PATH` | Устаревший совместимый алиас `VECTOR_DB_PATH` | `/app/chroma_db` |
 | `EMBEDDING_API_BASE` | URL OpenAI-совместимого API эмбеддингов | — |
+| `EMBEDDING_API_BASE_NO_V1` | Отключить автоматическое добавление `/v1` к базе API: при значении `1`, `true` или `yes` (регистр и окружающие пробелы не важны) база передаётся дословно — для корпоративных шлюзов, отдающих API без суффикса `/v1` (с 10.10.2026) | `false` |
 | `EMBEDDING_API_KEY` | Ключ API эмбеддингов | — |
 | `EMBEDDING_MODEL` | Модель API или локальная модель. Полный образ без явной настройки использует `sentence-transformers/paraphrase-multilingual-mpnet-base-v2`; удалённый профиль поставки закрепляет `qwen/qwen3-embedding-8b` | зависит от профиля |
 | `RESET_DATABASE` | Переиндексировать | `false` |
@@ -167,6 +170,7 @@
 | `BM25_ALPHA` | Вес семантического поиска (0–1) | `0.5` |
 | `MMR_ENABLED` | Снижать повторение похожих результатов после ранжирования, до хуков и ограничения выдачи | `false` |
 | `MMR_LAMBDA` | Вес релевантности в MMR (0–1); меньший вес усиливает разнообразие | `0.5` |
+| `CODE_SEARCH_MAX_PER_MODULE` | Максимум результатов одного модуля на странице `codesearch`; `0` — без ограничения. Применяется при поиске, отпечаток индекса не меняет (с 10.10.2026) | `3` |
 | `CONTEXT_EXPANSION` | Контекст поиска: `siblings`, `window` или `none`; в режиме `siblings` справка получает соседние фрагменты | `siblings` |
 | `CONTEXT_WINDOW_SIZE` | Число соседей с каждой стороны для расширения контекста | `1` |
 | `OVERFETCH_MULTIPLIER` | Множитель выборки для запросов по пути/идентификатору | `4` |
@@ -218,6 +222,7 @@
 | `SSL_VERSION` | Версия БСП | Обязательно |
 | `RESET_DATABASE` | Переиндексировать | `false` |
 | `EMBEDDING_API_BASE` | URL OpenAI-совместимого API эмбеддингов | — |
+| `EMBEDDING_API_BASE_NO_V1` | Отключить автоматическое добавление `/v1` к базе API: при значении `1`, `true` или `yes` (регистр и окружающие пробелы не важны) база передаётся дословно — для корпоративных шлюзов, отдающих API без суффикса `/v1` (с 10.10.2026) | `false` |
 | `EMBEDDING_API_KEY` | Ключ API эмбеддингов | — |
 | `EMBEDDING_MODEL` | Имя модели для API эмбеддингов | `qwen/qwen3-embedding-8b` |
 | `LOCAL_EMBEDDING_MODEL` | Резервная локальная CPU-модель (Hugging Face repo id). Совместимый алиас — `OFFLINE_EMBEDDING_MODEL` | `intfloat/multilingual-e5-small` |
@@ -273,6 +278,7 @@
 | `OPENAI_EMBEDDING_DIMENSIONS` | Размерность эмбеддингов, запрашиваемая у API | *(авто)* |
 | `VECTOR_INDEX_DIMENSION` | Ожидаемая размерность векторного индекса процедур; если не задана, читается из метаданных индекса | *(авто)* |
 | `EMBEDDING_API_BASE` | URL API эмбеддингов | — |
+| `EMBEDDING_API_BASE_NO_V1` | Отключить автоматическое добавление `/v1` к базе API: при значении `1`, `true` или `yes` (регистр и окружающие пробелы не важны) база передаётся дословно — для корпоративных шлюзов, отдающих API без суффикса `/v1` (с 10.10.2026) | `false` |
 | `EMBEDDING_API_KEY` | Ключ API эмбеддингов | — |
 | `EMBEDDING_MODEL` | Модель API эмбеддингов | `qwen/qwen3-embedding-8b` |
 | `LOCAL_EMBEDDING_MODEL` | Резервная локальная CPU-модель. Совместимый алиас — `OFFLINE_EMBEDDING_MODEL` | `intfloat/multilingual-e5-small` |
@@ -408,6 +414,7 @@
 | `RESET_CACHE` | Удалить кэш весов embedding-модели и скачать заново | `false` |
 | `HTTP_PORT` | Порт HTTP-сервера | `8004` |
 | `EMBEDDING_API_BASE` | URL OpenAI-совместимого API эмбеддингов | — |
+| `EMBEDDING_API_BASE_NO_V1` | Отключить автоматическое добавление `/v1` к базе API: при значении `1`, `true` или `yes` (регистр и окружающие пробелы не важны) база передаётся дословно — для корпоративных шлюзов, отдающих API без суффикса `/v1` (с 10.10.2026) | `false` |
 | `EMBEDDING_API_KEY` | Ключ API эмбеддингов | — |
 | `EMBEDDING_MODEL` | Имя модели для API эмбеддингов | `qwen/qwen3-embedding-8b` |
 | `LOCAL_EMBEDDING_MODEL` | Резервная локальная CPU-модель (Hugging Face repo id). Совместимый алиас — `OFFLINE_EMBEDDING_MODEL` | `intfloat/multilingual-e5-small` |

@@ -274,6 +274,43 @@ docker start 1c_help_mcp
 docker rm 1c_help_mcp
 ```
 
+## Где держать выгрузки конфигураций
+
+Каталог с диска Windows (`D:\...`), смонтированный в контейнер, Docker Desktop с WSL2 читает через сетевой протокол 9P. Для выгрузки 1С это узкое место: обход 25 тыс. файлов выгрузки занимает около 100 с вместо 5 с на самом диске, а когда выгрузку читают несколько контейнеров одновременно (например, три CodeMetadataSearch и три GraphMetadataSearch для трёх баз) — больше 5 минут; под такой нагрузкой отдельные чтения файлов срываются (CodeMetadataSearch с 06.10.2026 повторяет их). Из файловой системы WSL2 (ext4) или с тома Docker те же файлы читаются в 10–100 раз быстрее: чтение каталога `CommonModules` одной конфигурации — 1 с с тома против 12 с с диска `D:`.
+
+Поэтому на Windows выгрузки для CodeMetadataSearch и GraphMetadataSearch лучше держать не на диске Windows:
+
+### Вариант 1: файловая система WSL2
+
+В дистрибутиве Linux, который поставил `wsl --install` (по умолчанию Ubuntu), создайте каталог для выгрузок и копируйте туда выгрузку из Windows — так делается и первая копия, и обновление после новой выгрузки:
+
+```powershell
+robocopy D:\exports\KA \\wsl.localhost\Ubuntu\home\<пользователь>\exports\KA /MIR
+```
+
+Контейнеры запускайте из терминала этого дистрибутива, а выгрузку монтируйте по пути Linux:
+
+```bash
+docker run -d --name 1c_code_metadata_mcp ... -v /home/<пользователь>/exports/KA:/app/code:ro comol/1c_code_metadata_mcp:light
+```
+
+В Docker Desktop должна быть включена интеграция с этим дистрибутивом (Settings → Resources → WSL integration).
+
+### Вариант 2: именованный том Docker
+
+```powershell
+docker volume create ka_export
+docker run --rm -v ka_export:/dst -v D:\exports\KA:/src:ro alpine sh -c "rm -rf /dst/* && cp -a /src/. /dst/"
+```
+
+Копирование идёт через 9P один раз и занимает минуты; серверу передавайте `-v ka_export:/app/code:ro`. Серверы читают том, а не диск: после новой выгрузки повторите копирование — до планового обновления GraphMetadataSearch (`GRAPH_REFRESH_INTERVAL_SEC`) или перезапуска CodeMetadataSearch.
+
+### Индексируйте базы по очереди
+
+Первая индексация CodeMetadataSearch и GraphMetadataSearch упирается в чтение выгрузки и CPU. Шесть контейнеров на одной машине делят их между собой, и каждый идёт дольше, чем шёл бы один; запускайте первую индексацию баз последовательно.
+
+Индексы самих серверов (`/app/data`, `/app/index` и другие каталоги из [Кеширования БД](../prodvinutoe-ispolzovanie/keshirovanie-bd.md)) к этому не относятся: они и так лежат на томах Docker.
+
 ## Следующий шаг
 
 После установки Docker Desktop настройте [Cursor IDE](cursor-nastrojka.md).

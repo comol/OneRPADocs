@@ -53,6 +53,7 @@ docker run -d --restart unless-stopped -p 127.0.0.1:8004:8004 `
 | `EMBEDDING_MODEL` | Имя модели, с которым вызывается внешний API эмбеддингов | `qwen/qwen3-embedding-8b` |
 | `LOCAL_EMBEDDING_MODEL` | Hugging Face repo id локальной CPU-модели. Порядок разрешения: `LOCAL_EMBEDDING_MODEL` → `OFFLINE_EMBEDDING_MODEL` → `EMBEDDING_MODEL` → `OPENAI_MODEL` → локальное значение по умолчанию | `intfloat/multilingual-e5-small` |
 | `EMBEDDING_API_BASE` | URL API сервера (LM Studio, Ollama, OpenRouter). Суффикс `/v1` добавляется автоматически | — |
+| `EMBEDDING_API_BASE_NO_V1` | Передавать базу API дословно, без автодобавления `/v1` (значения `1`, `true`, `yes`) — для шлюзов, отдающих OpenAI-совместимый API без суффикса `/v1`. С 10.10.2026 | `false` |
 | `EMBEDDING_API_KEY` | Ключ API | `lm-studio` |
 | `EMBEDDING_DIMENSIONS` | Явное указание размерности эмбеддингов. Для моделей с переменной размерностью (Qwen3, text-embedding-3). Если не указано — определяется автоматически | *(авто)* |
 | `EMBEDDING_API_TIMEOUT` | Предел одного запроса к API эмбеддингов в секундах, на попытку. Задаётся сервером явно, а не наследуется из SDK: это ожидание семантической полосы, за которой стоит полнотекстовая. Значение по умолчанию рассчитано на пакет из `MAX_BATCH_SIZE` фрагментов при индексации, а не только на один запрос | `60` |

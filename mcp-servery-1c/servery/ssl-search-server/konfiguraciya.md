@@ -114,6 +114,7 @@ docker run --rm -v "E:/plugins/mcp_ssl/10-terms.py:/tmp/my_plugin.py" `
 | Переменная | Описание | Пример |
 |------------|----------|--------|
 | `EMBEDDING_API_BASE` | URL API сервера. Суффикс `/v1` добавляется автоматически | `http://host.docker.internal:1234/v1` |
+| `EMBEDDING_API_BASE_NO_V1` | Передавать базу API дословно, без автодобавления `/v1` (значения `1`, `true`, `yes`) — для шлюзов, отдающих OpenAI-совместимый API без суффикса `/v1`. С 10.10.2026 | `1` |
 | `EMBEDDING_API_KEY` | Ключ API | `lm-studio` |
 | `EMBEDDING_MODEL` | Имя модели, с которым вызывается API эмбеддингов. У модели Qwen3-Embedding запрос идёт с инструкцией задачи (см. [Инструкция к запросу у Qwen3](../../embedding-modeli/vybor-modeli.md#инструкция-к-запросу-у-qwen3)); `EMBEDDING_INPUT_TYPE_ENABLED=false` выключает её вместе с остальным разделением запроса и документа | `qwen/qwen3-embedding-8b` |
 | `LOCAL_EMBEDDING_MODEL` | Hugging Face repo id модели, которую загружает локальный (CPU) режим, когда API недоступен. Совместимый алиас — `OFFLINE_EMBEDDING_MODEL`. Если задана только `EMBEDDING_MODEL`, локальный режим использует её | `intfloat/multilingual-e5-small` |
