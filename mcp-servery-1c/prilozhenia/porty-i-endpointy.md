@@ -6,7 +6,7 @@
 
 По умолчанию современные образы используют `streamable-http` на `/mcp`. Если клиент требует SSE, включите `USESSE=true`; у Graph Metadata Search эта переменная называется `MCP_USE_SSE`. У большинства серверов URL остаётся `/mcp`; SyntaxCheckServer использует стандартные SSE-пути `/sse` и `/messages/`.
 
-Graph Metadata Search по умолчанию обслуживает `streamable-http` без серверной сессии и отвечает на POST обычным JSON (`FASTMCP_STATELESS_HTTP=true`, `FASTMCP_JSON_RESPONSE=true`). Для клиента, которому нужна stateful-сессия с SSE-ответами на том же `/mcp`, задайте обе переменные `false`.
+Graph Metadata Search по умолчанию обслуживает `streamable-http` без серверной сессии и отвечает на POST обычным JSON (`FASTMCP_STATELESS_HTTP=true`, `FASTMCP_JSON_RESPONSE=true`). Для клиента, которому нужна stateful-сессия с SSE-ответами на том же `/mcp`, задайте обе переменные `false`. `/mcp` и `/mcp/` Graph Metadata Search обслуживает напрямую, без перенаправления (образы от 13.10.2026; раньше в режиме по умолчанию `POST /mcp` получал `307 Temporary Redirect` на `/mcp/`, и клиент, который не следует перенаправлениям, не подключался).
 
 | Сервер | Порт | MCP Endpoint | Дополнительные |
 |--------|------|--------------|----------------|
