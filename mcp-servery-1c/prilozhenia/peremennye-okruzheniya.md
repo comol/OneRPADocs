@@ -202,6 +202,7 @@
 | `VECTOR_OPTIMIZE_DEADLINE_SEC` | Таймаут фоновой оптимизации | `1800` |
 | `VECTOR_OPTIMIZE_CANCEL_DEADLINE_SEC` | Таймаут оптимизации из запроса | `5` |
 | `VECTOR_WRITE_FAILURE_THRESHOLD` | Ошибки записи до терминального состояния | `5` |
+| `VECTOR_WARMUP_ENABLED` | Фоновый прогрев векторного индекса после старта и после переключения на новое поколение: по одному запросу на каждую включённую полосу, см. [конфигурацию Code](../servery/code-metadata-search/konfiguraciya.md#векторное-хранилище-zvec); `false` — без прогрева. С 13.10.2026 | `true` |
 | `GREP_MAX_RESULTS` | Максимум результатов fallback-сканирования | `50` |
 | `GREP_FILE_CACHE_SIZE` | Размер LRU-кэша прочитанных файлов | `500` |
 | `GREP_BROAD_DIR_THRESHOLD` | Максимальная ширина дерева fallback-сканирования | `10000` |
