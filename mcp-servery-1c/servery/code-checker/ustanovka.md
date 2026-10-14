@@ -170,3 +170,4 @@ Invoke-RestMethod -Uri "http://localhost:8007/release"
 
 * Установите `MCP_TOOL_CALL_MODE=standard` для переключения на промпт-режим
 * Или перезапустите контейнер — возможна временная недоступность upstream API
+* Запись журнала `Direct call condition … расходятся: code` (уровень `WARNING`) — не сбой сервера: модель 1С.ai повторила код с изменениями, ответ дал запасной промпт. См. [Большие модули в direct-режиме](konfiguraciya.md#большие-модули-в-direct-режиме)
