@@ -559,7 +559,9 @@
   регистрации (в образе `/data`).
 - `KD20_OUTPUT` — сформированные файлы правил (в образе `/data/output`).
 - `KD20_SANDBOX_DATA_URL` — сервер данных копии базы 1С (1c-data-mcp, `…/hs/mcp`) для
-  `check_rules_in_1c`; из контейнера база на этой машине —
+  проверок в 1С: `check_rules_in_1c`, `dump_rules_from_1c`, `exchange_plans_in_1c`,
+  `check_registration_in_1c` (у каждого есть и параметр `data_server_url`); из контейнера
+  база на этой машине —
   `http://host.docker.internal/<публикация>/hs/mcp`. Рабочую базу не указывать.
 - `KD20_DB` — поисковый индекс справочников (в образе `/data/kd20.sqlite3`); пустой
   индекс наполняется при первом запуске.
