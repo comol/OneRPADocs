@@ -89,7 +89,9 @@
 | `/dsh-1c` | Импорт контекста: `discover`, `preview`, `apply`, `rollback` |
 | `/support` | Черновик. `send` отправляет, `cancel` бросает |
 | `/supportstatus` | Ответы и закрытие обращения |
-| `/acp-connect` | Справка по входящему ACP. Сервер: `dsh-1c.ps1 -Acp` |
+| `/acp-connect` | Справка по входящему ACP. Сервер: `dsh-1c.ps1 -Acp`, мост к открытому Desktop: `-AcpConnect` |
+| `/add-dir` | Соседняя папка только для чтения: путь, `list`, `clear` |
+| `/pii` | Защита персональных данных, когда плагин включён: `status`, `on`, `off`, `project on\|off` |
 | `/openviking-ingest` | Загрузка каталога в OpenViking |
 | `/react` | Статус явного цикла ReAct |
 | `/background`, `/clear` | Увести сессию или начать новый разговор |

@@ -7,15 +7,19 @@
 | [Pi 1C](pi/README.md) | `Pi-1C.exe` — терминал, комплектный Warp или браузер на `127.0.0.1` | Нужен лёгкий агент в терминале или во вкладке Warp, с жёстко ограниченным набором инструментов |
 | [DSH Desktop 1С](dsh/README.md) | `DSH-Desktop-1C.exe` — окно Desktop | Нужна одна рабочая область: чат, метаданные, редактор BSL, OpenSpec, MCP и терминал |
 
-Обе поставки — **Windows x64** и рабочая **beta**. Docker-образы MCP в архив бандла не входят: их поднимают отдельно, см. [MCP серверы для 1С](../mcp-servery-1c/README.md).
+Обе поставки — рабочая **beta**. Основная платформа — **Windows x64**. Для Linux x64 и macOS на Apple Silicon есть отдельные архивы: Pi в терминале, DSH как Web в Linux и как Desktop на macOS, см. [Linux и macOS](platformy.md). Docker-образы MCP в архив бандла не входят: их поднимают отдельно, см. [MCP серверы для 1С](../mcp-servery-1c/README.md).
+
+Архивы скачиваются в личном кабинете [vibecoding1c.ru](https://vibecoding1c.ru/harnesses) после покупки, см. [Получение и обновление](poluchenie-i-obnovlenie.md).
 
 ## С чего начать
 
 1. [Что это и чем бандлы отличаются](obzor.md)
 2. [Требования](trebovaniya.md)
-3. [Установка Pi](pi/ustanovka-i-zapusk.md) или [установка DSH Desktop](dsh/ustanovka-i-zapusk.md)
-4. [Маршрут доработки](marshrut.md) — от открытия проекта до сдачи
-5. [Одинаковые имена команд](sootvetstvie-komand.md) — если работаете в обоих
+3. [Получение и обновление](poluchenie-i-obnovlenie.md) — какой архив скачать
+4. [Установка Pi](pi/ustanovka-i-zapusk.md) или [установка DSH Desktop](dsh/ustanovka-i-zapusk.md), для Linux и macOS — [отдельная страница](platformy.md)
+5. [Модели, подписки и аккаунты](modeli-i-podpiski.md) — подключить модель
+6. [Маршрут доработки](marshrut.md) — от открытия проекта до сдачи
+7. [Одинаковые имена команд](sootvetstvie-komand.md) — если работаете в обоих
 
 {% hint style="info" %}
 Папку самой поставки проектом 1С не открывайте. Рабочий стол и корень диска тоже не считаются проектом. Проект — отдельная папка с выгрузкой конфигурации или расширения.

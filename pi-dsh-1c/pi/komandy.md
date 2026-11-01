@@ -28,7 +28,7 @@
 | `/clear` | Новый разговор |
 | `/usage` | Расход токенов без текста промптов |
 | `/app-update` | Обновление поставки: проверка, загрузка, отдельное подтверждение установки |
-| `/bundle-updates` | `now`, `status`, `on`, `off`, `interval <часы>` |
+| `/bundle-updates` | Фоновая проверка новых правил и MCP: `now`, `status`, `on`, `off`, `interval <часы>` |
 | `/checkupdates`, `/updaterules` | Где правила и MCP и кто их обновляет, без тихой установки |
 | `/rulesmodel` | Профиль правил под модель: `opus5`, `sonnet5`, `fable5`, `gpt56`, `gpt6` |
 | `/awake` | Не давать Windows спать: `on`, `off`, `status` |
@@ -38,7 +38,7 @@
 
 | Команда | Зачем |
 |---|---|
-| `/mcp1c` | Восемь включённых MCP: ready или degraded. `reconnect` поднимает молчащие, `reconnect all` или `reconnect <id>` — принудительно. `cache` — кэш чтений. Выключенный `1c-data-mcp` в ready не входит |
+| `/mcp1c` | Восемь включённых MCP: ready или degraded. `reconnect` поднимает молчащие, `reconnect all` или `reconnect <id>` — принудительно. `cache` — кэш чтений. Выключенный `1c-data-mcp` в ready не входит. В новых выпусках вызов без аргументов открывает штатный `/mcp`, подкоманды сохраняются |
 | `/mcp-settings` | Адреса и включение без значений секретов |
 | `/mcp-project` | Сторонний HTTP, SSE или stdio MCP только этого проекта. `reload` перечитывает файл |
 | `/mcp`, `/pi-mcp` | Статус адаптера, включая Cognee, OpenViking и EDT-MCP, если они подключены |
@@ -68,7 +68,7 @@
 | `/config` | `init`, `status`, `analyze`, `update`, `apply`, `scaffold` |
 | `/rule` | `add`, `list`, `show`, `audit`, `conflicts`, `disable` |
 | `/learn` | Памятка, меню, факт, путь, URL, `approve`, `reject`, `retry`, `cancel` |
-| `/openspec` | `init`, список, `use <change>`, `sync`, `archive` |
+| `/openspec` | `init`, список, `use <change>`, `sync`, `archive`. `ticket <changes/имя> <ключ\|URL\|->` — связь с тикетом, `tickets` — открытые тикеты и источник |
 | `/spec` | Открыть proposal, design, tasks или spec |
 | `/tasks` | Прогресс и `set … done <revision> <доказательство>` |
 | `/opsx-propose`, `/opsx-explore`, `/opsx-apply`, `/opsx-update`, `/opsx-sync`, `/opsx-archive` | Навыки цикла change |
@@ -160,6 +160,11 @@
 | `/install-rtk`, `/install-headroom` | Статус сжатия. Второй компрессор одновременно не включают |
 | `/openviking-ingest` | Загрузить локальный каталог в OpenViking |
 | `/websearch`, `/curator`, `/search` | Редкий внешний поиск, не замена MCP 1С |
+| `/login`, `/provider`, `/connect` | Вход: подписки и API. Повторный вход того же провайдера добавляет ещё один именованный аккаунт |
+| `/accounts` | Аккаунты провайдеров: основной, порядок резервных, переименование, повторный вход, ротация. `/accounts cursor` — сразу Cursor |
+| `/model-fallback` | Основная и резервные модели разных провайдеров для чата или новых чатов. `status` — сохранённая цепочка |
+| `/subscriptions setup` | Заранее скачать и проверить официальные CLI Google Antigravity и Meta Muse |
+| `/pii` | Защита персональных данных: `status`, `on`, `off`, `default on\|off`. По умолчанию выключена |
 | `/claude-login`, `/claude-status` | Подписка Claude Max |
 | `/cursor-login`, `/cursor-refresh-models` | Подписка Cursor и каталог моделей |
 | `/cursor-runtime`, `/cursor-mode`, `/cursor-fast` | Локальный или cloud runtime, режим agent или plan, быстрый режим |

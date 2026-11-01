@@ -25,6 +25,12 @@
 | Мастер проекта | `/setup`, `/project-setup`, `/initproject` | `/project-setup`, затем `/project-init` |
 | Найти команду | `/commands1c` | `/capabilities` и меню «Команды» |
 | Откат файлов | Git проекта | `/checkpoint`, `/rewind` |
+| Аккаунты провайдеров и ротация | `/accounts` | «Модели и подписки», аккаунты провайдера |
+| Основная и резервные модели | `/model-fallback` | «Модели и подписки → Основная и резервные модели» |
+| Защита персональных данных | `/pii status\|on\|off`, `/pii default on\|off` | Плагин на странице плагинов, затем `/pii status\|on\|off`, `/pii project on\|off` |
+| Соседняя папка только для чтения | `/add-dir` | `/add-dir` |
+| Обновление поставки | `/app-update` | Меню → «Обновление бандла…» |
+| Связь change с тикетом | `/openspec ticket <changes/имя> <ключ или URL>`, список — `/openspec tickets` | «Связь с тикетом» в OpenSpec, панель Jira. Файл `openspec/tickets.json` общий |
 
 ## Одно имя — разный смысл
 
