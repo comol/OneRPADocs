@@ -37,6 +37,48 @@
 
 **Пример:** "Проверь этот код на ошибки"
 
+#### Что проверено: `checks` и `trace`
+
+С 01.11.2026 ответ `check_1c_code` говорит данными, какие проверки выполнены. Поле `checks` содержит по записи на каждую запрошенную проверку: `syntax` (синтаксис) и `logic_performance` (логика и производительность). Сервер заполняет его по фактам вызова: что отправлено, каким путём пришёл ответ, есть ли в ответе раздел этой проверки. Слова модели «проверено» на него не влияют.
+
+| `status` | Когда | `reason` |
+|----------|-------|----------|
+| `performed` | ответ есть, раздел проверки в нём есть, код передан целиком | `null` |
+| `partial` | то же, но код обрезан до `ONEC_AI_INPUT_MAX_LENGTH` | `code_truncated`, в `detail` — какие строки проверены |
+| `skipped` | в ответе нет раздела этой проверки | `section_missing` |
+| `skipped` | ответа нет | код из `error`: `operation_timeout`, `transport_failure`, `upstream_empty_answer`, `upstream_error`, `no_result` |
+| `skipped` | код не отправлялся (пустой код, недопустимый путь в `files`) | `input_refused` |
+| `skipped` | сбой самого сервера | `unexpected_error` |
+
+Поле `by` говорит, кто проверял: `analyzer` — синтаксис проверил анализатор 1С.ai (ответ пришёл прямым вызовом `syntax-checker`), `model` — проверку выполнила модель (логика и производительность всегда, синтаксис на промпт-пути и в запасном промпте). У `skipped` поле `by` пустое.
+
+Поле `trace` — след вызова:
+
+| Поле | Что значит |
+|------|-----------|
+| `tool_call_mode` | `MCP_TOOL_CALL_MODE`: `direct` или `standard` |
+| `capability`, `capability_state` | возможность прямого вызова (`syntax.validate`) и её состояние; в `standard` — `null` |
+| `path` | последний путь, которым отправлялся код: `direct`, `fallback_prompt`, `prompt`; `none` — код не отправлялся. Если ответа нет — путь, который не удался |
+| `direct_attempts`, `prompt_attempts` | сколько попыток сделал прямой вызов и промпт-путь (повторы после транспортного сбоя учтены) |
+| `truncated`, `lines_sent`, `lines_total`, `chars_sent`, `chars_total` | сколько кода передано из скольких |
+| `outcome` | `answered`, `error` или `refused` |
+| `error` | код сбоя, как в поле `error` |
+
+Пример (direct-режим, анализатор ответил):
+
+```json
+"checks": [
+  {"check": "syntax", "status": "performed", "by": "analyzer", "reason": null, "detail": ""},
+  {"check": "logic_performance", "status": "performed", "by": "model", "reason": null, "detail": ""}
+],
+"trace": {"tool_call_mode": "direct", "capability": "syntax.validate", "capability_state": "available",
+          "path": "direct", "direct_attempts": 1, "prompt_attempts": 0, "truncated": false,
+          "lines_sent": 40, "lines_total": 40, "chars_sent": 1234, "chars_total": 1234,
+          "outcome": "answered", "error": null}
+```
+
+Остальные поля ответа (`answer`, `truncation`, `fallback_reason`, `error`, `isError`) не изменились.
+
 ---
 
 ### review\_1c\_code
