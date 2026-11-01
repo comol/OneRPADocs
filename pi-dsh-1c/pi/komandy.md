@@ -38,7 +38,7 @@
 
 | Команда | Зачем |
 |---|---|
-| `/mcp1c` | Восемь MCP: ready или degraded, расхождение каталога как предупреждение. `cache` — кэш чтений |
+| `/mcp1c` | Восемь включённых MCP: ready или degraded. `reconnect` поднимает молчащие, `reconnect all` или `reconnect <id>` — принудительно. `cache` — кэш чтений. Выключенный `1c-data-mcp` в ready не входит |
 | `/mcp-settings` | Адреса и включение без значений секретов |
 | `/mcp-project` | Сторонний HTTP, SSE или stdio MCP только этого проекта. `reload` перечитывает файл |
 | `/mcp`, `/pi-mcp` | Статус адаптера, включая Cognee, OpenViking и EDT-MCP, если они подключены |

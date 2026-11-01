@@ -14,7 +14,7 @@
 | `mcp_1c_status` | Кратко или подробно: identity, каталог, схемы |
 | `onec_resource` | Правила, навыки и секции маршрута. К исходникам проекта доступа нет |
 | `onec_openspec` | Список, выбор, проверка и запись артефактов OpenSpec |
-| `onec_skill_script` | Один из 71 хешированного скрипта навыков, через отдельный host с лимитом вывода |
+| `onec_skill_script` | Один скрипт из манифеста поставки. Каждый сверяется по SHA-256 и запускается отдельным host с лимитом вывода |
 | `onec_bsl_query` | Диагностика, hover, definition и references локального BSL Language Server 1.0.7 |
 | `knowledge_1c` | Факты и правила из `.ai-rules/knowledge` по теме |
 | `memory` | recall и remember. Порядок backend: OpenViking, Cognee, память шаблонов, файл. Секреты не пишутся |

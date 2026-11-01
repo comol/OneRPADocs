@@ -7,7 +7,7 @@
 | Вид задачи | `/mode full\|bugfix\|doc\|spec\|analysis` | `/taskmode auto\|doc\|spec\|analysis\|bugfix\|full`. Старый `/quality` — то же, не глубина | В Pi `full`. В DSH `auto`: по запросу |
 | Глубина проверок | `/quality` или `/sdlc` `lite\|standard\|full` | `/sdlc lite\|standard\|full` | `standard` |
 | Оркестрация | `/economymode standard\|economy` | `/economymode standard\|economy` | `standard` |
-| UI-тесты | `/uitests on\|manual\|off` | `/uitests on\|manual\|off` | В Pi смотрите `/uitests status`; в DSH по умолчанию `manual` |
+| UI-тесты | `/uitests on\|manual\|off` | `/uitests on\|manual\|off` | `manual`. Пустое или неверное значение тоже считается `manual` |
 | Доступ к записи | `/access ask\|plan\|build` | `/mode ask\|plan\|build` | В DSH обычно BUILD (`ONEC_MODE_DEFAULT`) |
 
 Без аргумента команда открывает выбор. `status` показывает текущее значение.
