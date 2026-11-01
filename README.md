@@ -21,3 +21,7 @@ E-mail: info@onerpa.ru\
 {% content-ref url="konstruktor-mcp-serverov-1c/" %}
 [konstruktor-mcp-serverov-1c](konstruktor-mcp-serverov-1c/)
 {% endcontent-ref %}
+
+{% content-ref url="pi-dsh-1c/" %}
+[pi-dsh-1c](pi-dsh-1c/)
+{% endcontent-ref %}
