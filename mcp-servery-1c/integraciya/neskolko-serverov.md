@@ -48,7 +48,7 @@ docker run -d -p 8013:8003 `
 docker run -d -p 8000:8000 `
   --name 1c_metadata_buh `
   -e LICENSE_KEY=YOUR_LICENSE_KEY `
-  -v "E:/1C_Export/Buhgalteriya/Report:/app/metadata" `
+  -e CODE_PATH="/app/code" `
   -v "E:/1C_Export/Buhgalteriya/Files:/app/code" `
   -v "E:/bases/mcp_metadata_buh:/app/chroma_db" `
   comol/1c_code_metadata_mcp:latest
@@ -57,7 +57,7 @@ docker run -d -p 8000:8000 `
 docker run -d -p 8010:8000 `
   --name 1c_metadata_ut `
   -e LICENSE_KEY=YOUR_LICENSE_KEY `
-  -v "E:/1C_Export/UT/Report:/app/metadata" `
+  -e CODE_PATH="/app/code" `
   -v "E:/1C_Export/UT/Files:/app/code" `
   -v "E:/bases/mcp_metadata_ut:/app/chroma_db" `
   comol/1c_code_metadata_mcp:latest
@@ -92,7 +92,7 @@ docker run -d -p 8010:8000 `
 **Важно:** Для каждого экземпляра используйте:
 - Уникальный порт на хосте (например, 8003, 8013, 8023)
 - Уникальное имя контейнера (`--name`)
-- Отдельную папку для индекса (`-v "...:/app/chroma_db"`)
+- Отдельную папку для индекса (`/app/index` у HelpSearchServer, `/app/chroma_db` у CodeMetadataSearchServer)
 - Уникальный `connection_id` в mcp.json
 {% endhint %}
 

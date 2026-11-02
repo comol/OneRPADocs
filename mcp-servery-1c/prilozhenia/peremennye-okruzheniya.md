@@ -341,10 +341,6 @@
 | `GRAPH_PLUGIN_STRICT_BUILD` | Останавливать построение поколения при ошибке derived-state hook | `false` |
 | `GRAPH_PLUGIN_HOOK_TIMEOUT_SECONDS` | Бюджет времени одного plugin hook; `0` отключает контроль | `5.0` |
 
-{% hint style="warning" %}
-`GRAPH_FORM_XML_BATCH_SIZE` и `GRAPH_FORM_XML_BATCH_MAX_ROWS` описывают текущие исходники. Наличие в опубликованном образе проверяйте по release notes.
-{% endhint %}
-
 Полный список переменных Graph Metadata Search, включая лимиты графовых ответов, поколения и загрузку данных: [Конфигурация Graph Metadata Search](../servery/graph-metadata-search/konfiguraciya.md).
 
 ### 1CCodeChecker (порт 8007)
@@ -514,7 +510,7 @@
 -e EMBEDDING_MODEL=qwen3:embedding-4b
 ```
 
-## MCP QA (0.7.12)
+## MCP QA (0.7.17)
 
 - `LICENSE_KEY` — ключ QA; в MCP_Distr хранится как `LICENSE_KEY_QA`.
 - `LICENSE_KEY_FILE` — UTF-8 файл с ключом, имеет приоритет над переменной.
@@ -546,7 +542,7 @@
   переменной для него нет. Подробнее — [Сессии MCP и ответ 404](porty-i-endpointy.md#сессии-mcp-и-ответ-404-на-долгой-работе).
 
 Переменные прежних образов `MCP_QA_UPSTREAM_URL`/`MCP_QA_UPSTREAM_TOKEN` (0.5.0) и
-`MCP_QA_TESTPILOT_TIMEOUT`/`TC1C_LOGGING` (0.4.4) образ 0.7.12 в нативном режиме не использует.
+`MCP_QA_TESTPILOT_TIMEOUT`/`TC1C_LOGGING` (0.4.4) образ 0.7.17 в нативном режиме не использует.
 
 [Установка и первый сеанс QA](../servery/qa/README.md).
 

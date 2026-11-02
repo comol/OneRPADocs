@@ -13,6 +13,8 @@ MCP-серверы работают как локальные HTTP-сервис�
 | Graph Metadata Search    | 8006 | HTTP     |
 | 1CCodeChecker            | 8007 | HTTP     |
 | SSLSearchServer          | 8008 | HTTP     |
+| KD20                     | 8009 | HTTP     |
+| MCP QA                   | 8020 | HTTP     |
 
 {% hint style="info" %}
 Все серверы работают только локально (localhost). Внешний доступ не требуется.
@@ -33,7 +35,7 @@ netstat -an | findstr :8003
 
 ```powershell
 # Проверить все порты MCP-серверов
-@(8000, 8002, 8003, 8004, 8006, 8007, 8008) | ForEach-Object {
+@(8000, 8002, 8003, 8004, 8006, 8007, 8008, 8009, 8020) | ForEach-Object {
     $port = $_
     $result = netstat -an | findstr ":$port"
     if ($result) {
@@ -68,7 +70,7 @@ Docker Desktop обычно автоматически создаёт прави
 # Разрешить входящие подключения на порты MCP
 New-NetFirewallRule -DisplayName "MCP Servers" `
     -Direction Inbound `
-    -LocalPort 8000,8002,8003,8004,8006,8007,8008 `
+    -LocalPort 8000,8002,8003,8004,8006,8007,8008,8009,8020 `
     -Protocol TCP `
     -Action Allow
 ```

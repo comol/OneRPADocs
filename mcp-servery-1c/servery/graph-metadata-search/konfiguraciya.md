@@ -85,9 +85,7 @@ MATCH (m:IndexingMarker {name: 'metadata_load', project_name: $project}) DETACH 
 | `EMBEDDING_CHUNK_OVERLAP_TOKENS` | Перекрытие чанков при разбивке длинных текстов | *(авто)* |
 
 {% hint style="warning" %}
-`GRAPH_FORM_XML_BATCH_SIZE` и `GRAPH_FORM_XML_BATCH_MAX_ROWS` описывают текущие исходники. Наличие этого контракта в конкретном опубликованном образе проверяйте по release notes перед изменением настроек.
-
-В актуальном исходном коде структурная транзакция ставит свойству `form_xml_structure_state` значение `pending`, а после сохранения reference evidence — `complete`. Resume пропускает только завершённые формы. Если evidence не сохранился, счётчик `left recoverable` показывает оставшиеся `pending`: следующий прогон перепишет именно их. Частичная структура при ошибке записи удаляется, чтобы следующий прогон не продолжил поверх неполных данных.
+Структурная транзакция ставит свойству `form_xml_structure_state` значение `pending`, а после сохранения reference evidence — `complete`. Resume пропускает только завершённые формы. Если evidence не сохранился, счётчик `left recoverable` показывает оставшиеся `pending`: следующий прогон перепишет именно их. Частичная структура при ошибке записи удаляется, чтобы следующий прогон не продолжил поверх неполных данных.
 {% endhint %}
 
 ### Embedding модели

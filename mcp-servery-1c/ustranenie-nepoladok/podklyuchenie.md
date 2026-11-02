@@ -20,11 +20,11 @@ MCP-сервер не может подключиться к Neo4j, LM Studio и
 
 ```env
 # Неправильно
-OPENAI_API_BASE=http://localhost:1234/v1
+EMBEDDING_API_BASE=http://localhost:1234/v1
 NEO4J_URI=bolt://localhost:7687
 
 # Правильно
-OPENAI_API_BASE=http://host.docker.internal:1234/v1
+EMBEDDING_API_BASE=http://host.docker.internal:1234/v1
 NEO4J_URI=bolt://host.docker.internal:7687
 ```
 

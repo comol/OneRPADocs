@@ -28,7 +28,11 @@ New-Item -ItemType Directory -Force -Path @(
 # ============================================
 
 # Конфигурация
-$LICENSE_KEY = "YOUR_LICENSE_KEY"
+# У каждого сервера свой лицензионный ключ
+$LICENSE_KEY_SYNTAX = "YOUR_SYNTAX_LICENSE_KEY"
+$LICENSE_KEY_HELP = "YOUR_HELP_LICENSE_KEY"
+$LICENSE_KEY_SSL = "YOUR_SSL_LICENSE_KEY"
+$LICENSE_KEY_TEMPLATES = "YOUR_TEMPLATES_LICENSE_KEY"
 $LM_STUDIO_URL = "http://host.docker.internal:1234/v1"
 $EMBEDDING_MODEL = "Qwen3-Embedding-4B"
 $1C_VERSION = "8.3.23.1997"
@@ -41,7 +45,7 @@ Write-Host "Запуск MCP серверов для 1С..." -ForegroundColor Cy
 Write-Host "Запуск SyntaxCheckServer..." -ForegroundColor Yellow
 docker run -d -p 8002:8002 `
     --name 1c_syntaxcheck_mcp `
-    -e LICENSE_KEY=$LICENSE_KEY `
+    -e LICENSE_KEY=$LICENSE_KEY_SYNTAX `
     comol/1c_syntaxcheck_mcp:latest
 
 # --------------------------------------------
@@ -50,7 +54,7 @@ docker run -d -p 8002:8002 `
 Write-Host "Запуск HelpSearchServer..." -ForegroundColor Yellow
 docker run -d -p 8003:8003 `
     --name 1c_help_mcp `
-    -e LICENSE_KEY=$LICENSE_KEY `
+    -e LICENSE_KEY=$LICENSE_KEY_HELP `
     -e 1C_BIN_PATH=/1c_docs `
     -e RESET_DATABASE=false `
     -e EMBEDDING_API_BASE=$LM_STUDIO_URL `
@@ -67,7 +71,7 @@ docker run -d -p 8003:8003 `
 Write-Host "Запуск SSLSearchServer..." -ForegroundColor Yellow
 docker run -d -p 8008:8008 `
     --name mcp_ssl_server `
-    -e LICENSE_KEY=$LICENSE_KEY `
+    -e LICENSE_KEY=$LICENSE_KEY_SSL `
     -e SSL_VERSION=3.1.11 `
     -e RESET_DATABASE=false `
     -e EMBEDDING_API_BASE=$LM_STUDIO_URL `
@@ -82,12 +86,12 @@ docker run -d -p 8008:8008 `
 Write-Host "Запуск TemplatesSearchServer..." -ForegroundColor Yellow
 docker run -d -p 8004:8004 `
     --name template_search_mcp `
-    -e LICENSE_KEY=$LICENSE_KEY `
+    -e LICENSE_KEY=$LICENSE_KEY_TEMPLATES `
     -e RESET_DATABASE=false `
     -e EMBEDDING_API_BASE=$LM_STUDIO_URL `
     -e EMBEDDING_API_KEY=lm-studio `
     -e EMBEDDING_MODEL=$EMBEDDING_MODEL `
-    -v "E:/bases/mcp_templates:/app/data" `
+    -v "E:/bases/mcp_templates:/app/chroma_db" `
     comol/template-search-mcp:latest
 
 # --------------------------------------------

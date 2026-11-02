@@ -85,7 +85,7 @@ services:
       - EMBEDDING_API_KEY=lm-studio
       - EMBEDDING_MODEL=Qwen3-Embedding-4B
     volumes:
-      - E:/bases/mcp_templates:/app/data
+      - E:/bases/mcp_templates:/app/chroma_db
 ```
 
 ## Файл .env

@@ -86,7 +86,7 @@ Invoke-RestMethod -Uri "http://localhost:8007/release"
 {% endhint %}
 
 {% hint style="warning" %}
-Образ не знает собственный registry digest автоматически. При digest-pinned запуске передайте одно и то же значение в ссылке на образ и в окружении: `-e CHECKER_IMAGE_DIGEST="sha256:<digest>" comol/1c-code-checker@sha256:<digest>`. Без этого `/release` честно сообщает `image_digest_available=false`; совпадение двух пустых строк не подтверждает одинаковый образ. Поля доступны в текущих исходниках, публикация пока не подтверждена.
+Образ не знает собственный registry digest автоматически. При digest-pinned запуске передайте одно и то же значение в ссылке на образ и в окружении: `-e CHECKER_IMAGE_DIGEST="sha256:<digest>" comol/1c-code-checker@sha256:<digest>`. Без этого `/release` честно сообщает `image_digest_available=false`; совпадение двух пустых строк не подтверждает одинаковый образ.
 {% endhint %}
 
 ## Конфигурация Cursor

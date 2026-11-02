@@ -149,7 +149,7 @@ docker run -d -p 8007:8007 `
 | `/release` | Идентичность выпуска: версия, переданный оператором digest и его состояние, версия upstream-контракта, время сборки |
 
 {% hint style="warning" %}
-Образ не может автоматически знать собственный registry digest. В текущих исходниках оператор передаёт `CHECKER_IMAGE_DIGEST=sha256:<digest>` вместе с запуском `comol/1c-code-checker@sha256:<digest>`; иначе `/release` возвращает `image_digest_available=false`. Этот контракт ещё не подтверждён в опубликованных образах.
+Образ не может автоматически знать собственный registry digest. Оператор передаёт `CHECKER_IMAGE_DIGEST=sha256:<digest>` вместе с запуском `comol/1c-code-checker@sha256:<digest>`; иначе `/release` возвращает `image_digest_available=false`.
 {% endhint %}
 
 ## Оригинальная идея
