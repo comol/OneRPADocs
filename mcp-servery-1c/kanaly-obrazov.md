@@ -91,7 +91,7 @@ IMAGE_TAG = IMAGE_VARIANT
 
 ## MCP QA
 
-`comol/qa_mcp:latest` — MCP QA 0.7.17, только Linux/amd64. Контейнер сам работает менеджером тестирования
+`comol/qa_mcp:latest` — MCP QA 0.7.18, только Linux/amd64. Контейнер сам работает менеджером тестирования
 и подключается к тест-клиенту, запущенному человеком (`MCP_QA_TESTCLIENT`).
 Вариантов `light` и `arm64` нет, поэтому общие
 `IMAGE_VARIANT`/`IMAGE_TAG` к QA не применяются: образ задаёт `QA_IMAGE` в `config.env`.
