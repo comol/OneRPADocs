@@ -19,7 +19,7 @@ MCP-серверы 1С — отдельный продукт со своим д�
 | `DSH-Web-1C-<версия>-<выпуск>-linux-x64.zip` | DSH Web для Linux x64 |
 | `DSH-Desktop-1C-<версия>-<выпуск>-darwin-arm64.zip` | DSH Desktop для macOS на Apple Silicon |
 
-Выпуск — дата и время сборки в виде `ГГГГММДД-ЧЧММСС`. Чем больше число, тем новее архив. Установка описана в разделах [Pi](pi/ustanovka-i-zapusk.md), [DSH Desktop](dsh/ustanovka-i-zapusk.md) и [Linux и macOS](platformy.md).
+Выпуск — дата и время сборки в виде `ГГГГММДД-ЧЧММСС`. Чем больше число, тем новее архив. Актуальные опубликованные поставки: Pi — бандл **1.1.0**, ядро **1.4.0**; DSH — бандл **0.1.0**, официальный Desktop **0.2.1-rc.5**. Установка описана в разделах [Pi](pi/ustanovka-i-zapusk.md), [DSH Desktop](dsh/ustanovka-i-zapusk.md) и [Linux и macOS](platformy.md).
 
 ## Обновление из приложения
 

@@ -286,6 +286,7 @@
   * [DSH Desktop 1С](pi-dsh-1c/dsh/README.md)
     * [Установка и запуск](pi-dsh-1c/dsh/ustanovka-i-zapusk.md)
     * [Интерфейс и пресеты](pi-dsh-1c/dsh/interfejs-i-presety.md)
+    * [Ассистент DSH](pi-dsh-1c/dsh/assistent.md)
     * [Проект, MCP и модели](pi-dsh-1c/dsh/proekt-mcp-modeli.md)
     * [Команды](pi-dsh-1c/dsh/komandy.md)
     * [Проверка, откат и сдача](pi-dsh-1c/dsh/proverka-otkat-sdacha.md)

@@ -10,7 +10,7 @@
 |---|---|
 | `/mode ask\|plan\|build\|status` | Права записи. По умолчанию обычно BUILD |
 | `/profile` | Алиас `/mode`: `explore`, `plan`, `build` |
-| `/taskmode auto\|doc\|spec\|analysis\|bugfix\|full\|status` | Вид задачи. По умолчанию `auto` — по запросу. Старый `/quality` делает то же |
+| `/taskmode auto\|doc\|spec\|analysis\|bugfix\|full\|status` | Вид задачи. По умолчанию `auto` — «Авто»: вид определяется по тексту запроса. Старый `/quality` делает то же |
 | `/sdlc lite\|standard\|full` | Глубина проверок, по умолчанию standard |
 | `/economymode standard\|economy` | Обычное или расширенное делегирование |
 | `/uitests on\|manual\|off` | UI-тесты. `on` соответствует auto |
@@ -84,7 +84,7 @@
 | `/goal1c status\|recover\|stop` | Состояние автономной цели |
 | `/later`, `/check`, `/loop`, `/heartbeat` | Отложенное сообщение, расписание, пульс |
 | `/sessions` | Сводка фона |
-| `/continue1c` | Только статус автопродолжения цели. Прерванный ход продолжает кнопка ▶ Продолжить |
+| `/continue1c` | Только статус автопродолжения цели. Прерванный ход DSH продолжает сам; вручную — обычным сообщением в тот же чат |
 | `/checkpoint`, `/rewind` | Ручная точка и возврат файлов |
 | `/dsh-1c` | Импорт контекста: `discover`, `preview`, `apply`, `rollback` |
 | `/support` | Черновик. `send` отправляет, `cancel` бросает |
