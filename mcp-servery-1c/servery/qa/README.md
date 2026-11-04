@@ -95,10 +95,51 @@ ui_spreadsheet(action="dblclick", name="ОтчетТабличныйДокуме
 нажатие Enter с последующим переходом. Проверки клавиатурных событий требуют
 отдельного инструмента вне QA MCP.
 
+## Сохранённые тесты на pytest — исходники 0.8.0
+
+Для этой возможности нужен образ 0.8.0 или новее; стабильный `latest`
+публикуется отдельно. При самостоятельной сборке задайте
+`QA_IMAGE=mcp-qa-local:latest`.
+
+В образ входят `mcp-qa-testing`, pytest-плагин и отдельный раннер `qa-tests`.
+Сохранённый тест заранее записывает действия и проверки обычным Python-кодом,
+а CI получает обычный код выхода pytest и JUnit. Раннер подключается к QA MCP,
+работает только с native и не исполняет тесты внутри процесса сервера.
+
+```python
+from mcp_qa_testing import expect
+
+
+def test_catalog(app):
+    form = app.open(kind="catalog", metadata_name="Валюты")
+    form.here()
+    expect(form.table("Список")).to_exist(timeout=10)
+    expect(app).to_have_no_messages()
+```
+
+Из корня дистрибутива (тесты — в `servers/qa-tests`):
+
+```bash
+docker compose --env-file config.env -f servers/qa-compose.yml up -d --wait --wait-timeout 90 qa-mcp
+docker compose --env-file config.env -f servers/qa-compose.yml run --rm qa-tests pytest /tests
+```
+
+`qa-compose.yml` использует существующие `QA_IMAGE`, `LICENSE_KEY_QA`,
+`QA_HTTP_PORT`, `QA_HTTP_TOKEN` и `MCP_QA_TESTCLIENT` из `config.env`. Лицензия
+проверяется до первого теста. JUnit находится в named volume `qa-test-reports`
+по пути `/data/reports/junit.xml`. Подробное руководство поставляется в исходниках
+`servers/MCP_QA/docs/pytest.md`; шаблон CI — `servers/MCP_QA/examples/ci/github-actions.yml`.
+
+Перед каждым тестом фикстура `app` закрывает чужие окна. При падении сохраняются
+снимок формы и диагностика; `--qa-keep-open` оставляет первый провал для осмотра
+через тот же MCP. Данные тестов не откатываются. Каждому параллельному воркеру
+нужны отдельные QA-контейнер и TestClient.
+
 ## Поставка и требования
 
-- Образ: `comol/qa_mcp:latest` — версия **0.7.18**; других тегов на Docker Hub нет,
-  только Linux/amd64, вариантов `light` и `arm64` нет.
+- Образ: `comol/qa_mcp:latest`; в исходниках — версия **0.8.0**, фактическая
+  версия образа видна в `/healthz`. Других тегов на Docker Hub нет, только
+  Linux/amd64, вариантов `light` и `arm64` нет.
 - Ключ в `config.env`: `LICENSE_KEY_QA`; внутри сервера: `LICENSE_KEY`
   или путь к файлу ключа в `LICENSE_KEY_FILE`.
 - Порт: **8020**; MCP: `http://127.0.0.1:8020/mcp`; liveness: `/healthz`.
@@ -120,7 +161,7 @@ ui_spreadsheet(action="dblclick", name="ОтчетТабличныйДокуме
 Глобальные `IMAGE_VARIANT`/`IMAGE_TAG` к QA не применяются: образ задаёт
 отдельное значение `QA_IMAGE`.
 
-## Ограничения версии 0.7.18
+## Ограничения версии 0.8.0
 
 - **Операции.** Нативно выполняются все операции инструментов `qa_*`/`ui_*`:
   окна, формы и их элементы, таблицы и списки (поиск, состояние просмотра,
@@ -389,7 +430,7 @@ docker ps --filter name=qa-mcp
 docker exec qa-mcp python /app/check_http.py
 ```
 
-Ожидаются `"backend": "native"`, `"version": "0.7.18"`, `tool_count: 62` и ответ
+Ожидаются `"backend": "native"`, `"version": "0.8.0"`, `tool_count: 62` и ответ
 `qa_status` с `"executor": "native"`. `/healthz` проверяет только HTTP,
 не доступность 1С. Ключ не записывается в `mcp.json`:
 

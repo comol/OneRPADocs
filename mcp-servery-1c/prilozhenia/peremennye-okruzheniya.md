@@ -510,7 +510,7 @@
 -e EMBEDDING_MODEL=qwen3:embedding-4b
 ```
 
-## MCP QA (0.7.18)
+## MCP QA (исходники 0.8.0)
 
 - `LICENSE_KEY` — ключ QA; в MCP_Distr хранится как `LICENSE_KEY_QA`.
 - `LICENSE_KEY_FILE` — UTF-8 файл с ключом, имеет приоритет над переменной.
@@ -537,12 +537,20 @@
 - `MCP_QA_COMMAND_TIMEOUT` — срок ожидания ответа тест-клиента на один запрос,
   когда инструмент не передал свой таймаут; по умолчанию `120` с, верхняя
   граница таймаута инструмента — 3600 с (0.7.5).
-- В поставке: `QA_IMAGE`, `QA_HTTP_PORT`, `QA_HTTP_TOKEN` — настройки только QA.
+- В поставке: `QA_IMAGE`, `QA_HTTP_PORT`, `QA_HTTP_TOKEN` — настройки только QA;
+  `QA_TESTS` — каталог сохранённых pytest-тестов для `servers/qa-compose.yml`.
+- `MCP_QA_URL` / `MCP_QA_TOKEN` — endpoint QA MCP и его Bearer-токен для раннера
+  `qa-tests`; в Compose задаются автоматически.
+- `MCP_QA_CONNECTION`, `MCP_QA_TIMEOUT`, `MCP_QA_STARTUP_TIMEOUT`,
+  `MCP_QA_REQUEST_TIMEOUT` — имя сеанса и сроки раннера; по умолчанию `ci`,
+  5, 120 и 300 секунд соответственно.
+- `MCP_QA_REPORTS` / `MCP_QA_ARTIFACTS` — каталоги JUnit и приложений к падениям;
+  в Compose отчёты пишутся в `/data/reports`.
 - Сессия MCP закрывается после 30 минут без запросов; это значение библиотеки MCP,
   переменной для него нет. Подробнее — [Сессии MCP и ответ 404](porty-i-endpointy.md#сессии-mcp-и-ответ-404-на-долгой-работе).
 
 Переменные прежних образов `MCP_QA_UPSTREAM_URL`/`MCP_QA_UPSTREAM_TOKEN` (0.5.0) и
-`MCP_QA_TESTPILOT_TIMEOUT`/`TC1C_LOGGING` (0.4.4) образ 0.7.18 в нативном режиме не использует.
+`MCP_QA_TESTPILOT_TIMEOUT`/`TC1C_LOGGING` (0.4.4) образ 0.8.0 в нативном режиме не использует.
 
 [Установка и первый сеанс QA](../servery/qa/README.md).
 
@@ -574,3 +582,9 @@
   данные — `PATH_BASES\kd20`.
 - Сессия MCP закрывается после 30 минут без запросов; это значение библиотеки MCP,
   переменной для него нет. Подробнее — [Сессии MCP и ответ 404](porty-i-endpointy.md#сессии-mcp-и-ответ-404-на-долгой-работе).
+
+## СППР
+
+Образа нет, ключа `LICENSE_KEY_SPPR` нет. Процесс stdio на машине с каталогом исходников.
+
+- `SPPR_INDEX_DB` — путь к файлу индекса SQLite. По умолчанию `data/sppr.sqlite3` в каталоге проекта.

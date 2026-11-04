@@ -17,6 +17,7 @@ MCP-серверы публикуются в одном канале: теги `
 | 1CCodeChecker | [`comol/1c-code-checker`](https://hub.docker.com/r/comol/1c-code-checker/tags) | `latest`, `light`, `arm64` |
 | MCP QA | [`comol/qa_mcp`](https://hub.docker.com/r/comol/qa_mcp/tags) | `latest` (только amd64; вариантов `light` и `arm64` нет) |
 | Конвертация данных 2.0 (KD20) | [`comol/1c_conversion_data_mcp`](https://hub.docker.com/r/comol/1c_conversion_data_mcp/tags) | `latest`, `arm64` (варианта `light` нет) |
+| СППР | образа нет | контейнер не публикуется |
 
 В дистрибутиве тег задаётся так:
 
@@ -45,6 +46,7 @@ IMAGE_TAG = IMAGE_VARIANT
 | 1CCodeChecker | `LICENSE_KEY_CODECHECKER` |
 | MCP QA | `LICENSE_KEY_QA` |
 | Конвертация данных 2.0 (KD20) | `LICENSE_KEY_KD20` |
+| СППР | ключа нет: образа нет |
 
 Ключ одного сервера другой сервер не принимает. Образы от 27.09.2026 принимают только ключи, выпущенные 27.09.2026; ключ, выданный раньше, отклоняется с `Invalid LICENSE_KEY`, и контейнер сразу завершается. Действующий ключ — в `config.env` текущего дистрибутива MCP_Distr или в личном кабинете https://vibecoding1c.ru/.
 
@@ -106,3 +108,7 @@ IMAGE_TAG = IMAGE_VARIANT
 `latest` и `arm64`. Варианта `light`
 нет: embeddings сервер не использует, поэтому при `IMAGE_VARIANT=light` ставится `latest`.
 Ключ `LICENSE_KEY_KD20` передаётся серверу как `LICENSE_KEY`. [Страница сервера](servery/kd20/README.md).
+
+## СППР
+
+Образа нет и лицензионного ключа нет. Сервер входит в состав с 05.11.2026, работает как локальный процесс stdio и в эту таблицу тегов не добавляет репозиторий. [Страница сервера](servery/sppr/README.md).

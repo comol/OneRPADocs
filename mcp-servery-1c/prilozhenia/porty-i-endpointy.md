@@ -19,6 +19,7 @@ Graph Metadata Search по умолчанию обслуживает `streamable
 | MCP QA | 8020 | `/mcp` (stateful Streamable HTTP) | `/healthz` (liveness), `/`; `POST /client-bus/v1/poll`, `POST /client-bus/v1/result` — сетевой канал расширения `MCPQAClient` с токеном сеанса в `X-MCP-QA-Token`; исходящее подключение к тест-клиенту 1С, по умолчанию `host.docker.internal:1538` |
 | Конвертация данных 2.0 (KD20) | 8009 | `/mcp` (Streamable HTTP) | `/healthz` (liveness) |
 | SSLSearchServer | 8008 | `/mcp` | `/ready` |
+| СППР | нет | stdio, HTTP нет | образа нет, контейнер не публикуется |
 
 ## Сессии MCP и ответ 404 на долгой работе
 
