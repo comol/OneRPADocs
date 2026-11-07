@@ -3,7 +3,7 @@
 Изолированная сборка Pi Coding Agent для разработки на «1С:Предприятие».
 
 - Версия бандла: **1.1.0**
-- Ядро: `@earendil-works/pi-coding-agent` **1.4.0**
+- Ядро: `@earendil-works/pi-coding-agent` **1.5.0**
 - Поставка: Windows x64, файл `Pi-1C.exe`. Для Linux x64 и macOS на Apple Silicon есть консольные архивы с `./Pi-1C`, см. [Linux и macOS](../platformy.md)
 - Сайт сборки: [vibecoding1c.ru](https://vibecoding1c.ru/)
 
