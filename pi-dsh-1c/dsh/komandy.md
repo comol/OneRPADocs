@@ -36,7 +36,7 @@
 | `/onec-check-mcp`, `/checkmcp` | Разбор отказа MCP |
 | `/models1c` | Провайдеры и модели без секретов |
 
-Тексты `/installmcp`, `/install-cognee`, `/install-openviking`, `/install-edt-mcp`, `/install-agent-browser` и `/install-windows-mcp` передают процедуру текущему чату. Установка идёт с обычными подтверждениями и сама сервер не поднимает.
+Тексты `/installmcp`, `/install-cognee`, `/install-openviking`, `/install-edt-mcp`, `/install-agent-browser` и `/install-agent-desktop` передают процедуру текущему чату. Установка идёт с обычными подтверждениями и сама сервер не поднимает.
 
 ## OpenSpec и знания поведения
 
