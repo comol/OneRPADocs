@@ -313,7 +313,7 @@ C:/Work/edt-workspace-zup/       <- EXTENSIONS_HOST_PATH -> /app/extensions:ro
 
 | Переменная | Описание | По умолчанию |
 |------------|----------|--------------|
-| `MCP_TOOL_PROFILE` | Какой набор инструментов публикуется: `admin` (всё) или `read-only` (без управления проектами) | `admin` |
+| `MCP_TOOL_PROFILE` | Какой набор инструментов публикуется: `standard` (по умолчанию; без диагностики оператора и без инструментов жизненного цикла проекта, которые без нужной настройки не выполняются), `admin` (всё) или `read-only` (без управления проектами, перезагрузки плагинов и пишущей пары обычных форм). Подробно — [Профили инструментов](README.md#профили-инструментов) | `standard` |
 | `MCP_NAMESPACE` | Namespace установки, в котором регистрируются графовые проекты | `default` |
 | `ADMIN_TOKEN` | Токен для административных HTTP-эндпоинтов веб-интерфейса | — |
 | `GRAPH_SCOPE_ENFORCED` | Записан ли scope в самой базе. Включать только на базе, пересобранной по новой схеме идентификаторов: данные, загруженные раньше, свойств scope не содержат. Вместе с миграционным окном задаёт строгость `project_id` — см. врезку ниже | `false` |
@@ -417,7 +417,7 @@ C:/Work/edt-workspace-zup/       <- EXTENSIONS_HOST_PATH -> /app/extensions:ro
 | `GRAPH_PLUGIN_STRICT_BUILD` | Останавливать построение нового поколения при ошибке derived-state hook вместо пропуска проблемной единицы | `false` |
 | `GRAPH_PLUGIN_HOOK_TIMEOUT_SECONDS` | Бюджет времени одного hook; `0` отключает контроль | `5.0` |
 
-Для контейнера обычно монтируют каталог хоста в `/app/plugins`. `list_plugins` доступен для диагностики в обоих профилях, а изменяющий состояние `reload_plugins(operation_id)` — только в профиле `admin`. После перезагрузки call-scoped hooks действуют со следующего вызова, а derived-state hooks — со следующего построения индекса.
+Для контейнера обычно монтируют каталог хоста в `/app/plugins`. `list_plugins` доступен для диагностики во всех профилях, а изменяющий состояние `reload_plugins(operation_id)` не публикуется в профиле `read-only`. После перезагрузки call-scoped hooks действуют со следующего вызова, а derived-state hooks — со следующего построения индекса.
 
 Плагин — **один Python-файл** в каталоге плагинов. Объявлены восемь hooks: `on_startup`, `on_request`, `on_result`, `on_search_candidates` (в рамках вызова) и `on_source_unit`, `on_metadata_object`, `on_routine`, `on_embedding_document` (формируют граф, полнотекстовый и векторный маршруты) — плюс три таблицы: `ALIASES`, `TOOL_PRESETS` и `CYPHER_TEMPLATES` (дополнительные read-only Cypher-шаблоны для `run_graph_cypher_template`). Полный контракт лежит в образе: `/app/plugin_api.py`, `/app/plugins/AGENTS.md`, `/app/plugins/example.py`.
 

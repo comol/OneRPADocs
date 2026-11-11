@@ -59,6 +59,8 @@ Graph Metadata Search по умолчанию обслуживает `streamable
 | 7474 | Neo4j Browser (HTTP) |
 | 7687 | Neo4j Bolt Protocol |
 
+Если Bolt-порт Neo4j при старте Graph Metadata Search ещё не отвечает, сервер ждёт его до 600 с (одна строка `WARNING` на попытку), а не завершается и не перезапускается Docker'ом. Когда Neo4j возвращается после сбоя, сервер восстанавливается без перезапуска: `/healthz`, `get_object_dossier` и `trace_call_chain` снова отвечают. Отвеченные пробы `/health`, `/healthz`, `/ready`, `/readyz` в access-лог не пишутся. `initialize` сообщает имя `Graph Metadata Search` и ревизию сборки.
+
 ## Полные URL для mcp.json
 
 ```json

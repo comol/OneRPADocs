@@ -30,10 +30,10 @@ KD20 помогает ИИ писать и дорабатывать правил
 
 ## Поставка и требования
 
-- Образ: `comol/1c_conversion_data_mcp`, версия **0.6.0** от 05.11.2026; теги `latest`
+- Образ: `comol/1c_conversion_data_mcp`, версия **0.6.1** от 11.11.2026; теги `latest`
   (Linux/amd64) и `arm64` (Linux/arm64), других тегов на Docker Hub нет.
   Варианта `light` нет: embeddings сервер не использует. При `IMAGE_VARIANT=light` ставится `latest`.
-  Образ и исходники сервера — **0.6.0** (73 инструмента), включая `ed_trace` и `ed_pair_validate`.
+  Образ и исходники сервера — **0.6.1** (73 инструмента), включая `ed_trace` и `ed_pair_validate`.
 - Ключ в `config.env`: `LICENSE_KEY_KD20`; внутри контейнера — `LICENSE_KEY` или путь к файлу
   ключа в `LICENSE_KEY_FILE`.
 - Порт: **8009**; MCP: `http://127.0.0.1:8009/mcp` (Streamable HTTP); liveness: `/healthz`.
@@ -212,6 +212,26 @@ KD20 помогает ИИ писать и дорабатывать правил
   правил в сообщении: ошибку загрузки правят в правилах отправителя и перезагружают комплект
   в приёмнике.
 
+## Аннотации инструментов и проверка аргументов
+
+У каждого инструмента есть аннотации MCP, по ним клиент решает, что выполнять без
+подтверждения:
+
+- `readOnlyHint: true` — только читает: 36 инструментов;
+- `destructiveHint: true` — удаляет сохранённое или молча заменяет целиком набор правил,
+  правила регистрации либо файл по указанному пути: 16 инструментов (пять `delete_*`,
+  `create_ruleset`, `draft_*`, `import_*`, `generate_*`, `build_registration_rules`,
+  `pack_rules_zip`, `export_handlers_bsl`, `dump_rules_from_1c`);
+- остальные 21 меняют то, что названо в вызове, но не разрушают;
+- `openWorldHint: true` — обращается к базе 1С через сервер данных: 5 инструментов
+  (`*_in_1c` и `dump_rules_from_1c`).
+
+Закрытые наборы значений объявлены в схеме как enum: `priority` у `set_object_rule`, `style`
+у `generate_rules_xml` и `generate_registration_xml`, `preset` у `set_object_rules_flags`,
+`owner` у `handler_interface`, `section` у `kd20_format_reference`. Неизвестное значение
+отклоняет проверка схемы до запуска инструмента. `serverInfo.version` в ответе `initialize` —
+версия пакета (0.6.1).
+
 ## Ограничения
 
 - Писать сервер умеет только правила формата 2.01 («Конвертация данных» 2.0/2.1). Обмен
@@ -269,7 +289,7 @@ docker run -d --name 1c_kd20_mcp --init --restart unless-stopped `
 `{"service":"kd20-mcp","status":"ok","check":"liveness"}`. `Exited (1)` сразу после старта —
 неподходящий ключ (`docker logs 1c_kd20_mcp` покажет `Invalid LICENSE_KEY`).
 
-Подключение клиента (ключ в `mcp.json` не пишется), клиент образа 0.6.0 видит 73 инструмента:
+Подключение клиента (ключ в `mcp.json` не пишется), клиент образа 0.6.1 видит 73 инструмента (меньше, если часть отключена `KD20_DISABLE_TOOLS`):
 
 ```json
 {"mcpServers":{"1c-kd20":{"url":"http://127.0.0.1:8009/mcp"}}}
@@ -316,6 +336,9 @@ docker run -d --name 1c_kd20_mcp --init --restart unless-stopped `
 | `KD20_ALLOWED_ROOTS` | где разрешено читать и писать (через `;`) | `/data;/workspace` |
 | `MCP_TRANSPORT` | `http` или `stdio` | `http` |
 | `KD20_SANDBOX_DATA_URL` | сервер данных копии базы (1c-data-mcp, `…/hs/mcp`) для `check_rules_in_1c`, `dump_rules_from_1c`, `exchange_plans_in_1c`, `check_registration_in_1c` (у каждого есть и параметры `data_server_url` и `base` — база из `set_base`); из контейнера база на этой машине — `host.docker.internal` | не задано |
+| `KD20_DISABLE_TOOLS` | какие инструменты не выставлять клиенту: имена и маски через запятую (`ed_*,*_in_1c`), регистр учитывается; маска без совпадений — предупреждение в журнале при запуске | не задано — все 73 |
+
+`KD20_DISABLE_TOOLS` убирает из контекста модели группы, которые в установке не нужны: `ed_*` — 13 инструментов КД 3, `*_in_1c` — 4 проверки в базе, `*base*,*_exchange*` — 8 инструментов баз и обменов (в их числе `check_base_in_1c`). Отключённый инструмент сервер не регистрирует: его нет в `tools/list`, вызвать его нельзя.
 
 Справочники сервера в поисковом индексе обновляются при каждом запуске: заменяются только
 их фрагменты, проиндексированное через `index_kd20_path` остаётся (справочники — формат правил,

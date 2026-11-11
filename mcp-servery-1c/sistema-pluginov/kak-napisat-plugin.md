@@ -168,7 +168,7 @@ docker run -d -p 8006:8006 `
 | SSLSearchServer | MCP-инструмент `plugin_state` | MCP-инструмент `plugin_reload` |
 | SyntaxCheckServer | MCP-инструмент `plugin_state` | MCP-инструмент `plugin_reload` |
 | TemplatesSearchServer | MCP-инструмент `plugin_state` | MCP-инструмент `plugin_reload` — только если включены изменяющие инструменты |
-| Graph Metadata Search | MCP-инструмент `list_plugins` | MCP-инструмент `reload_plugins(operation_id)` — только профиль `admin` |
+| Graph Metadata Search | MCP-инструмент `list_plugins` | MCP-инструмент `reload_plugins(operation_id)` — не публикуется в профиле `read-only` |
 | CodeMetadataSearchServer | MCP-инструмент `plugin_state` | MCP-инструмент `plugin_reload` |
 | 1CCodeChecker | `GET /plugins` | `POST /plugins/reload` (HTTP 409, если новый набор не загружается) |
 
