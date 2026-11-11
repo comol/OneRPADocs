@@ -154,10 +154,10 @@
 
 | Команда | Зачем |
 |---|---|
-| `/installtools`, `/tools` | Статус MCP, Cognee, EDT-MCP, браузера, Windows-MCP, Headroom, RTK, OpenWhispr |
+| `/installtools`, `/tools` | Статус MCP, Cognee, EDT-MCP, браузера, Vercel Agent Desktop, Headroom, RTK, OpenWhispr |
 | `/openwhispr`, `/install-openwhispr` | Внешняя диктовка |
 | `/install-cognee`, `/install-openviking`, `/install-edt-mcp` | Процедуры подключения. Сервер команда сама не поднимает |
-| `/install-agent-browser`, `/install-windows-mcp` | Браузер и окна Windows |
+| `/install-agent-browser`, `/install-agent-desktop` | Браузер и окна рабочего стола. Сервер команда сама не поднимает |
 | `/install-rtk`, `/install-headroom` | Статус сжатия. Второй компрессор одновременно не включают |
 | `/openviking-ingest` | Загрузить локальный каталог в OpenViking |
 | `/websearch`, `/curator`, `/search` | Редкий внешний поиск, не замена MCP 1С |

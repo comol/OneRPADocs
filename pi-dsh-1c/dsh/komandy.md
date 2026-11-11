@@ -60,7 +60,7 @@
 | `/loadfrom1cbase` | База → файлы. Аргумент: `base`, `extension:<Имя>` или `all`, либо перечень объектов |
 | `/getconfigfiles` | Алиас частичной выгрузки |
 | `/sync1c` | Свежесть, выгрузка, переиндексация. `apply` или `go` выполняют, `partial` — выбранное |
-| `/update1cbase` | Файлы → база через `onec_deploy` после подтверждения |
+| `/update1cbase` | Файлы → база через `onec_deploy` в BUILD, без отдельного окна бандла |
 | `/build-release` | Файлы → `.cf` или `.cfe` выбранного состава. База проекта не меняется |
 | `/deploy-and-test` | Загрузка и проверка интерфейса |
 | `/bsl-check` | Локальный BSL Language Server по выбранным файлам |
@@ -105,7 +105,7 @@
 - `onec_bsl_query` — локальный BSL Language Server
 - `knowledge_1c` — слой знаний
 - `onec_openspec_progress`, `onec_openspec_handoff` — ход change
-- `onec_deploy` — загрузка в базу после подтверждения
+- `onec_deploy` — загрузка в базу в BUILD. Поручение из чата не открывает отдельное окно подтверждения; окно деплоя можно открыть вручную
 - `onec_com_execute` — вызов через COM, когда backend именно `com`
 - `local_extension` — локальные навыки и плагины
 - `subagent`, `subagent_fork`, `workflow` — делегирование
