@@ -102,7 +102,7 @@ ui_spreadsheet(action="dblclick", name="ОтчетТабличныйДокуме
 
 В образ входят `mcp-qa-testing`, pytest-плагин и отдельный раннер `qa-tests`.
 Сохранённый тест заранее записывает действия и проверки обычным Python-кодом,
-а CI получает обычный код выхода pytest и JUnit. Раннер подключается к QA MCP,
+а CI получает обычный код выхода pytest. Раннер подключается к QA MCP,
 работает только с native и не исполняет тесты внутри процесса сервера.
 
 ```python
@@ -125,8 +125,8 @@ docker compose --env-file config.env -f servers/qa-compose.yml run --rm qa-tests
 
 `qa-compose.yml` использует существующие `QA_IMAGE`, `LICENSE_KEY_QA`,
 `QA_HTTP_PORT`, `QA_HTTP_TOKEN` и `MCP_QA_TESTCLIENT` из `config.env`. Лицензия
-проверяется до первого теста. JUnit находится в named volume `qa-test-reports`
-по пути `/data/reports/junit.xml`. Подробное руководство поставляется в исходниках
+проверяется до первого теста. Диагностика падений сохраняется в томе `qa-test-reports`
+в каталоге `/data/reports/artifacts`. Подробное руководство поставляется в исходниках
 `servers/MCP_QA/docs/pytest.md`; шаблон CI — `servers/MCP_QA/examples/ci/github-actions.yml`.
 
 Перед каждым тестом фикстура `app` закрывает чужие окна. При падении сохраняются

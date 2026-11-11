@@ -544,8 +544,8 @@
 - `MCP_QA_CONNECTION`, `MCP_QA_TIMEOUT`, `MCP_QA_STARTUP_TIMEOUT`,
   `MCP_QA_REQUEST_TIMEOUT` — имя сеанса и сроки раннера; по умолчанию `ci`,
   5, 120 и 300 секунд соответственно.
-- `MCP_QA_REPORTS` / `MCP_QA_ARTIFACTS` — каталоги JUnit и приложений к падениям;
-  в Compose отчёты пишутся в `/data/reports`.
+- `MCP_QA_ARTIFACTS` — каталог диагностики падений; по умолчанию `qa-artifacts`.
+  В Compose — `/data/reports/artifacts` в томе `qa-test-reports`.
 - Сессия MCP закрывается после 30 минут без запросов; это значение библиотеки MCP,
   переменной для него нет. Подробнее — [Сессии MCP и ответ 404](porty-i-endpointy.md#сессии-mcp-и-ответ-404-на-долгой-работе).
 
