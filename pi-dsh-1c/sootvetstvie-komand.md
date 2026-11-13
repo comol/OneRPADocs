@@ -21,6 +21,7 @@
 | Диагностика | `/doctor`, `/preflight1c` | `/lifecycle doctor` |
 | Состояние MCP | `/mcp1c`, `/checkmcp` | `/status1c`, `/onec-check-mcp` |
 | Кэш чтений MCP | `/mcp1c cache` | `/mcp-cache` |
+| Подключение к EDT-MCP | `/check-edt` | `/check-edt` |
 | Обновления правил и MCP | `/bundle-updates`, `/checkupdates`, `/updaterules` | `/lifecycle updates` |
 | Мастер проекта | `/setup`, `/project-setup`, `/initproject` | `/project-setup`, затем `/project-init` |
 | Найти команду | `/commands1c` | `/capabilities` и меню «Команды» |

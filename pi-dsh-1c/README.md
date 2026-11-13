@@ -7,7 +7,7 @@
 | [Pi 1C](pi/README.md) | `Pi-1C.exe` — терминал, комплектный Warp или браузер на `127.0.0.1` | Нужен лёгкий агент в терминале или во вкладке Warp, с жёстко ограниченным набором инструментов |
 | [DSH Desktop 1С](dsh/README.md) | `DSH-Desktop-1C.exe` — окно Desktop | Нужна одна рабочая область: чат, метаданные, редактор BSL, OpenSpec, MCP и терминал |
 
-Обе поставки — рабочая **beta**. Основная платформа — **Windows x64**. Для Linux x64 и macOS на Apple Silicon есть отдельные архивы: Pi в терминале, DSH как Web в Linux и как Desktop на macOS, см. [Linux и macOS](platformy.md). Docker-образы MCP в архив бандла не входят: их поднимают отдельно, см. [MCP серверы для 1С](../mcp-servery-1c/README.md).
+Обе поставки — рабочая **beta**. С 13.11.2026 развивается DSH, а Pi получает только исправления критичных дефектов. Основная платформа — **Windows x64**. Для Linux x64 и macOS на Apple Silicon есть отдельные архивы: Pi в терминале, DSH как Web в Linux и как Desktop на macOS, см. [Linux и macOS](platformy.md). Docker-образы MCP в архив бандла не входят: их поднимают отдельно, см. [MCP серверы для 1С](../mcp-servery-1c/README.md).
 
 Архивы скачиваются в личном кабинете [vibecoding1c.ru](https://vibecoding1c.ru/harnesses) после покупки, см. [Получение и обновление](poluchenie-i-obnovlenie.md).
 
