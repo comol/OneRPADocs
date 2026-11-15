@@ -46,7 +46,7 @@
 | `performed` | ответ есть, раздел проверки в нём есть, код передан целиком | `null` |
 | `partial` | то же, но код обрезан до `ONEC_AI_INPUT_MAX_LENGTH` | `code_truncated`, в `detail` — какие строки проверены |
 | `skipped` | в ответе нет раздела этой проверки | `section_missing` |
-| `skipped` | ответа нет | код из `error`: `operation_timeout`, `transport_failure`, `upstream_empty_answer`, `upstream_error`, `no_result` |
+| `skipped` | ответа нет | код из `error`: `operation_timeout`, `transport_failure`, `upstream_empty_answer`, `upstream_error`, `token_rejected`, `budget_exceeded`, `no_active_tariff`, `no_result` |
 | `skipped` | код не отправлялся (пустой код, недопустимый путь в `files`) | `input_refused` |
 | `skipped` | сбой самого сервера | `unexpected_error` |
 
@@ -65,6 +65,7 @@
 | `truncated`, `lines_sent`, `lines_total`, `chars_sent`, `chars_total` | сколько кода передано из скольких |
 | `outcome` | `answered`, `error` или `refused` |
 | `error` | код сбоя, как в поле `error` |
+| `context_tokens`, `context_limit` | с 15.11.2026: сколько токенов было в контексте модели 1С.ai после ответа и каков размер контекста модели, как их сообщил 1С.ai; `null`, если не сообщил |
 
 Пример (direct-режим, анализатор ответил):
 
@@ -76,7 +77,7 @@
 "trace": {"tool_call_mode": "direct", "capability": "syntax.validate", "capability_state": "available",
           "path": "direct", "direct_attempts": 1, "prompt_attempts": 0, "truncated": false,
           "lines_sent": 40, "lines_total": 40, "chars_sent": 1234, "chars_total": 1234,
-          "outcome": "answered", "error": null}
+          "outcome": "answered", "error": null, "context_tokens": 7744, "context_limit": 384000}
 ```
 
 Остальные поля ответа (`answer`, `truncation`, `fallback_reason`, `error`, `isError`) не изменились.
@@ -320,6 +321,9 @@ Code review кода 1С с точки зрения стиля и стандар
 | `operation_timeout` | истёк `ONEC_AI_OPERATION_TIMEOUT`, в том числе когда на запасной промпт не осталось времени |
 | `transport_failure` | сеть, таймаут запроса или ответ 5xx/429 на всех путях |
 | `upstream_empty_answer` | 1С.ai закончил ответ без итогового текста (например, только рассуждение) |
+| `token_rejected` | 1С.ai не принял ключ `ONEC_AI_TOKEN`: ключ не найден или не передан (с 15.11.2026) |
+| `budget_exceeded` | исчерпан лимит 1С:Напарника для ключа; не повторяется (с 15.11.2026) |
+| `no_active_tariff` | у ключа нет активного тарифа 1С:Напарника (с 15.11.2026) |
 | `upstream_error` | другая ошибка upstream |
 | `no_result` | возможность не вернула результата, а запасного промпта у инструмента нет |
 | `input_refused` | вход отклонён (пустой код или вопрос, недопустимый путь в `files`), в 1С.ai ничего не отправлялось |
