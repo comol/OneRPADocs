@@ -33,7 +33,9 @@ KD20 помогает ИИ писать и дорабатывать правил
 - Образ: `comol/1c_conversion_data_mcp`, версия **0.6.1** от 11.11.2026; теги `latest`
   (Linux/amd64) и `arm64` (Linux/arm64), других тегов на Docker Hub нет.
   Варианта `light` нет: embeddings сервер не использует. При `IMAGE_VARIANT=light` ставится `latest`.
-  Образ и исходники сервера — **0.6.1** (73 инструмента), включая `ed_trace` и `ed_pair_validate`.
+  Образ — **0.6.1** (73 инструмента), включая `ed_trace` и `ed_pair_validate`.
+  В исходниках с 17.11.2026 инструментов 76: добавлены `ed_draft_module`,
+  `ed_patch_extension` и `ed_transfer_kd2`. В текущий образ они не входили.
 - Ключ в `config.env`: `LICENSE_KEY_KD20`; внутри контейнера — `LICENSE_KEY` или путь к файлу
   ключа в `LICENSE_KEY_FILE`.
 - Порт: **8009**; MCP: `http://127.0.0.1:8009/mcp` (Streamable HTTP); liveness: `/healthz`.
@@ -61,7 +63,8 @@ KD20 помогает ИИ писать и дорабатывать правил
 | Проверки в копии базы (необязательно) | `check_rules_in_1c`, `dump_rules_from_1c`, `exchange_plans_in_1c`, `check_registration_in_1c` |
 | Навигация по готовым правилам | `search_ruleset_code`, `read_handler`, `trace_object`, `handler_queries` |
 | Правила регистрации | `import_registration_rules`, `build_registration_rules`, `validate_registration_rules`, `describe_registration_rules`, `generate_registration_xml` |
-| Обмен через универсальный формат (КД 3), только чтение | `ed_open`, `ed_overview`, `ed_list`, `ed_get`, `ed_locate`, `ed_validate`, `ed_trace`, `ed_pair_validate`, `ed_close`, `ed_schema_open`, `ed_schema_types`, `ed_schema_type`, `ed_schema_close` |
+| Обмен через универсальный формат (КД 3), чтение | `ed_open`, `ed_overview`, `ed_list`, `ed_get`, `ed_locate`, `ed_validate`, `ed_trace`, `ed_pair_validate`, `ed_close`, `ed_schema_open`, `ed_schema_types`, `ed_schema_type`, `ed_schema_close` |
+| Запись модуля КД 3 (исходники, в образе 0.6.1 ещё нет) | `ed_draft_module` — пустой модуль; `ed_patch_extension` — расширение поверх типового, типовой файл не меняется; `ed_transfer_kd2` — перенос правил КД 2 без обработчиков, запросов и алгоритмов |
 | Справка | `handler_interface`, `kd20_format_reference`, `search_kd20`, `explain_kd20`, `index_kd20_path` |
 
 - **Две базы обмена.** `set_base` задаёт базу: где она находится — каталог файловой базы
@@ -193,7 +196,9 @@ KD20 помогает ИИ писать и дорабатывать правил
   не выбирает; свойство, которое у найденного объекта перезапишется пустым; табличная часть,
   которая очистится, потому что источник её не отправляет; поле поиска, которое источник не
   заполняет. Код обработчиков не исполняется. Чистый `ed_validate` не доказывает, что объект
-  доходит.
+  доходит. Исходники умеют записать новый модуль, не трогая типовой: `ed_draft_module`,
+  `ed_patch_extension`, `ed_transfer_kd2`. Слои расширений читатель по-прежнему не разбирает.
+  В образе 0.6.1 этих трёх инструментов нет.
 - **Код обработчиков.** `export_handlers_bsl` выгружает каждый обработчик и алгоритм
   отдельным BSL-модулем с параметрами обработчика — для
   [SyntaxCheckServer](../syntax-check-server/README.md); `locate_handler_line` переводит
@@ -289,7 +294,7 @@ docker run -d --name 1c_kd20_mcp --init --restart unless-stopped `
 `{"service":"kd20-mcp","status":"ok","check":"liveness"}`. `Exited (1)` сразу после старта —
 неподходящий ключ (`docker logs 1c_kd20_mcp` покажет `Invalid LICENSE_KEY`).
 
-Подключение клиента (ключ в `mcp.json` не пишется), клиент образа 0.6.1 видит 73 инструмента (меньше, если часть отключена `KD20_DISABLE_TOOLS`):
+Подключение клиента (ключ в `mcp.json` не пишется), клиент образа 0.6.1 видит 73 инструмента (меньше, если часть отключена `KD20_DISABLE_TOOLS`; в исходниках с 17.11.2026 — 76):
 
 ```json
 {"mcpServers":{"1c-kd20":{"url":"http://127.0.0.1:8009/mcp"}}}
@@ -336,9 +341,9 @@ docker run -d --name 1c_kd20_mcp --init --restart unless-stopped `
 | `KD20_ALLOWED_ROOTS` | где разрешено читать и писать (через `;`) | `/data;/workspace` |
 | `MCP_TRANSPORT` | `http` или `stdio` | `http` |
 | `KD20_SANDBOX_DATA_URL` | сервер данных копии базы (1c-data-mcp, `…/hs/mcp`) для `check_rules_in_1c`, `dump_rules_from_1c`, `exchange_plans_in_1c`, `check_registration_in_1c` (у каждого есть и параметры `data_server_url` и `base` — база из `set_base`); из контейнера база на этой машине — `host.docker.internal` | не задано |
-| `KD20_DISABLE_TOOLS` | какие инструменты не выставлять клиенту: имена и маски через запятую (`ed_*,*_in_1c`), регистр учитывается; маска без совпадений — предупреждение в журнале при запуске | не задано — все 73 |
+| `KD20_DISABLE_TOOLS` | какие инструменты не выставлять клиенту: имена и маски через запятую (`ed_*,*_in_1c`), регистр учитывается; маска без совпадений — предупреждение в журнале при запуске | не задано — все инструменты образа (73; в исходниках с 17.11.2026 — 76) |
 
-`KD20_DISABLE_TOOLS` убирает из контекста модели группы, которые в установке не нужны: `ed_*` — 13 инструментов КД 3, `*_in_1c` — 4 проверки в базе, `*base*,*_exchange*` — 8 инструментов баз и обменов (в их числе `check_base_in_1c`). Отключённый инструмент сервер не регистрирует: его нет в `tools/list`, вызвать его нельзя.
+`KD20_DISABLE_TOOLS` убирает из контекста модели группы, которые в установке не нужны: `ed_*` — инструменты КД 3 (в образе 13, в исходниках 16), `*_in_1c` — 4 проверки в базе, `*base*,*_exchange*` — 8 инструментов баз и обменов (в их числе `check_base_in_1c`). Отключённый инструмент сервер не регистрирует: его нет в `tools/list`, вызвать его нельзя.
 
 Справочники сервера в поисковом индексе обновляются при каждом запуске: заменяются только
 их фрагменты, проиндексированное через `index_kd20_path` остаётся (справочники — формат правил,
