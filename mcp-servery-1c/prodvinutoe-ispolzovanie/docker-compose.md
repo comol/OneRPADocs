@@ -86,6 +86,11 @@ services:
       - EMBEDDING_MODEL=Qwen3-Embedding-4B
     volumes:
       - E:/bases/mcp_templates:/app/chroma_db
+    # Полнотекстовый индекс RocksDB: без этого лимита контейнер не доходит до /ready.
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
 ```
 
 ## Файл .env

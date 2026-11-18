@@ -104,7 +104,7 @@ docker run -d -p 8008:8008 `
 ### TemplatesSearchServer
 
 ```powershell
-docker run -d -p 8004:8004 `
+docker run -d --ulimit nofile=65536:65536 -p 8004:8004 `
     --name template_search_mcp `
     -e LICENSE_KEY=YOUR_LICENSE_KEY `
     -e RESET_DATABASE=false `

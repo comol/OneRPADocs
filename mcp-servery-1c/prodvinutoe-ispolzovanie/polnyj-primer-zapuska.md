@@ -84,7 +84,7 @@ docker run -d -p 8008:8008 `
 # 4. TemplatesSearchServer (порт 8004)
 # --------------------------------------------
 Write-Host "Запуск TemplatesSearchServer..." -ForegroundColor Yellow
-docker run -d -p 8004:8004 `
+docker run -d --ulimit nofile=65536:65536 -p 8004:8004 `
     --name template_search_mcp `
     -e LICENSE_KEY=$LICENSE_KEY_TEMPLATES `
     -e RESET_DATABASE=false `
