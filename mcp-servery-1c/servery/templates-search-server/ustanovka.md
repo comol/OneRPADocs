@@ -18,6 +18,7 @@ New-Item -ItemType Directory -Force -Path "E:\bases\mcp_templates"
 ```powershell
 docker run -d --restart unless-stopped -p 127.0.0.1:8004:8004 `
   --name template_search_mcp `
+  --ulimit nofile=65536:65536 `
   -e LICENSE_KEY=YOUR_LICENSE_KEY `
   -e RESET_CACHE=false `
   -e RESET_DATABASE=false `
@@ -33,6 +34,7 @@ docker run -d --restart unless-stopped -p 127.0.0.1:8004:8004 `
 ```powershell
 docker run -d --restart unless-stopped -p 127.0.0.1:8004:8004 `
   --name template_search_mcp `
+  --ulimit nofile=65536:65536 `
   -e LICENSE_KEY=YOUR_LICENSE_KEY `
   -e RESET_CACHE=false `
   -e RESET_DATABASE=false `
@@ -40,6 +42,8 @@ docker run -d --restart unless-stopped -p 127.0.0.1:8004:8004 `
   -v "E:/bases/mcp_templates:/app/chroma_db" `
   comol/template-search-mcp:latest
 ```
+
+Полнотекстовый индекс держит открытыми файлы RocksDB. Лимита Docker по умолчанию (1024) не хватает на разовую перезапись корпуса, и без `--ulimit nofile=65536:65536` контейнер не доходит до готовности. Образ поднимает мягкий лимит сам, но не выше жёсткого, который задаёт только этот флаг.
 
 ## Переменные окружения
 

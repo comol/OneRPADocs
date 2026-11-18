@@ -283,6 +283,7 @@ comol/template-search-mcp:latest
 ```powershell
 docker run -d --restart unless-stopped -p 127.0.0.1:8004:8004 `
   --name template_search_mcp `
+  --ulimit nofile=65536:65536 `
   -e LICENSE_KEY=YOUR_LICENSE_KEY `
   -v "E:/bases/mcp_templates:/app/chroma_db" `
   comol/template-search-mcp:latest
