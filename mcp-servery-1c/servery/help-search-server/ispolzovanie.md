@@ -116,6 +116,10 @@ docker logs -f 1c_help_mcp
 
 ИИ вызовет `standards(query="именование общих модулей")` и найдёт правило внутри корпуса стандартов.
 
+> "BSL LS выдал bslls:AssignAliasFieldsInQuery — что это значит и как исправить?"
+
+ИИ вызовет `standards(name="bslls:AssignAliasFieldsInQuery")` и получит описание диагностики с примерами и ссылкой на стандарт ИТС. Так же объясняются проверки 1C:EDT по их идентификатору, например `standards(name="begin-transaction")`.
+
 ## Типичные сценарии
 
 ### Быстрый поиск по имени
