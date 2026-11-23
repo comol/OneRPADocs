@@ -12,10 +12,12 @@ KD20 помогает ИИ писать и дорабатывать правил
 Первый сеанс, отличие от расширения MCP внутри базы и проверка, что расширение
 опубликовано, — на странице [Как пользоваться](kak-polzovatsya.md).
 
-Обмен через универсальный формат (EnterpriseData, «Конвертация данных» 3) сервер читает и
-проверяет, но не пишет: модуль менеджера обмена из выгрузки конфигурации, схему формата из
-пакетов XDTO, связность правил и их соответствие схеме и конфигурации. В версии 0.6.0
-к этому добавлены путь одного объекта и сверка модуля источника с модулем приёмника.
+Обмен через универсальный формат (EnterpriseData, «Конвертация данных» 3) сервер читает,
+проверяет и может записать отдельно (не меняя типовой модуль): модуль менеджера обмена из
+выгрузки конфигурации, схему формата из пакетов XDTO, связность правил и их соответствие
+схеме и конфигурации, путь одного объекта (`ed_trace`), сверку модуля источника с модулем
+приёмника (`ed_pair_validate`), а также заготовку модуля (`ed_draft_module`), модуль
+расширения (`ed_patch_extension`) и перенос правил КД 2 (`ed_transfer_kd2`).
 
 С копией базы через её сервер данных (Конструктор MCP-серверов 1С) сервер по желанию
 проверяет загрузку правил, снимает правила, которые действуют в базе, показывает планы обмена
@@ -30,11 +32,11 @@ KD20 помогает ИИ писать и дорабатывать правил
 
 ## Поставка и требования
 
-- Образ: `comol/1c_conversion_data_mcp`, версия **0.6.2** от 17.11.2026; теги `latest`
+- Образ: `comol/1c_conversion_data_mcp`, версия **0.7.0** от 23.11.2026; теги `latest`
   (Linux/amd64) и `arm64` (Linux/arm64), других тегов на Docker Hub нет.
   Варианта `light` нет: embeddings сервер не использует. При `IMAGE_VARIANT=light` ставится `latest`.
-  Образ — **0.6.2** (76 инструментов), включая `ed_trace`, `ed_pair_validate`,
-  `ed_draft_module`, `ed_patch_extension` и `ed_transfer_kd2`.
+  Образ — **0.7.0** (77 инструментов), включая `suggest_value_mappings`, `ed_trace`,
+  `ed_pair_validate`, `ed_draft_module`, `ed_patch_extension` и `ed_transfer_kd2`.
 - Ключ в `config.env`: `LICENSE_KEY_KD20`; внутри контейнера — `LICENSE_KEY` или путь к файлу
   ключа в `LICENSE_KEY_FILE`.
 - Порт: **8009**; MCP: `http://127.0.0.1:8009/mcp` (Streamable HTTP); liveness: `/healthz`.
@@ -56,7 +58,7 @@ KD20 помогает ИИ писать и дорабатывать правил
 |---|---|
 | Базы и обмены | `set_base`, `describe_bases`, `delete_base`, `base_launch_string`, `check_base_in_1c`, `set_exchange`, `describe_exchanges`, `delete_exchange` |
 | Конфигурации | `load_configuration`, `list_configurations`, `list_metadata`, `describe_object`, `compare_configurations` |
-| Подбор соответствий | `suggest_object_mappings`, `suggest_property_mappings` |
+| Подбор соответствий | `suggest_object_mappings`, `suggest_property_mappings`, `suggest_value_mappings` (ПКЗ перечислений) |
 | Набор правил | `create_ruleset`, `draft_ruleset`, `list_rulesets`, `describe_ruleset`, `set_object_rule`, `delete_object_rule`, `set_object_rules_flags`, `set_property_rule`, `delete_property_rule`, `set_value_map`, `set_export_rule`, `delete_export_rule`, `set_clear_rule`, `set_conversion_handler`, `set_parameter`, `set_algorithm`, `set_query`, `bind_configurations`, `draft_correspondent_ruleset` |
 | Проверка и выгрузка | `validate_ruleset`, `generate_rules_xml`, `preview_rules_xml`, `import_rules_xml`, `diff_rulesets`, `pack_rules_zip`, `export_handlers_bsl`, `locate_handler_line` |
 | Проверки в копии базы (необязательно) | `check_rules_in_1c`, `dump_rules_from_1c`, `exchange_plans_in_1c`, `check_registration_in_1c` |
@@ -171,6 +173,8 @@ KD20 помогает ИИ писать и дорабатывать правил
   уже есть, передайте `sync_by_id=false` или задайте свойства поиска с продолжением поиска.
 - **Подбор пар.** Для объекта, у которого нет кандидата по имени, предлагается объект с тем же
   составом реквизитов (переименование, не меньше 70 % общих реквизитов).
+  `suggest_value_mappings` отдельно подбирает ПКЗ перечислений и показывает значения обеих
+  сторон без соответствия, включая ближайшие кандидаты ниже порога.
 - **Навигация.** `trace_object` показывает путь объекта через правила с каскадом значений
   вглубь (`depth`), целиком или только ссылкой уходит значение, цепочку «ветка → алгоритм →
   вызов ПКО» с номерами строк, ПВД, вместо которого при обмене через план работает другой,
@@ -220,7 +224,7 @@ KD20 помогает ИИ писать и дорабатывать правил
 У каждого инструмента есть аннотации MCP, по ним клиент решает, что выполнять без
 подтверждения:
 
-- `readOnlyHint: true` — только читает: 36 инструментов;
+- `readOnlyHint: true` — только читает: 37 инструментов;
 - `destructiveHint: true` — удаляет сохранённое или молча заменяет целиком набор правил,
   правила регистрации либо файл по указанному пути: 19 инструментов (пять `delete_*`,
   `create_ruleset`, `draft_*`, `import_*`, `generate_*`, `build_registration_rules`,
@@ -234,7 +238,7 @@ KD20 помогает ИИ писать и дорабатывать правил
 у `generate_rules_xml` и `generate_registration_xml`, `preset` у `set_object_rules_flags`,
 `owner` у `handler_interface`, `section` у `kd20_format_reference`. Неизвестное значение
 отклоняет проверка схемы до запуска инструмента. `serverInfo.version` в ответе `initialize` —
-версия пакета (0.6.2).
+версия пакета (0.7.0).
 
 ## Ограничения
 
@@ -258,7 +262,7 @@ KD20 помогает ИИ писать и дорабатывать правил
   читающих файлы, и для поискового индекса. Серверу данных логин и пароль передаются только
   с `data_server_auth=true` — если публикация `…/hs/mcp` требует Basic-аутентификацию.
 - Состав плана обмена для правил регистрации читается из выгрузки Конфигуратора
-  (`ExchangePlans\<План>\Ext\Content.xml`); из проекта 1C:EDT — пока нет.
+  (`ExchangePlans\<План>\Ext\Content.xml`) и из проекта 1C:EDT (`ExchangePlans\<План>\<План>.mdo`).
 - Синтаксический анализатор не доказывает, что переменные контекста обработчика
   использованы верно: смысл проверяет только обмен.
 - Перенос результата в проект 1С (захват в хранилище, замена `Template.txt`, обновление
@@ -296,7 +300,7 @@ docker run -d --name 1c_kd20_mcp --init --restart unless-stopped `
 `{"service":"kd20-mcp","status":"ok","check":"liveness"}`. `Exited (1)` сразу после старта —
 неподходящий ключ (`docker logs 1c_kd20_mcp` покажет `Invalid LICENSE_KEY`).
 
-Подключение клиента (ключ в `mcp.json` не пишется), клиент образа 0.6.2 видит 76 инструментов (меньше, если часть отключена `KD20_DISABLE_TOOLS`):
+Подключение клиента (ключ в `mcp.json` не пишется), клиент образа 0.7.0 видит 77 инструментов (меньше, если часть отключена `KD20_DISABLE_TOOLS`):
 
 ```json
 {"mcpServers":{"1c-kd20":{"url":"http://127.0.0.1:8009/mcp"}}}

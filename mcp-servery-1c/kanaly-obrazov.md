@@ -103,7 +103,7 @@ IMAGE_TAG = IMAGE_VARIANT
 
 ## Конвертация данных 2.0 (KD20)
 
-`comol/1c_conversion_data_mcp` — выпуск 0.6.2 от 17.11.2026: `latest` (Linux/amd64) и
+`comol/1c_conversion_data_mcp` — выпуск 0.7.0 от 23.11.2026: `latest` (Linux/amd64) и
 `arm64` (Linux/arm64); тегов версий на Docker Hub нет — с 04.10.2026 у образа только
 `latest` и `arm64`. Варианта `light`
 нет: embeddings сервер не использует, поэтому при `IMAGE_VARIANT=light` ставится `latest`.
