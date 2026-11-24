@@ -95,10 +95,10 @@
 Если необходимо полностью перестроить векторный индекс (например, после смены embedding-модели):
 
 ```powershell
-docker rm -f template_search_mcp
+docker rm -f 1c_templates_mcp
 
 docker run -d --restart unless-stopped --ulimit nofile=65536:65536 -p 127.0.0.1:8004:8004 `
-  --name template_search_mcp `
+  --name 1c_templates_mcp `
   -e LICENSE_KEY=YOUR_LICENSE_KEY `
   -e RESET_DATABASE=true `
   -v "E:/bases/mcp_templates:/app/chroma_db" `

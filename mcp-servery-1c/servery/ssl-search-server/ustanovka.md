@@ -25,7 +25,7 @@ New-Item -ItemType Directory -Force -Path "E:\bases\mcp_ssl"
 
 ```powershell
 docker run -d -p 8008:8008 `
-  --name mcp_ssl_server `
+  --name 1c_ssl_mcp `
   -e LICENSE_KEY=YOUR_LICENSE_KEY `
   -e SSL_VERSION=3.1.11 `
   -e RESET_DATABASE=false `
@@ -40,7 +40,7 @@ docker run -d -p 8008:8008 `
 
 ```powershell
 docker run -d -p 8008:8008 `
-  --name mcp_ssl_server `
+  --name 1c_ssl_mcp `
   -e LICENSE_KEY=YOUR_LICENSE_KEY `
   -e SSL_VERSION=3.1.11 `
   -e RESET_DATABASE=false `
@@ -63,13 +63,13 @@ docker run -d -p 8008:8008 `
 ### Мониторинг
 
 ```powershell
-docker logs -f mcp_ssl_server
+docker logs -f 1c_ssl_mcp
 ```
 
 ## Проверка работы
 
 ```powershell
-docker ps --filter name=mcp_ssl_server
+docker ps --filter name=1c_ssl_mcp
 
 # Готовность отвечать на поиск (её же читает HEALTHCHECK образа)
 Invoke-RestMethod -Uri "http://localhost:8008/ready"
@@ -82,7 +82,7 @@ Invoke-RestMethod -Uri "http://localhost:8008/ready"
 ## Остановка
 
 ```powershell
-docker stop mcp_ssl_server
+docker stop 1c_ssl_mcp
 ```
 
 По сигналу остановки сервер перестаёт принимать новые пакеты индексации, доводит начатое до контрольной точки и сбрасывает векторное хранилище — всё в пределах `SHUTDOWN_GRACE_SECONDS` (по умолчанию 10 секунд, ровно столько даёт `docker stop` до SIGKILL). Прерванная индексация не повреждает обслуживающее поколение.
@@ -106,11 +106,11 @@ docker stop mcp_ssl_server
 
 ```powershell
 # Остановить и удалить контейнер
-docker rm -f mcp_ssl_server
+docker rm -f 1c_ssl_mcp
 
 # Запустить с новой версией и переиндексацией
 docker run -d -p 8008:8008 `
-  --name mcp_ssl_server `
+  --name 1c_ssl_mcp `
   -e LICENSE_KEY=YOUR_LICENSE_KEY `
   -e SSL_VERSION=3.2.1 `
   -e RESET_DATABASE=true `

@@ -17,7 +17,7 @@ New-Item -ItemType Directory -Force -Path "E:\bases\mcp_templates"
 
 ```powershell
 docker run -d --restart unless-stopped -p 127.0.0.1:8004:8004 `
-  --name template_search_mcp `
+  --name 1c_templates_mcp `
   --ulimit nofile=65536:65536 `
   -e LICENSE_KEY=YOUR_LICENSE_KEY `
   -e RESET_CACHE=false `
@@ -33,7 +33,7 @@ docker run -d --restart unless-stopped -p 127.0.0.1:8004:8004 `
 
 ```powershell
 docker run -d --restart unless-stopped -p 127.0.0.1:8004:8004 `
-  --name template_search_mcp `
+  --name 1c_templates_mcp `
   --ulimit nofile=65536:65536 `
   -e LICENSE_KEY=YOUR_LICENSE_KEY `
   -e RESET_CACHE=false `
@@ -148,7 +148,7 @@ docker run --rm -v "E:/plugins/mcp_templates/10-aliasy.py:/tmp/my_plugin.py" `
 ### Мониторинг
 
 ```powershell
-docker logs -f template_search_mcp
+docker logs -f 1c_templates_mcp
 ```
 
 ## Проверка работы
@@ -156,7 +156,7 @@ docker logs -f template_search_mcp
 ### MCP endpoint
 
 ```powershell
-docker ps --filter name=template_search_mcp
+docker ps --filter name=1c_templates_mcp
 ```
 
 ### Liveness и readiness

@@ -13,13 +13,13 @@
 
 ### Репозиторий
 
-[github.com/comol/cursor_rules_1c](https://github.com/comol/cursor_rules_1c)
+[github.com/comol/ai_rules_1c](https://github.com/comol/ai_rules_1c)
 
 ### Установка
 
 ```powershell
 # Клонирование репозитория
-git clone https://github.com/comol/cursor_rules_1c.git
+git clone https://github.com/comol/ai_rules_1c.git
 
 # Или скачайте архив с GitHub
 ```

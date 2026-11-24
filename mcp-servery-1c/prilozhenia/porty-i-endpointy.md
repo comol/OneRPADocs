@@ -84,7 +84,7 @@ Graph Metadata Search по умолчанию обслуживает `streamable
     },
     "1c-graph-metadata-mcp": {
       "url": "http://localhost:8006/mcp",
-      "connection_id": "1c_graph_service_001"
+      "connection_id": "1c_graph_metadata_001"
     },
     "1c-code-checker-mcp": {
       "url": "http://localhost:8007/mcp",
@@ -96,6 +96,9 @@ Graph Metadata Search по умолчанию обслуживает `streamable
     },
     "1c-kd20": {
       "url": "http://127.0.0.1:8009/mcp"
+    },
+    "1c-qa": {
+      "url": "http://127.0.0.1:8020/mcp"
     }
   }
 }
@@ -114,7 +117,8 @@ $servers = @(
     @{Name="GraphMetadataSearch"; Port=8006; Endpoint="/mcp"},
     @{Name="1CCodeChecker"; Port=8007; Endpoint="/mcp"},
     @{Name="SSLSearchServer"; Port=8008; Endpoint="/mcp"},
-    @{Name="KD20"; Port=8009; Endpoint="/mcp"}
+    @{Name="KD20"; Port=8009; Endpoint="/mcp"},
+    @{Name="MCP QA"; Port=8020; Endpoint="/mcp"}
 )
 
 foreach ($server in $servers) {

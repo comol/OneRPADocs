@@ -76,7 +76,7 @@ C:\Users\<username>\AppData\Roaming\Cursor\User\globalStorage\mcp.json
     },
     "1c-graph-metadata-mcp": {
       "url": "http://localhost:8006/mcp",
-      "connection_id": "1c_graph_service_001"
+      "connection_id": "1c_graph_metadata_001"
     },
     "1c-ssl-mcp": {
       "url": "http://localhost:8008/mcp",
@@ -93,6 +93,12 @@ C:\Users\<username>\AppData\Roaming\Cursor\User\globalStorage\mcp.json
     "1c-code-checker-mcp": {
       "url": "http://localhost:8007/mcp",
       "connection_id": "1c_code_checker_001"
+    },
+    "1c-qa": {
+      "url": "http://127.0.0.1:8020/mcp"
+    },
+    "1c-kd20": {
+      "url": "http://127.0.0.1:8009/mcp"
     }
   }
 }

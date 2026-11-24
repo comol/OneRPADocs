@@ -41,11 +41,12 @@
 5. **CodeMetadataSearchServer** — нужна выгрузка конфигурации
 6. **Graph Metadata Search** — нужна выгрузка + Neo4j
 7. **Конвертация данных 2.0 (KD20)** — нужны выгрузки источника и приёмника обмена
+8. **СППР** — локальный процесс stdio (без Docker-образа), нужны снимки конфигурации и базы 1С:СППР
 
 ### Требующие внешних ресурсов
 
-8. **1CCodeChecker** — нужен токен 1С:Напарник
-9. **MCP QA** — нужна тестовая база 1С с клиентом тестирования (`/TestClient`)
+9. **1CCodeChecker** — нужен токен 1С:Напарник
+10. **MCP QA** — нужна тестовая база 1С с клиентом тестирования (`/TestClient`)
 
 ## Приоритет установки
 
@@ -63,7 +64,7 @@ docker run -d -p 8002:8002 --name 1c_syntaxcheck_mcp `
 
 ```powershell
 # SSLSearchServer
-docker run -d -p 8008:8008 --name mcp_ssl_server `
+docker run -d -p 8008:8008 --name 1c_ssl_mcp `
   -e LICENSE_KEY=YOUR_LICENSE_KEY `
   -e SSL_VERSION=3.1.11 `
   -v "E:/bases/mcp_ssl:/app/zvec_db" `

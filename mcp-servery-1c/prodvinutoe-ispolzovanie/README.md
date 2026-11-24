@@ -47,7 +47,7 @@ docker run -d -p 8002:8002 --name 1c_syntaxcheck_mcp -e LICENSE_KEY=$LICENSE_KEY
 ### Остановка всех серверов
 
 ```powershell
-docker stop 1c_help_mcp 1c_syntaxcheck_mcp mcp_ssl_server template_search_mcp
+docker stop 1c_help_mcp 1c_syntaxcheck_mcp 1c_ssl_mcp 1c_templates_mcp
 ```
 
 ### Проверка статуса

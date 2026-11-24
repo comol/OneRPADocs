@@ -217,7 +217,7 @@ docker-compose up -d
   "mcpServers": {
     "1c-graph-metadata-mcp": {
       "url": "http://localhost:8006/mcp",
-      "connection_id": "1c_graph_service_001"
+      "connection_id": "1c_graph_metadata_001"
     }
   }
 }

@@ -93,7 +93,7 @@ docker run -d -p 8003:8003 `
 
 ```powershell
 docker run -d -p 8008:8008 `
-    --name mcp_ssl_server `
+    --name 1c_ssl_mcp `
     -e LICENSE_KEY=YOUR_LICENSE_KEY `
     -e SSL_VERSION=3.1.11 `
     -e RESET_DATABASE=false `
@@ -105,7 +105,7 @@ docker run -d -p 8008:8008 `
 
 ```powershell
 docker run -d --ulimit nofile=65536:65536 -p 8004:8004 `
-    --name template_search_mcp `
+    --name 1c_templates_mcp `
     -e LICENSE_KEY=YOUR_LICENSE_KEY `
     -e RESET_DATABASE=false `
     -v "E:/bases/mcp_templates:/app/chroma_db" `
@@ -150,7 +150,7 @@ Expand-Archive -Path "E:\backup\mcp_bases_20260123.zip" -DestinationPath "E:\bas
 
 ```powershell
 # Остановить контейнеры
-docker stop 1c_help_mcp mcp_ssl_server template_search_mcp
+docker stop 1c_help_mcp 1c_ssl_mcp 1c_templates_mcp
 
 # Удалить данные
 Remove-Item -Recurse -Force "E:\bases\mcp_docs\*"

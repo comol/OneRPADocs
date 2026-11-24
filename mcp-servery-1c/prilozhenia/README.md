@@ -38,7 +38,7 @@
 
 - [Видеокурс по вайбкодингу](https://vibecoding1c.ru/#course)
 - [Страница MCP серверов](https://vibecoding1c.ru/mcp_server)
-- [Cursor Rules для 1С](https://github.com/comol/cursor_rules_1c)
+- [AI Rules для 1С](https://github.com/comol/ai_rules_1c)
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/)
 - [LM Studio](https://lmstudio.ai/)
 - [Ollama](https://ollama.com/)

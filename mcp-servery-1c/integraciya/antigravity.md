@@ -26,7 +26,9 @@ Antigravity подключает те же HTTP-серверы, что и Cursor
     "1c-ssl-mcp":             { "serverUrl": "http://localhost:8008/mcp" },
     "1c-templates-mcp":       { "serverUrl": "http://localhost:8004/mcp" },
     "1c-syntax-checker-mcp":  { "serverUrl": "http://localhost:8002/mcp" },
-    "1c-code-checker-mcp":    { "serverUrl": "http://localhost:8007/mcp" }
+    "1c-code-checker-mcp":    { "serverUrl": "http://localhost:8007/mcp" },
+    "1c-qa":                  { "serverUrl": "http://127.0.0.1:8020/mcp" },
+    "1c-kd20":                { "serverUrl": "http://127.0.0.1:8009/mcp" }
   }
 }
 ```

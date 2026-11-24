@@ -70,7 +70,7 @@ docker run -d -p 8003:8003 `
 # --------------------------------------------
 Write-Host "Запуск SSLSearchServer..." -ForegroundColor Yellow
 docker run -d -p 8008:8008 `
-    --name mcp_ssl_server `
+    --name 1c_ssl_mcp `
     -e LICENSE_KEY=$LICENSE_KEY_SSL `
     -e SSL_VERSION=3.1.11 `
     -e RESET_DATABASE=false `
@@ -85,7 +85,7 @@ docker run -d -p 8008:8008 `
 # --------------------------------------------
 Write-Host "Запуск TemplatesSearchServer..." -ForegroundColor Yellow
 docker run -d --ulimit nofile=65536:65536 -p 8004:8004 `
-    --name template_search_mcp `
+    --name 1c_templates_mcp `
     -e LICENSE_KEY=$LICENSE_KEY_TEMPLATES `
     -e RESET_DATABASE=false `
     -e EMBEDDING_API_BASE=$LM_STUDIO_URL `
@@ -117,8 +117,8 @@ Write-Host "Остановка MCP серверов..." -ForegroundColor Yellow
 $containers = @(
     "1c_help_mcp",
     "1c_syntaxcheck_mcp",
-    "mcp_ssl_server",
-    "template_search_mcp"
+    "1c_ssl_mcp",
+    "1c_templates_mcp"
 )
 
 foreach ($container in $containers) {

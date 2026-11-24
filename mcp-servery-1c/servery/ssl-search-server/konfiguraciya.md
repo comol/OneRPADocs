@@ -156,7 +156,7 @@ docker run --rm -v "E:/plugins/mcp_ssl/10-terms.py:/tmp/my_plugin.py" `
 
 ```powershell
 docker run -d -p 8008:8008 `
-  --name mcp_ssl_server `
+  --name 1c_ssl_mcp `
   -e LICENSE_KEY=YOUR_LICENSE_KEY `
   -e SSL_VERSION=3.1.11 `
   comol/mcp_ssl_server:latest
@@ -166,7 +166,7 @@ docker run -d -p 8008:8008 `
 
 ```powershell
 docker run -d -p 8008:8008 `
-  --name mcp_ssl_server `
+  --name 1c_ssl_mcp `
   -e LICENSE_KEY=YOUR_LICENSE_KEY `
   -e SSL_VERSION=3.1.11 `
   -e RESET_DATABASE=false `

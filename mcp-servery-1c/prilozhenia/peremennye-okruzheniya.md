@@ -497,7 +497,7 @@
 ```powershell
 -e LICENSE_KEY=YOUR_LICENSE_KEY `
 -e RESET_DATABASE=false `
--e EMBEDDING_API_BASE=https://openrouter.ai/api `
+-e EMBEDDING_API_BASE=https://openrouter.ai/api/v1 `
 -e EMBEDDING_API_KEY=YOUR_OPENROUTER_KEY `
 -e EMBEDDING_MODEL=qwen/qwen3-embedding-8b
 ```
@@ -597,7 +597,7 @@
   индекс наполняется при первом запуске.
 - `KD20_DISABLE_TOOLS` — какие инструменты не выставлять клиенту: имена и маски через
   запятую (`ed_*,*_in_1c`), регистр учитывается; не задано — все инструменты
-  опубликованного образа (76); маска без совпадений —
+  опубликованного образа (77); маска без совпадений —
   предупреждение в журнале при запуске.
 - В поставке: `KD20_WORKSPACE` (папка с выгрузками и макетами правил, монтируется
   только на чтение в `/workspace`), `KD20_HTTP_PORT` и `KD20_SANDBOX_DATA_URL`; рабочие

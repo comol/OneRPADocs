@@ -111,7 +111,7 @@ docker run -d -p 8010:8000 `
     },
     "1c-graph-metadata-mcp": {
       "url": "http://localhost:8006/mcp",
-      "connection_id": "1c_graph_service_001"
+      "connection_id": "1c_graph_metadata_001"
     },
     "1c-ssl-mcp": {
       "url": "http://localhost:8008/mcp",
@@ -128,6 +128,12 @@ docker run -d -p 8010:8000 `
     "1c-code-checker-mcp": {
       "url": "http://localhost:8007/mcp",
       "connection_id": "1c_code_checker_001"
+    },
+    "1c-qa": {
+      "url": "http://127.0.0.1:8020/mcp"
+    },
+    "1c-kd20": {
+      "url": "http://127.0.0.1:8009/mcp"
     }
   }
 }
@@ -220,7 +226,9 @@ $servers = @(
     @{Name="TemplatesSearchServer"; Port=8004},
     @{Name="GraphMetadataSearch"; Port=8006},
     @{Name="1CCodeChecker"; Port=8007},
-    @{Name="SSLSearchServer"; Port=8008}
+    @{Name="SSLSearchServer"; Port=8008},
+    @{Name="KD20"; Port=8009},
+    @{Name="MCP QA"; Port=8020}
 )
 
 foreach ($server in $servers) {

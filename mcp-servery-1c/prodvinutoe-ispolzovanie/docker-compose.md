@@ -56,7 +56,7 @@ services:
 
   ssl-search:
     image: comol/mcp_ssl_server:latest
-    container_name: mcp_ssl_server
+    container_name: 1c_ssl_mcp
     restart: unless-stopped
     ports:
       - "8008:8008"
@@ -72,7 +72,7 @@ services:
 
   templates-search:
     image: comol/template-search-mcp:latest
-    container_name: template_search_mcp
+    container_name: 1c_templates_mcp
     restart: unless-stopped
     ports:
       - "8004:8004"

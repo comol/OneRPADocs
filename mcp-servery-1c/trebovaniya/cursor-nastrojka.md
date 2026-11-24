@@ -87,7 +87,7 @@ C:\Users\<имя_пользователя>\AppData\Roaming\Cursor\User\globalSto
 1. Склонируйте репозиторий правил:
 
 ```powershell
-git clone https://github.com/comol/cursor_rules_1c.git
+git clone https://github.com/comol/ai_rules_1c.git
 ```
 
 2. Скопируйте файлы в ваш проект или глобальные настройки Cursor

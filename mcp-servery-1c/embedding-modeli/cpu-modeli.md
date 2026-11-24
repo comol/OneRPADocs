@@ -180,7 +180,7 @@ docker run -d -p 8003:8003 `
 
 ```powershell
 docker run -d -p 8008:8008 `
-  --name mcp_ssl_server `
+  --name 1c_ssl_mcp `
   -e LICENSE_KEY=YOUR_LICENSE_KEY `
   -e SSL_VERSION=3.1.11 `
   -e RESET_DATABASE=false `
