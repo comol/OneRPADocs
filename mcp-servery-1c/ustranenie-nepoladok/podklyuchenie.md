@@ -237,7 +237,7 @@ docker logs --tail 50 <container_name>
 
 ### Решение
 
-Добавьте переменную окружения `USESSE=true`. Для Graph Metadata Search используйте `MCP_USE_SSE=true`:
+Добавьте переменную окружения `USESSE=true`. Для Graph Metadata Search используйте `MCP_USE_SSE=true`. У SyntaxCheckServer и 1CCodeChecker клиент при SSE подключается к `/sse`, а не к `/mcp`; у остальных серверов URL остаётся `/mcp`.
 
 ```powershell
 docker run -d -p 8002:8002 `

@@ -4,7 +4,7 @@
 
 ## Порты серверов
 
-По умолчанию современные образы используют `streamable-http` на `/mcp`. Если клиент требует SSE, включите `USESSE=true`; у Graph Metadata Search эта переменная называется `MCP_USE_SSE`. У большинства серверов URL остаётся `/mcp`; SyntaxCheckServer использует стандартные SSE-пути `/sse` и `/messages/`.
+По умолчанию современные образы используют `streamable-http` на `/mcp`. Если клиент требует SSE, включите `USESSE=true`; у Graph Metadata Search эта переменная называется `MCP_USE_SSE`. У большинства серверов URL остаётся `/mcp`. SyntaxCheckServer использует стандартные SSE-пути `/sse` и `/messages/`. 1CCodeChecker при `USESSE=true` слушает `/sse`; streamable-http по-прежнему на `/mcp`.
 
 Graph Metadata Search по умолчанию обслуживает `streamable-http` без серверной сессии и отвечает на POST обычным JSON (`FASTMCP_STATELESS_HTTP=true`, `FASTMCP_JSON_RESPONSE=true`). Для клиента, которому нужна stateful-сессия с SSE-ответами на том же `/mcp`, задайте обе переменные `false`. `/mcp` и `/mcp/` Graph Metadata Search обслуживает напрямую, без перенаправления (образы от 13.10.2026; раньше в режиме по умолчанию `POST /mcp` получал `307 Temporary Redirect` на `/mcp/`, и клиент, который не следует перенаправлениям, не подключался).
 
@@ -15,7 +15,7 @@ Graph Metadata Search по умолчанию обслуживает `streamable
 | HelpSearchServer | 8003 | `/mcp` | `/health`, `/ready`, `/plugins`, `/plugins/reload` |
 | TemplatesSearchServer | 8004 | `/mcp` | `/health`, `/ready`, `/extend/`, `/extend/memory` (веб-интерфейс) |
 | Graph Metadata Search | 8006 | `/mcp` | `/health` (`/healthz`), `/ready` (`/readyz`) |
-| 1CCodeChecker | 8007 | `/mcp` | `/health`, `/ready`, `/metrics/sessions`, `/release`, `/plugins`, `/plugins/reload` |
+| 1CCodeChecker | 8007 | `/mcp` (`streamable-http`) или `/sse` (SSE) | `/health`, `/ready`, `/metrics/sessions`, `/release`, `/plugins`, `/plugins/reload` |
 | MCP QA | 8020 | `/mcp` (stateful Streamable HTTP) | `/healthz` (liveness), `/`; `POST /client-bus/v1/poll`, `POST /client-bus/v1/result` — сетевой канал расширения `MCPQAClient` с токеном сеанса в `X-MCP-QA-Token`; исходящее подключение к тест-клиенту 1С, по умолчанию `host.docker.internal:1538` |
 | Конвертация данных 2.0 (KD20) | 8009 | `/mcp` (Streamable HTTP) | `/healthz` (liveness) |
 | SSLSearchServer | 8008 | `/mcp` | `/ready` |
