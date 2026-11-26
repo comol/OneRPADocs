@@ -46,7 +46,7 @@
 | `performed` | ответ есть, раздел проверки в нём есть, код передан целиком | `null` |
 | `partial` | то же, но код обрезан до `ONEC_AI_INPUT_MAX_LENGTH` | `code_truncated`, в `detail` — какие строки проверены |
 | `skipped` | в ответе нет раздела этой проверки | `section_missing` |
-| `skipped` | ответа нет | код из `error`: `operation_timeout`, `transport_failure`, `upstream_empty_answer`, `upstream_error`, `token_rejected`, `budget_exceeded`, `no_active_tariff`, `no_result` |
+| `skipped` | ответа нет | код из `error`: `operation_timeout`, `transport_failure`, `upstream_empty_answer`, `upstream_error`, `token_rejected`, `budget_exceeded`, `no_active_tariff`, `rate_limited`, `no_result` |
 | `skipped` | код не отправлялся (пустой код, недопустимый путь в `files`) | `input_refused` |
 | `skipped` | сбой самого сервера | `unexpected_error` |
 
@@ -319,11 +319,12 @@ Code review кода 1С с точки зрения стиля и стандар
 | `error` | Когда |
 |---------|-------|
 | `operation_timeout` | истёк `ONEC_AI_OPERATION_TIMEOUT`, в том числе когда на запасной промпт не осталось времени |
-| `transport_failure` | сеть, таймаут запроса или ответ 5xx/429 на всех путях |
+| `transport_failure` | сеть, таймаут запроса или ответ 5xx на всех путях |
 | `upstream_empty_answer` | 1С.ai закончил ответ без итогового текста (например, только рассуждение) |
 | `token_rejected` | 1С.ai не принял ключ `ONEC_AI_TOKEN`: ключ не найден или не передан (с 15.11.2026) |
-| `budget_exceeded` | исчерпан лимит 1С:Напарника для ключа; не повторяется (с 15.11.2026) |
+| `budget_exceeded` | исчерпан лимит 1С:Напарника для ключа; не повторяется (с 15.11.2026). С 26.11.2026 в `answer` — какой лимит исчерпан (за 5 часов или за неделю) и когда он обновится, время в UTC |
 | `no_active_tariff` | у ключа нет активного тарифа 1С:Напарника (с 15.11.2026) |
+| `rate_limited` | 1С.ai ограничил частоту запросов ключа (`rate_limit_exceeded`, HTTP 429): слишком много сообщений или дискуссий подряд. Не повторяется, в `answer` — через сколько секунд повторить (с 26.11.2026; раньше приходило как `transport_failure`) |
 | `upstream_error` | другая ошибка upstream |
 | `no_result` | возможность не вернула результата, а запасного промпта у инструмента нет |
 | `input_refused` | вход отклонён (пустой код или вопрос, недопустимый путь в `files`), в 1С.ai ничего не отправлялось |
