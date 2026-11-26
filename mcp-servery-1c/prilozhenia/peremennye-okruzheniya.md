@@ -325,7 +325,7 @@
 | `LOAD_ORDINARY_FORMS` | Загружать структуру обычных форм | `true` |
 | `LOAD_EVENT_SUBSCRIPTIONS` | Загружать подписки на события | `false` |
 | `LOAD_PREDEFINED_VALUES` | Загружать предопределённые элементы | `false` |
-| `LOAD_ROLE_RIGHTS` | Загружать права ролей | `false` |
+| `LOAD_ROLE_RIGHTS` | Загружать права ролей (данные `get_access_rights`, в том числе `audit`). В образе по умолчанию `false`, `docker-compose.yml` дистрибутива ставит `true` | `false` |
 | `LOAD_HELP_FROM_HTML` | Загружать справку из HTML | `false` |
 | `LOAD_DCS_TEMPLATES` | Загружать схемы компоновки данных (СКД) из макетов отчётов и обработок: узлы `DcsDataSet`, `DcsField`, `DcsParameter`, `DcsGrouping`, `DcsFilter`, `DcsTemplateArea` под макетом `Layout` — данные `get_report_dcs_lineage`. Состав узлов и связей — на странице конфигурации Graph | `false` |
 | `EXTENSION_NAME` | Имя расширения | — |
