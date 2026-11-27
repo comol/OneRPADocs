@@ -64,7 +64,7 @@
 | `/update1cbase` | Файлы → база через `onec_deploy` в BUILD, без отдельного окна бандла |
 | `/build-release` | Файлы → `.cf` или `.cfe` выбранного состава. База проекта не меняется |
 | `/deploy-and-test` | Загрузка и проверка интерфейса |
-| `/bsl-check` | Локальный BSL Language Server по выбранным файлам |
+| `/bsl-check` | Локальная проверка BSL по выбранным файлам. В актуальном Windows — встроенный анализатор, в дневных Linux и macOS — BSL Language Server |
 | `/deslop` | Артефакты ИИ в BSL. `apply` применяет |
 | `/journal1c` | Журнал регистрации: число событий, объект, пользователь |
 | `/formshot` | Снимок формы |
@@ -105,7 +105,7 @@
 
 - `mcp_search` и `mcp_call` — шлюз MCP
 - `onec_metadata_tree`, `onec_metadata_open` — дерево метаданных
-- `onec_bsl_query` — локальный BSL Language Server
+- `onec_bsl_query` — локальная проверка BSL. В актуальном Windows — встроенный анализатор, в дневных Linux и macOS — BSL Language Server
 - `knowledge_1c` — слой знаний
 - `onec_openspec_progress`, `onec_openspec_handoff` — ход change
 - `onec_deploy` — загрузка в базу в BUILD. Агент сам загружает и проверяет изменение, в том числе после исправления ошибки; отдельного окна подтверждения нет, окно деплоя можно открыть вручную

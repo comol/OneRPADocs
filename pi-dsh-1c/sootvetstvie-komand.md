@@ -13,7 +13,7 @@
 | файлы → ИБ | `/update1cbase`, `/1c-deploy` | `/update1cbase` |
 | файлы → ИБ и UI-тесты | `/deploy-and-test`, `/test-fix-loop` | `/deploy-and-test` |
 | `.dt` и исходники → тестовая ИБ | `/restore-testbase` | Навык `1c-metadata-manage` (`db-load-dt`), затем `/update1cbase` |
-| BSL Language Server | `/bsl status` | `/bsl-check` |
+| Локальная проверка BSL | `/bsl status` | `/bsl-check` |
 | Расход контекста | `/context-usage`, `/context-export` | `/context1c` |
 | OpenSpec | `/openspec` | `/openspec1c` |
 | Продолжить или остановить цель | `/goal-resume`, `/goal-cancel` | `/goal1c recover`, `/goal1c stop` |
